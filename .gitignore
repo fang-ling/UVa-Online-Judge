@@ -2,3 +2,4 @@
 
 hxy.xcodeproj
 main.c
+hxy_tests/hxy_tests.h
