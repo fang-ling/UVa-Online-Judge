@@ -9,6 +9,8 @@
 
 #import "272.h"
 
+#import "401.h"
+
 #import "10082.h"
 
 #import <XCTest/XCTest.h>
@@ -38,6 +40,36 @@
   NSString* out = [
     NSString
       stringWithContentsOfFile: [path stringByAppendingString: @"272.0.out"]
+      encoding: NSUTF8StringEncoding
+      error: nil
+  ];
+  XCTAssertEqualObjects(
+    out,
+    [NSString stringWithCString: buf encoding: NSUTF8StringEncoding]
+  );
+  
+  fclose(stdin);
+  fclose(stdout);
+}
+
+// MARK: - Volume 4
+
+- (void)test_401 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
+  
+  char buf[1024];
+  freopen(
+    [[path stringByAppendingString: @"401.0.in"] UTF8String],
+    "r",
+    stdin
+  );
+  freopen("/dev/null", "a", stdout);
+  setbuf(stdout, buf);
+  main_401();
+  NSString* out = [
+    NSString
+      stringWithContentsOfFile: [path stringByAppendingString: @"401.0.out"]
       encoding: NSUTF8StringEncoding
       error: nil
   ];
