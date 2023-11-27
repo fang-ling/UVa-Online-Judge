@@ -5,6 +5,13 @@
 //  Created by Fang Ling on 2023/11/26.
 //
 
+/*
+ * This program defines helper functions to find the mirror of the given
+ * character. It then reads strings from input until the end of file is reached
+ * and classifies each string as a regular palindrome, a mirrored string, or a
+ * mirrored palindrome. The classification is printed for each string.
+ */
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <ctype.h>
