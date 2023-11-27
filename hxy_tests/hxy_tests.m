@@ -13,6 +13,8 @@
 
 #import "401.h"
 
+#import "594.h"
+
 #import "10082.h"
 
 #import <XCTest/XCTest.h>
@@ -80,6 +82,7 @@
   fclose(stdin);
   fclose(stdout);
 }
+
 // MARK: - Volume 4
 
 - (void)test_401 {
@@ -105,6 +108,33 @@
     out,
     [NSString stringWithCString: buf encoding: NSUTF8StringEncoding]
   );
+  
+  fclose(stdin);
+  fclose(stdout);
+}
+
+// MARK: - Volume 5
+
+- (void)test_594 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 5 (500-599)/"];
+  
+  char buf[1024];
+  freopen(
+    [[path stringByAppendingString: @"594.0.in"] UTF8String],
+    "r",
+    stdin
+  );
+  freopen("/dev/null", "a", stdout);
+  setbuf(stdout, buf);
+  main_594();
+  NSString* out = [
+    NSString
+      stringWithContentsOfFile: [path stringByAppendingString: @"594.0.out"]
+      encoding: NSUTF8StringEncoding
+      error: nil
+  ];
+  XCTAssertEqual(strncmp(buf, [out UTF8String], strlen([out UTF8String])), 0);
   
   fclose(stdin);
   fclose(stdout);
