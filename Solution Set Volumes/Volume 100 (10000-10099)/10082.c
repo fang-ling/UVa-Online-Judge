@@ -5,6 +5,12 @@
 //  Created by Fang Ling on 2023/11/25.
 //
 
+/*
+ * The code reads characters from input, compares them with the `TBL` string to
+ * determine if they are mistyped keys, and prints the corresponding decoded
+ * characters.
+ */
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
