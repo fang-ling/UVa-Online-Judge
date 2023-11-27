@@ -9,6 +9,8 @@
 
 #import "272.h"
 
+#import "340.h"
+
 #import "401.h"
 
 #import "10082.h"
@@ -52,6 +54,32 @@
   fclose(stdout);
 }
 
+// MARK: - Volume 3
+
+- (void)test_340 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 3 (300-399)/"];
+  
+  char buf[1024];
+  freopen(
+    [[path stringByAppendingString: @"340.0.in"] UTF8String],
+    "r",
+    stdin
+  );
+  freopen("/dev/null", "a", stdout);
+  setbuf(stdout, buf);
+  main_340();
+  NSString* out = [
+    NSString
+      stringWithContentsOfFile: [path stringByAppendingString: @"340.0.out"]
+      encoding: NSUTF8StringEncoding
+      error: nil
+  ];
+  XCTAssertEqual(strncmp(buf, [out UTF8String], strlen([out UTF8String])), 0);
+  
+  fclose(stdin);
+  fclose(stdout);
+}
 // MARK: - Volume 4
 
 - (void)test_401 {
