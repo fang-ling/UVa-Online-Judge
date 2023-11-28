@@ -17,10 +17,14 @@
 
 #import "10082.h"
 
+#import "12720.h"
+
 #import <XCTest/XCTest.h>
 #import <stdio.h>
 
-/* 
+#define var __auto_type
+
+/*
  * IO_DATA_PATH:
  * "/.../.../repo/IO Data Volumes/"
  */
@@ -168,6 +172,43 @@
   
   fclose(stdin);
   fclose(stdout);
+}
+
+// MARK: - Volume 127
+
+- (void)test_12720 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 127 (12700-12799)/"];
+  for (var i = 0; i < 2; i += 1) {
+    freopen(
+      [[path 
+        stringByAppendingString: [NSString stringWithFormat: @"12720.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/12720.out", "w", stdout);
+    main_12720();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"12720.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/12720.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
 }
 
 @end
