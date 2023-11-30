@@ -15,6 +15,7 @@
 
 #import "594.h"
 
+#import "1583.h"
 #import "1584.h"
 
 #import "10082.h"
@@ -148,6 +149,41 @@
 
 // MARK: - Volume 15
 
+- (void)test_1583 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 15 (1500-1599)/"];
+  for (var i = 0; i < 1; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"1583.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_1583();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"1583.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
 - (void)test_1584 {
   NSString* path = @IO_DATA_PATH;
   path = [path stringByAppendingString: @"Volume 15 (1500-1599)/"];
@@ -188,29 +224,36 @@
 - (void)test_10082 {
   NSString* path = @IO_DATA_PATH;
   path = [path stringByAppendingString: @"Volume 100 (10000-10099)/"];
-  
-  char buf[1024];
-  freopen(
-    [[path stringByAppendingString: @"10082.0.in"] UTF8String],
-    "r",
-    stdin
-  );
-  freopen("/dev/null", "a", stdout);
-  setbuf(stdout, buf);
-  main_10082();
-  NSString* out = [
-    NSString
-      stringWithContentsOfFile: [path stringByAppendingString: @"10082.0.out"]
+  for (var i = 0; i < 1; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"10082.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_10082();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"10082.%d.out", i]
+      ]
       encoding: NSUTF8StringEncoding
       error: nil
-  ];
-  XCTAssertEqualObjects(
-    out,
-    [NSString stringWithCString: buf encoding: NSUTF8StringEncoding]
-  );
-  
-  fclose(stdin);
-  fclose(stdout);
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
 }
 
 // MARK: - Volume 127
