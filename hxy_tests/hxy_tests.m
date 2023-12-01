@@ -15,6 +15,8 @@
 
 #import "594.h"
 
+#import "1225.h"
+
 #import "1583.h"
 #import "1584.h"
 #import "1585.h"
@@ -147,6 +149,43 @@
   
   fclose(stdin);
   fclose(stdout);
+}
+
+// MARK: - Volume 12
+
+- (void)test_1225 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 12 (1200-1299)/"];
+  for (var i = 0; i < 1; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"1225.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_1225();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"1225.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
 }
 
 // MARK: - Volume 15
