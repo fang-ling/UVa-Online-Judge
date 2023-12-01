@@ -5,6 +5,12 @@
 //  Created by Fang Ling on 2023/12/1.
 //
 
+/* 
+ * During the processing of each formula, the code calculates the molar mass by
+ * multiplying the atomic mass of each element by the quantity of atoms
+ * indicated in the formula.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
