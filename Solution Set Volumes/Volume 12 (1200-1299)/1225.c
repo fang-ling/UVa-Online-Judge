@@ -105,12 +105,12 @@ int _array_init(struct Array* array, unsigned int count, int element_size) {
 }
 
 /* Creates an empty array. */
-int array_init(struct Array* array, int element_size) {
+static int array_init(struct Array* array, int element_size) {
   return _array_init(array, 0, element_size);
 }
 
 /* Destroys an array. */
-void array_deinit(struct Array* array) {
+static void array_deinit(struct Array* array) {
   free((*array)._storage);
   (*array).count = 0;
   (*array).element_size = 0;
@@ -131,7 +131,7 @@ static int _check_index(struct Array* array, int index) {
 }
 
 /* Returns the element at the specified position. */
-int array_get(struct Array* array, int index, void* element) {
+static int array_get(struct Array* array, int index, void* element) {
   var err = _check_index(array, index);
   if (err != 0) {
     return err;
@@ -145,7 +145,7 @@ int array_get(struct Array* array, int index, void* element) {
 }
 
 /* Replaces the element at the specified position. */
-int array_set(struct Array* array, int index, void* element) {
+static int array_set(struct Array* array, int index, void* element) {
   var err = _check_index(array, index);
   if (err != 0) {
     return err;
@@ -161,7 +161,7 @@ int array_set(struct Array* array, int index, void* element) {
 /* MARK: - Adding Elements */
 
 /* Adds a new element at the end of the array. */
-int array_append(struct Array* array, void* element) {
+static int array_append(struct Array* array, void* element) {
   var q = 2; /* multiple factor = 2 */
 
   if ((*array).capacity == 0) {
@@ -186,7 +186,7 @@ int array_append(struct Array* array, void* element) {
 /* MARK: - Removing Elements */
 
 /* Removes all the elements. */
-int array_remove_all(struct Array* array) {
+static int array_remove_all(struct Array* array) {
   free((*array)._storage);
   (*array)._storage = NULL;
   (*array).count = 0;
@@ -248,4 +248,5 @@ void main_1225(void) {
     }
     printf("%d\n", ans[9]);
   }
+  array_deinit(&sequence);
 }
