@@ -25,6 +25,7 @@
 #import "1585.h"
 #import "1586.h"
 
+#import "10055.h"
 #import "10082.h"
 
 #import "12720.h"
@@ -414,6 +415,41 @@
 }
 
 // MARK: - Volume 100
+
+- (void)test_10055 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 100 (10000-10099)/"];
+  for (var i = 0; i < 3; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"10055.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_10055();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"10055.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
 
 - (void)test_10082 {
   NSString* path = @IO_DATA_PATH;
