@@ -9,6 +9,7 @@
 
 #import "100.h"
 
+#import "202.h"
 #import "227.h"
 #import "232.h"
 #import "272.h"
@@ -94,6 +95,41 @@
 }
 
 // MARK: - Volume 2
+
+- (void)test_202 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 2 (200-299)/"];
+  for (var i = 0; i < 5; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"202.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_202();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"202.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
 
 - (void)test_227 {
   NSString* path = @IO_DATA_PATH;
