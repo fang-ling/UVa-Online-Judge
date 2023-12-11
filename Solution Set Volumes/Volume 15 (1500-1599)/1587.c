@@ -1,28 +1,61 @@
 //
-//  11292.c
+//  1587.c
 //  hxy
 //
-//  Created by Fang Ling on 2023/12/5.
+//  Created by Fang Ling on 2023/12/11.
 //
 
 /*
- * Use the following greedy strategy: sort the diameters of the dragon's
- * heads and the heights of the knights of Loowater in ascending order,
- * respectively. Then, chop off the heads one by one. If we run out of
- * knights, then Loowater is doomed!
+ * Consider all the input rectangles are in landscape mode:
+ *
+ *             +------+
+ *             |      |
+ *             +------+
+ *
+ * That is, width_i > height_i.
+ * Then we sort all six rectangles in width first, and height second.
+ * For example:
+ *               w=6
+ *             +------+         +------+
+ *        h=1  |   0  |         |   1  |
+ *             +------+         +------+
+ *
+ *               w=11
+ *             +-----------+    +-----------+
+ *        h=1  |     2     |    |     3     |
+ *             +-----------+    +-----------+
+ *
+ *               w=11
+ *             +-----------+    +-----------+
+ *             |           |    |           |
+ *        h=6  :     4     :    :     5     :
+ *             |           |    |           |
+ *             +-----------+    +-----------+
+ * ==>
+ *
+ *               w=11
+ *             +-----------+
+ *        h=1  |     2     |  ↙-- h=1
+ *             +-----------+.-.+
+ *             |           |   |
+ *        h=6  :     4     : 0 :  w=6
+ *             |           |   |
+ *             +-----------+.-.+
+ *
+ * We find that these properties must be true:
+ *   1. rectangle_k == rectangle_k+1, for k = 0, 2, 4
+ *   2. rectangle_0.h == rectangle_2.h;   rectangle_0.w == rectangle_4.h
+ *   3. rectangle_2.h == rectangle_0.h;   rectangle_2.w == rectangle_4.w
+ *   4. rectangle_4.h == rectangle_0.w;   rectangle_4.w == rectangle_2.w
  */
-
-#include <stdio.h>
-
-#define var __auto_type
 
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
 /* Array START                                          /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
-/* Author: Fang Ling                                   \ \ ,__\  \ \ \        */
-/* Version: 1.1                                         \ \ \_/__ \_\ \_  __  */
-/* Date: December 4, 2023                                \ \_\/\_\/\____\/\_\ */
+/* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
+/* Version: 1.3                                         \ \ \_/__ \_\ \_  __  */
+/* Date: December 9, 2023                                \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
 
@@ -44,9 +77,9 @@
 /*                                                        ___   ___           */
 /* sort START                                           /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
-/* Author: Fang Ling                                   \ \ ,__\  \ \ \        */
+/* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
 /* Version: 1.0                                         \ \ \_/__ \_\ \_  __  */
-/* Date: December 4, 2023                               \ \_\/\_\/\____\/\_\ */
+/* Date: December 4, 2023                                \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
 
@@ -194,6 +227,7 @@ static void sort(
 /*                                     \_/__/                         \_/__/  */
 /*===----------------------------------------------------------------------===*/
 
+
 #define var __auto_type
 
 /*
@@ -203,6 +237,7 @@ static void sort(
  * 2: Array index is out of range
  * 3: Negative Array index is out of range
  * 5: due to realloc, check `errno`
+ * 6: Can't remove last element from an empty collection
  */
 
 struct Array {
@@ -289,20 +324,6 @@ static int _check_index(struct Array* array, int index) {
   return 0;
 }
 
-/* Returns the element at the specified position. */
-static int array_get(struct Array* array, int index, void* element) {
-  var err = _check_index(array, index);
-  if (err != 0) {
-    return err;
-  }
-  memcpy(
-    element,
-    (*array)._storage + (*array).element_size * index,
-    (*array).element_size
-  );
-  return err;
-}
-
 /* Replaces the element at the specified position. */
 static int array_set(struct Array* array, int index, void* element) {
   var err = _check_index(array, index);
@@ -332,6 +353,7 @@ static int array_append(struct Array* array, void* element) {
     var new_size = (*array).capacity * (*array).element_size;
     (*array)._storage = realloc((*array)._storage, new_size);
     if ((*array)._storage == NULL) {
+      /* FIXME: memory leak will happen if realloc failed */
       return 5;
     }
   }
@@ -378,78 +400,88 @@ void array_sort(struct Array* array, int (*compare)(const void*, const void*)) {
 /*                                     \_/__/                         \_/__/  */
 /*===----------------------------------------------------------------------===*/
 
+
+#include <stdio.h>
+#include <stdbool.h>
+
+#define var __auto_type
+
+#define MAX(a,b)       \
+  ({                   \
+    var _a = (a);      \
+    var _b = (b);      \
+    _a > _b ? _a : _b; \
+  })
+
+#define MIN(a,b)       \
+  ({                   \
+    var _a = (a);      \
+    var _b = (b);      \
+    _a < _b ? _a : _b; \
+  })
+
+struct Rectangle {
+  int width;
+  int height;
+};
+
 static int compare(const void* a, const void* b) {
-  if (*(int*)a < *(int*)b) {
-    return -1;
-  } else if (*(int*)a > *(int*)b) {
-    return 1;
+  var _a = (struct Rectangle*)a;
+  var _b = (struct Rectangle*)b;
+  if ((*_a).width == (*_b).width) {
+    if ((*_a).height < (*_b).height) {
+      return -1;
+    } else if ((*_a).height > (*_b).height) {
+      return 1;
+    }
+    return 0;
+  } else {
+    if ((*_a).width < (*_b).width) {
+      return -1;
+    } else if ((*_a).width > (*_b).width) {
+      return 1;
+    }
+    return 0;
   }
-  return 0;
 }
 
-void main_11292(void) {
-  struct Array knights;
-  struct Array heads;
-  array_init(&knights, sizeof(int));
-  array_init(&heads, sizeof(int));
+void main_1587(void) {
+  struct Array rects;
+  array_init(&rects, sizeof(struct Rectangle));
 
-  var n = 0;
-  var m = 0;
   while (true) {
-    array_remove_all(&knights);
-    array_remove_all(&heads);
+    array_remove_all(&rects);
 
-    scanf("%d %d", &n, &m);
-    if (n == 0 && m == 0) {
-      break;
-    }
+    var w = 0;
+    var h = 0;
     var i = 0;
-    for (i = 0; i < n; i += 1) {
-      var delta = 0;
-      scanf("%d", &delta);
-      array_append(&heads, &delta);
-    }
-    for (i = 0; i < m; i += 1) {
-      var delta = 0;
-      scanf("%d", &delta);
-      array_append(&knights, &delta);
-    }
-
-    if (n > m) { /* We don't have enough knights. */
-      printf("Loowater is doomed!\n");
-      continue;
-    }
-    array_sort(&knights, compare);
-    array_sort(&heads, compare);
-    var cost = 0;
-    i = 0;
-    var j = 0;
-    while (true) {
-      if (i >= n) {
-        break;
+    for (i = 0; i < 6; i += 1) {
+      if (scanf("%d %d", &w, &h) != 2) {
+        goto end;
       }
-      if (j >= m) {
-        break;
-      }
-
-      var head_r = 0;
-      var knight_h = 0;
-      array_get(&knights, j, &knight_h);
-      array_get(&heads, i, &head_r);
-      /* knight j is tall enough to chop off the head */
-      if (knight_h >= head_r) {
-        i += 1;
-        cost += knight_h;
-      }
-      j += 1;
+      struct Rectangle rect;
+      rect.width = MAX(w, h);
+      rect.height = MIN(w, h);
+      array_append(&rects, &rect);
     }
-    if (i != n) { /* we still left some heads */
-      printf("Loowater is doomed!\n");
+    
+    array_sort(&rects, compare);
+    /* Unsafe cask */
+    var R = (struct Rectangle*)rects._storage;
+        /* Requirement 1 */
+    if (R[0].width == R[1].width && R[0].height == R[1].height &&
+        R[2].width == R[3].width && R[2].height == R[3].height &&
+        R[4].width == R[5].width && R[4].height == R[5].height &&
+        /* Requirement 2 */
+        R[0].height == R[2].height && R[0].width == R[4].height &&
+        R[2].height == R[0].height && R[2].width == R[4].width &&
+        R[4].height == R[0].width && R[4].width == R[2].width) {
+      printf("POSSIBLE\n");
     } else {
-      printf("%d\n", cost);
+      printf("IMPOSSIBLE\n");
     }
   }
 
-  array_deinit(&knights);
-  array_deinit(&heads);
+end:
+  array_deinit(&rects);
 }
