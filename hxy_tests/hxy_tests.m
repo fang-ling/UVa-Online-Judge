@@ -31,6 +31,7 @@
 #import "1585.h"
 #import "1586.h"
 #import "1587.h"
+#import "1588.h"
 
 #import "10038.h"
 #import "10055.h"
@@ -632,6 +633,41 @@
       stringWithContentsOfFile: [
         path stringByAppendingString:
           [NSString stringWithFormat: @"1587.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+- (void)test_1588 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 15 (1500-1599)/"];
+  for (var i = 0; i < 3; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"1588.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_1588();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"1588.%d.out", i]
       ]
       encoding: NSUTF8StringEncoding
       error: nil
