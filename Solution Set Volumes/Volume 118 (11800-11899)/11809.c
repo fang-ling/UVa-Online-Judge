@@ -10,8 +10,10 @@
  *                 = log10(A) + B
  *
  * log10(M * 2^E) = log10(M) + log10(2^E)
- *                = log10(M) + log2(2^E)/log2(10)
- *                = log10(M) + E/log2(10)
+ *                = log10(M) + log2(2^E) / log2(10)
+ *                = log10(M) + E / log2(10)
+ *                = log10(M) + E * log10(2) / log2(2)
+ *                = log10(M) + E * log10(2)
  *
  * Since A * 10^B == M * 2^E, we can calculate all possible combinations of M
  * and E and then compare them with the values of A and B.
@@ -46,20 +48,20 @@ void main_11809(void) {
   for (M = 0; M <= 9; M += 1) {
     var E = 0;
     for (E = 1; E <= 30; E += 1) {
-      /* log10(M * 2^E) = log10(M) + E/log2(10) */
+      /* log10(M * 2^E) = log10(M) + E * log10(2) */
       ans[M][E] = log10(man2dec[M]);
       var exp = (1 << E) - 1;
-      ans[M][E] += (double)exp / log2(10);
+      ans[M][E] += exp * log10(2);
     }
   }
 
-  var A = 0.0;
-  var B = 0.0;
   char delta[100];
   while (true) {
     scanf("%s", delta);
     *strchr(delta, 'e') = ' '; /* Change 'e' to ' ' */
-    sscanf(delta, "%lf %lf", &A, &B);
+    var A = 0.0;
+    var B = 0;
+    sscanf(delta, "%lf %d", &A, &B);
 
     if (A == 0 && B == 0) {
       break;
@@ -69,7 +71,7 @@ void main_11809(void) {
     for (M = 0; M <= 9; M += 1) {
       var E = 0;
       for (E = 1; E <= 30; E += 1) {
-        if (fabs(value - ans[M][E]) <= epsilon) {
+        if (fabs(ans[M][E] - value) <= epsilon) {
           printf("%d %d\n", M, E);
           goto eol;
         }
