@@ -20,3 +20,4 @@ Objective-C codes are only for Xcode unit tests (`xctest`).
 2. [_November 27, 2023_] IV Problem: [340 - Master-Mind Hints](https://github.com/fang-ling/UVa-Online-Judge/blob/main/Solution%20Set%20Volumes/Volume%203%20(300-399)/340.c)
 3. [_November 30, 2023_] VIII Problem: [1583 - Digit Generator](https://github.com/fang-ling/UVa-Online-Judge/blob/main/Solution%20Set%20Volumes/Volume%2015%20(1500-1599)/1583.c)
 4. [_December 5, 2023_] XVI Problem: [11292 - The Dragon of Loowater](https://github.com/fang-ling/UVa-Online-Judge/blob/main/Solution%20Set%20Volumes/Volume%20112%20(11200-11299)/11292.c)
+5. [_December 20, 2023_] XXXII Problem: [489 - Hangman Judge](https://github.com/fang-ling/UVa-Online-Judge/blob/main/Solution%20Set%20Volumes/Volume%204%20(400-499)/489.c)
