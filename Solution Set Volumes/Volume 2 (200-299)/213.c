@@ -5,6 +5,17 @@
 //  Created by Fang Ling on 2024/1/3.
 //
 
+/*
+ * This question is pretty straightforward, just follow the instructions given 
+ * in the prompt.
+ * Here are a few things to keep in mind:
+ *   A. The input can be quite complex. I start by loading all the data into
+ *      memory, and then I separate each set of data into headers and messages,
+ *      placing each on its own line.
+ *   B. The strsep() function in the C language can sometimes lead to runtime
+ *      errors, and the cause of these errors is unknown.
+ */
+
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
 /* Deque START                                          /'___\ /\_ \          */
@@ -457,89 +468,124 @@ void main_213(void) {
   char code[7][1 << 7];
   char c[7];
 
-  struct Deque deque;
-  deque_init(&deque, sizeof(char));
+  /* Read the whole data */
+  struct Array array;
+  array_init(&array, sizeof(char));
 
   char* line = NULL;
   size_t linecap = 0;
   var linelen = 0;
-  while ((linelen = (int)getline(&line, &linecap, stdin)) > 1) {
-    /* line[0..<linelen] now contains the header. Parse header: */
-    /* linelen also include \n char */
-    linelen -= 1;
-    var i = 0;
-    var k = 0;
-    for (i = 0; i < 7; i += 1) { /* 1 ≤ key_len ≤ 7 */
-      var j = 0;
-      var len = (1 << (i + 1)) - 1;
-      for (j = 0; j < len; j += 1) {
-        if (k >= linelen) { /* Out of header */
-          break;
-        }
+  var is_first = true;
+  var is_header = true;
+  char new_line = '\n';
+  while ((linelen = (int)getline(&line, &linecap, stdin) - 1) > 0) {
+    is_header = false;
 
-        code[i][j] = line[k];
-        k += 1;
-      }
-    }
-
-    /* Use a deque to help us read the cipher. */
-    deque_remove_all(&deque);
-    while ((linelen = (int)getline(&line, &linecap, stdin)) > 0) {
-      linelen -= 1;
+    if (is_first) {
+      is_first = false;
+      is_header = true;
+    } else {
+      var i = 0;
       for (i = 0; i < linelen; i += 1) {
-        if (line[i] == '0' || line[i] == '1') {
-          deque_append(&deque, &line[i]);
-        }
-      }
-
-/*      deque_get(&deque, deque.count - 1, &c[0]);
-      deque_get(&deque, deque.count - 2, &c[1]);
-      deque_get(&deque, deque.count - 3, &c[2]);*/
-      if (
-        line[linelen - 1] == '0' &&
-        line[linelen - 2] == '0' &&
-        line[linelen - 3] == '0'
-      ) { /* End of cipher */
-        break;
-      }
-    }
-
-    /* Parse the cipher */
-    while (!deque.is_empty) {
-      var len = 0;
-      /* c1c2c3 */
-      deque_get(&deque, 0, &c[0]);
-      deque_remove_first(&deque);
-      deque_get(&deque, 0, &c[1]);
-      deque_remove_first(&deque);
-      deque_get(&deque, 0, &c[2]);
-      deque_remove_first(&deque);
-      len = (c[2] - '0') + (c[1] - '0') * (1 << 1) + (c[0] - '0') * (1 << 2);
-      if (len == 0) { /* End of cipher */
-        break;
-      }
-
-      while (true) {
-        for (i = 0; i < len; i += 1) {
-          deque_get(&deque, 0, &c[i]);
-          deque_remove_first(&deque);
-        }
-        var key = 0;
-        for (i = len - 1; i >= 0; i -= 1) {
-          key += (c[i] - '0') * (1 << (len - i - 1));
-        }
-        /*
-         * 1 2 3
-         * 1 3 7
-         */
-        if (key == (1 << len) - 1) {
+        if (line[i] != '0' && line[i] != '1') {
+          is_header = true;
           break;
         }
-        printf("%c", code[len - 1][key]);
+      }
+      if (is_header) {
+        array_append(&array, &new_line); /* Append \n */
       }
     }
-    printf("\n");
+    var i = 0;
+    for (i = 0; i < linelen; i += 1) {
+      array_append(&array, &line[i]);
+    }
+    if (is_header) {
+      array_append(&array, &new_line); /* Append \n */
+    }
+  }
+  struct Deque deque;
+  deque_init(&deque, sizeof(char));
+
+  var counter = 0;
+  var unsafe_cast = (char*)array._storage;
+  var left = 0;
+  var right = 0;
+  while (/*(line = strsep(&unsafe_cast, "\n")) != NULL*/left < array.count) {
+    for (; right < array.count; right += 1) {
+      if (unsafe_cast[right] == '\n') {
+        break;
+      }
+    }
+    /* left..<right */
+    /*linelen = (int)strlen(line);*/
+
+    if (counter == 0) { /* Parse header: */
+      var i = 0;
+      var k = /*0*/left;
+      for (i = 0; i < 7; i += 1) { /* 1 ≤ key_len ≤ 7 */
+        var j = 0;
+        var len = (1 << (i + 1)) - 1;
+        for (j = 0; j < len; j += 1) {
+          if (k >= /*linelen*/right) { /* Out of header */
+            break;
+          }
+
+          code[i][j] = unsafe_cast[k];/*line[k];*/
+          k += 1;
+        }
+      }
+    } else if (counter == 1) {
+      /* Use a deque to help us read the cipher. */
+      deque_remove_all(&deque);
+      var i = 0;
+      for (i = /*0*/left; i < /*linelen*/right; i += 1) {
+        deque_append(&deque, &/*line[i]*/unsafe_cast[i]);
+      }
+
+      /* Parse the cipher */
+      while (!deque.is_empty) {
+        var len = 0;
+        /* c1c2c3 */
+        deque_get(&deque, 0, &c[0]);
+        deque_remove_first(&deque);
+        deque_get(&deque, 0, &c[1]);
+        deque_remove_first(&deque);
+        deque_get(&deque, 0, &c[2]);
+        deque_remove_first(&deque);
+        len = (c[2] - '0') + (c[1] - '0') * (1 << 1) + (c[0] - '0') * (1 << 2);
+        if (len == 0) { /* End of cipher */
+          break;
+        }
+
+        while (true) {
+          for (i = 0; i < len; i += 1) {
+            deque_get(&deque, 0, &c[i]);
+            deque_remove_first(&deque);
+          }
+          var key = 0;
+          for (i = len - 1; i >= 0; i -= 1) {
+            key += (c[i] - '0') * (1 << (len - i - 1));
+          }
+          /*
+           * 1 2 3
+           * 1 3 7
+           */
+          if (key == (1 << len) - 1 || deque.count == 0) {
+            break;
+          }
+          printf("%c", code[len - 1][key]);
+        }
+      }
+      printf("\n");
+    }
+    counter += 1;
+    counter %= 2;
+
+    left = right + 1;
+    right += 1;
   }
 
+  array_deinit(&array);
   deque_deinit(&deque);
 }

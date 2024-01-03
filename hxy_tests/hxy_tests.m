@@ -185,7 +185,7 @@
 - (void)test_213 {
   NSString* path = @IO_DATA_PATH;
   path = [path stringByAppendingString: @"Volume 2 (200-299)/"];
-  for (var i = 0; i < 5; i += 1) {
+  for (var i = 0; i < 6; i += 1) {
     freopen(
       [[path
         stringByAppendingString: [NSString stringWithFormat: @"213.%d.in", i]
