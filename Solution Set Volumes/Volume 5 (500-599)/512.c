@@ -5,6 +5,13 @@
 //  Created by Fang Ling on 2024/1/4.
 //
 
+/*
+ * The problem can be solved simply by following the requirements of the
+ * question. It is worth noting that this is my first attempt at nesting two
+ * C-Collection array types, just being on consistently preserving the latest
+ * copy.
+ */
+
 #include <stdio.h>
 
 #define var __auto_type
