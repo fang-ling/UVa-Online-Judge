@@ -455,51 +455,6 @@ static int array_remove_all(struct Array* array) {
   return 0;
 }
 
-/* MARK: - Finding Elements */
-
-/*
- * Returns a Boolean value indicating whether the sequence contains the given
- * element.
- */
-static bool array_contains(
-  struct Array* array,
-  void* key,
-  bool (*equal)(const void*, const void*)
-) {
-  var buf = malloc((*array).element_size);
-  var i = 0;
-  for (i = 0; i < (*array).count; i += 1) {
-    array_get(array, i, buf);
-    if (equal(buf, key)) {
-      free(buf);
-      return true;
-    }
-  }
-  free(buf);
-  return false;
-}
-
-/*
- * Returns the first index where the specified value appears in the collection.
- */
-static int array_first_index(
-  struct Array* array,
-  void* key,
-  bool (*equal)(const void*, const void*)
-) {
-  var buf = malloc((*array).element_size);
-  var i = 0;
-  for (i = 0; i < (*array).count; i += 1) {
-    array_get(array, i, buf);
-    if (equal(buf, key)) {
-      free(buf);
-      return i;
-    }
-  }
-  free(buf);
-  return -1;
-}
-
 /* MARK: - Reordering an Array’s Elements */
 
 /* Sorts the collection in place. */
@@ -509,52 +464,6 @@ void array_sort(struct Array* array, int (*compare)(const void*, const void*)) {
     return;
   }
   sort((*array)._storage, (*array).count, (*array).element_size, compare);
-}
-
-/* Exchanges the values at the specified indices of the collection. */
-static int array_swap_at(struct Array* array, int i, int j) {
-  var err = 0;
-  if ((err = _check_index(array, i)) != 0) {
-    return err;
-  }
-  if ((err = _check_index(array, j)) != 0) {
-    return err;
-  }
-  if (i == j) {
-    return 0;
-  }
-  var width = (*array).element_size;
-  var buf = malloc(width);
-  memcpy(buf, (*array)._storage + i * width, width);
-  memcpy((*array)._storage + i * width, (*array)._storage + j * width, width);
-  memcpy((*array)._storage + j * width, buf, width);
-  return 0;
-}
-
-/* MARK: - Comparing Arrays */
-
-/*
- * Returns a Boolean value indicating whether two arrays contain the same
- * elements in the same order.
- */
-static bool array_equal(
-  struct Array* lhs,
-  struct Array* rhs/*,
-  int (*elem_compare)(const void*, const void*)*/
-) {
-  if ((*lhs).count != (*rhs).count) {
-    return false;
-  }
-  if (
-    memcmp(
-      (*lhs)._storage,
-      (*rhs)._storage,
-      (*lhs).count * (*lhs).element_size
-    ) != 0
-  ) {
-    return false;
-  }
-  return true;
 }
 
 /*===----------------------------------------------------------------------===*/
@@ -570,14 +479,20 @@ static bool array_equal(
 /*===----------------------------------------------------------------------===*/
 
 static void delete_row_512(struct Array* tbl, int row) {
-  /*array_deinit(((struct Array**)(*tbl)._storage)[row]);*//* Free elem at row */
+  struct Array temp;
+  array_get(tbl, row, &temp);
+  array_deinit(&temp); /* Free elem at row */
+  array_set(tbl, row, &temp);
   array_remove_at(tbl, row);
 }
 
 static void delete_col_512(struct Array* tbl, int col) {
+  struct Array temp;
   var row = 0;
   for (row = 0; row < (*tbl).count; row += 1) {
-    array_remove_at(((struct Array**)(*tbl)._storage)[row], col);
+    array_get(tbl, row, &temp);
+    array_remove_at(&temp, col);
+    array_set(tbl, row, &temp);
   }
 }
 
@@ -585,31 +500,39 @@ static void insert_row_512(struct Array* tbl, int row) {
   struct Array new_row;
   array_init(&new_row, sizeof(int));
   var i = 0;
-  var count = (*((struct Array**)(*tbl)._storage)[0]).count;
+  var count = ((struct Array*)(*tbl)._storage)[0].count;
   var buf = -1;
   for (i = 0; i < count; i += 1) {
     array_append(&new_row, &buf);
   }
-  var new_row_p = &new_row;
-  array_insert(tbl, &new_row_p, row);
+  array_insert(tbl, &new_row, row);
 }
 
 static void insert_col_512(struct Array* tbl, int col) {
+  struct Array temp;
   var buf = -1;
   var row = 0;
   for (row = 0; row < (*tbl).count; row += 1) {
-    array_insert(((struct Array**)(*tbl)._storage)[row], &buf, col);
+    array_get(tbl, row, &temp);
+    array_insert(&temp, &buf, col);
+    array_set(tbl, row, &temp);
   }
 }
 
 static void swap_at_512(struct Array* tbl, int pos[]) {
   /* Beautiful ;-) */
   var delta =
-    ((int*)(*((struct Array**)(*tbl)._storage)[pos[0]])._storage)[pos[1]];
+    ((int*)((struct Array*)(*tbl)._storage)[pos[0]]._storage)[pos[1]];
   var delta2 =
-    ((int*)(*((struct Array**)(*tbl)._storage)[pos[2]])._storage)[pos[3]];
-  array_set(((struct Array**)(*tbl)._storage)[pos[0]], pos[1], &delta2);
-  array_set(((struct Array**)(*tbl)._storage)[pos[2]], pos[3], &delta);
+    ((int*)((struct Array*)(*tbl)._storage)[pos[2]]._storage)[pos[3]];
+  struct Array temp;
+  array_get(tbl, pos[0], &temp);
+  array_set(&temp, pos[1], &delta2);
+  array_set(tbl, pos[0], &temp);
+
+  array_get(tbl, pos[2], &temp);
+  array_set(&temp, pos[3], &delta);
+  array_set(tbl, pos[2], &temp);
 }
 
 static int compare(const void* a, const void* b) {
@@ -626,7 +549,7 @@ void main_512(void) {
   int pos[4];
 
   struct Array tbl;
-  array_init(&tbl, sizeof(struct Array*));
+  array_init(&tbl, sizeof(struct Array));
   struct Array op_buf;
   array_init(&op_buf, sizeof(int));
 
@@ -637,7 +560,10 @@ void main_512(void) {
   while (scanf("%d %d", &r, &c) == 2 && r != 0 && c != 0) {
     var i = 0;
     for (i = 0; i < tbl.count; i += 1) {
-      array_deinit(((struct Array**)tbl._storage)[i]);
+      struct Array temp;
+      array_get(&tbl, i, &temp);
+      array_deinit(&temp);
+      array_set(&tbl, i, &temp);
     }
     array_remove_all(&tbl);
 
@@ -655,8 +581,7 @@ void main_512(void) {
         var temp = (i << 8) + j;
         array_append(&row, &temp);
       }
-      var row_p = &row;
-      array_append(&tbl, &row_p);
+      array_append(&tbl, &row);
     }
 
     var ops = 0;
@@ -732,9 +657,9 @@ void main_512(void) {
       delta = (ops << 8) + A;
       var is_gone = true;
       for (i = 0; i < tbl.count; i += 1) {
-        var count = (*((struct Array**)tbl._storage)[i]).count;
+        var count = ((struct Array*)tbl._storage)[i].count;
         for (j = 0; j < count; j += 1) {
-          var delta2 = ((int*)(*((struct Array**)tbl._storage)[i])._storage)[j];
+          var delta2 = ((int*)(((struct Array*)tbl._storage)[i])._storage)[j];
           if (delta == delta2) {
             is_gone = false;
             r = i;
