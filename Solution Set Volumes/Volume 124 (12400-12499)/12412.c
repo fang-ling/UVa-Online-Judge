@@ -591,7 +591,7 @@ static void add_student_12412(struct Array* db, struct Student s) {
   }
 }
 
-static void remove_student(struct Array* db, char* name) {
+static void remove_student_12412(struct Array* db, char* name) {
   var count = 0;
   var i = 0;
   struct Student delta;
@@ -606,7 +606,7 @@ static void remove_student(struct Array* db, char* name) {
   printf("%d student(s) removed.\n", count);
 }
 
-static void remove_student_2(struct Array* db, int64 sid) {
+static void remove_student_2_12412(struct Array* db, int64 sid) {
   var count = 0;
   var i = 0;
   struct Student delta;
@@ -619,6 +619,174 @@ static void remove_student_2(struct Array* db, int64 sid) {
     }
   }
   printf("%d student(s) removed.\n", count);
+}
+
+static int int_compare_reversed_12412(const void* a, const void* b) {
+  if (*(int*)a > *(int*)b) {
+    return 1;
+  } else if (*(int*)a < *(int*)b) {
+    return -1;
+  }
+  return 0;
+}
+
+static void _get_rank_list_12412(struct Array* db, struct Array* result) {
+  /* Assume result is initialized and is empty. */
+  struct Array total_score;
+  array_init(&total_score, sizeof(int));
+  
+  var unsafe_cast = (struct Student*)(*db)._storage;
+  var i = 0;
+  for (i = 0; i < (*db).count; i += 1) {
+    var delta = unsafe_cast[i].scores[0] + 
+                unsafe_cast[i].scores[1] +
+                unsafe_cast[i].scores[2] +
+                unsafe_cast[i].scores[3];
+    array_append(&total_score, &delta);
+  }
+  /* Biggest at front */
+  array_sort(&total_score, int_compare_reversed_12412);
+  var len = ((int*)total_score._storage)[0] + 1;
+  var delta = 0;
+  for (i = 0; i < len; i += 1) {
+    array_append(result, &delta);
+  }
+  for (i = 0; i < total_score.count; i += 1) {
+    var I = 0;
+    array_get(&total_score, i, &I);
+    array_get(result, I, &delta);
+    if (delta == 0) { /* First insert */
+      array_set(result, I, &i);
+    }
+  }
+  
+  array_deinit(&total_score);
+}
+
+static void select_student_12412(struct Array* db, char* name) {
+  struct Array rank;
+  array_init(&rank, sizeof(int));
+  
+  struct Student delta;
+  
+  var total_score = 0;
+  var i = 0;
+  for (i = 0; i < (*db).count; i += 1) {
+    array_get(db, i, &delta);
+    if (strcmp(delta.name, name)) {
+      total_score = delta.scores[0] +
+                    delta.scores[1] +
+                    delta.scores[2] +
+                    delta.scores[3];
+      var rnk = 0;
+      array_get(&rank, total_score, &rnk);
+      printf(
+        "%d %010lld %d %s %d %d %d %d %d %.2f\n",
+        rnk + 1,
+        delta.sid,
+        delta.cid,
+        delta.name,
+        delta.scores[0],
+        delta.scores[1],
+        delta.scores[2],
+        delta.scores[3],
+        total_score,
+        (double)total_score / 4.000000000000
+      );
+    }
+  }
+  
+  array_deinit(&rank);
+}
+
+static void select_student_2_12412(struct Array* db, int64 sid) {
+  struct Array rank;
+  array_init(&rank, sizeof(int));
+  
+  struct Student delta;
+  
+  var total_score = 0;
+  var i = 0;
+  for (i = 0; i < (*db).count; i += 1) {
+    array_get(db, i, &delta);
+    if (delta.sid == sid) {
+      total_score = delta.scores[0] +
+                    delta.scores[1] +
+                    delta.scores[2] +
+                    delta.scores[3];
+      var rnk = 0;
+      array_get(&rank, total_score, &rnk);
+      printf(
+        "%d %010lld %d %s %d %d %d %d %d %.2f\n",
+        rnk + 1,
+        delta.sid,
+        delta.cid,
+        delta.name,
+        delta.scores[0],
+        delta.scores[1],
+        delta.scores[2],
+        delta.scores[3],
+        total_score,
+        (double)total_score / 4.000000000000
+      );
+    }
+  }
+  
+  array_deinit(&rank);
+}
+
+static void stat_student_12412(struct Array* db, int cid) {
+  char subjects[5][12] = {
+    "Chinese", "Mathematics", "English", "Programming", "Overall:"
+  };
+  
+  struct Student delta;
+  
+  var i = 0;
+  for (i = 0; i < 4; i += 1) {
+    var total = 0;
+    var passed = 0;
+    var size = 0;
+    var j = 0;
+    for (j = 0; j < (*db).count; j += 1) {
+      array_get(db, j, &delta);
+      if (cid == 0 || delta.cid == cid) {
+        total += delta.scores[i];
+        if (delta.scores[i] >= 60) {
+          passed += 1;
+        }
+        size += 1;
+      }
+    }
+    printf("%s\n", subjects[i]);
+    printf("Average Score: %.2f\n", (double)total / size);
+    printf("Number of passed students: %d\n", passed);
+    printf("Number of failed students: %d\n", size - passed);
+    printf("\n");
+  }
+  /* Overall.    0  1  2  3  4 */
+  int pass[5] = {0, 0, 0, 0, 0};
+  for (i = 0; i < (*db).count; i += 1) {
+    var num_pass = 0;
+    array_get(db, i, &delta);
+    if (!(cid == 0 || delta.cid == cid)) {
+      continue;
+    }
+    var j = 0;
+    for (j = 0; j < 4; j += 1) {
+      if (delta.scores[j] >= 60) {
+        num_pass += 1;
+      }
+    }
+    pass[num_pass] += 1;
+  }
+  printf("%s\n", subjects[4]);
+  printf("Number of students who passed all subjects: %d\n", pass[4]);
+  printf("Number of students who passed 3 or more subjects: %d\n", pass[3]);
+  printf("Number of students who passed 2 or more subjects: %d\n", pass[2]);
+  printf("Number of students who passed 1 or more subjects: %d\n", pass[1]);
+  printf("Number of students who failed all subjects: %d\n", pass[0]);
+  printf("\n");
 }
 
 void main_12412(void) {
