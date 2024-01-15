@@ -56,6 +56,8 @@
 
 #import "11809.h"
 
+#import "12412.h"
+
 #import "12720.h"
 
 #import <XCTest/XCTest.h>
@@ -1266,6 +1268,43 @@
   }
 }
 
+// MARK: - Volume 124
+
+- (void)test_12412 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 124 (12400-12499)/"];
+  for (var i = 0; i < 2; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"12412.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_12412();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"12412.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
 // MARK: - Volume 127
 
 - (void)test_12720 {
@@ -1280,7 +1319,7 @@
       "r",
       stdin
     );
-    freopen("/tmp/12720.out", "w", stdout);
+    freopen("/tmp/hxy.out", "w", stdout);
     main_12720();
     fclose(stdin);
     fclose(stdout);
@@ -1295,7 +1334,7 @@
     ];
     var sol = [
       NSString
-      stringWithContentsOfFile: @"/tmp/12720.out"
+      stringWithContentsOfFile: @"/tmp/hxy.out"
       encoding: NSUTF8StringEncoding
       error: nil
     ];

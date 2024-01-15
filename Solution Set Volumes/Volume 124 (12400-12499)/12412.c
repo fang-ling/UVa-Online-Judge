@@ -5,7 +5,12 @@
 //  Created by Fang Ling on 2024/1/11.
 //
 
+/*
+ * This question evaluates programming skills more than algorithms.
+ */
+
 #include <stdio.h>
+#include <ctype.h>
 
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
@@ -336,50 +341,6 @@ static int array_append(struct Array* array, void* element) {
   return 0;
 }
 
-/*
- * Inserts a new element at the specified position.
- *
- * - Complexity:
- *   O(n), where n is the length of the array.
- */
-static int array_insert(struct Array* array, void* element, int i) {
-  if (i == (*array).count) { /* this method is equivalent to append(_:) */
-    return array_append(array, element);
-  }
-  var err = _check_index(array, i);
-  if (err != 0) {
-    return err;
-  }
-  /* Dumb append to make room for the new element. Update is_empty & count. */
-  if ((err = array_append(array, element)) != 0) {
-    return err;
-  }
-  /*
-   * [1, 2, 3, 4, 5]  <----- insert(100, at: 3)
-   *
-   *  0  1  2  3  4    5
-   * [1, 2, 3, 4, 5, 100]  <---- after append, count = 6
-   *           \--/  <---- shift right by one (i ..< count - 1)
-   *                                          (move length = count - 1 - i)
-   *
-   * Then copy new_element at index 3.
-   *
-   *    0  1  2    3  4  5
-   * = [1, 2, 3, 100, 4, 5]
-   */
-  memmove(
-    (*array)._storage + (i + 1) * (*array).element_size,
-    (*array)._storage + i * (*array).element_size,
-    ((*array).count - 1 - i) * (*array).element_size
-  );
-  memcpy(
-    (*array)._storage + i * (*array).element_size,
-    element,
-    (*array).element_size
-  );
-  return err;
-}
-
 /* MARK: - Removing Elements */
 
 /* Removes the last element of the collection. */
@@ -442,17 +403,6 @@ static int array_remove_at(struct Array* array, int i) {
   return array_remove_last(array);
 }
 
-/* Removes all the elements. */
-static int array_remove_all(struct Array* array) {
-  free((*array)._storage);
-  (*array)._storage = NULL;
-  (*array).count = 0;
-  (*array).capacity = 0;
-  (*array).is_empty = true;
-  
-  return 0;
-}
-
 /* MARK: - Finding Elements */
 
 /*
@@ -477,27 +427,6 @@ static bool array_contains(
   return false;
 }
 
-/*
- * Returns the first index where the specified value appears in the collection.
- */
-static int array_first_index(
-  struct Array* array,
-  void* key,
-  bool (*equal)(const void*, const void*)
-) {
-  var buf = malloc((*array).element_size);
-  var i = 0;
-  for (i = 0; i < (*array).count; i += 1) {
-    array_get(array, i, buf);
-    if (equal(buf, key)) {
-      free(buf);
-      return i;
-    }
-  }
-  free(buf);
-  return -1;
-}
-
 /* MARK: - Reordering an Array’s Elements */
 
 /* Sorts the collection in place. */
@@ -507,52 +436,6 @@ void array_sort(struct Array* array, int (*compare)(const void*, const void*)) {
     return;
   }
   sort((*array)._storage, (*array).count, (*array).element_size, compare);
-}
-
-/* Exchanges the values at the specified indices of the collection. */
-static int array_swap_at(struct Array* array, int i, int j) {
-  var err = 0;
-  if ((err = _check_index(array, i)) != 0) {
-    return err;
-  }
-  if ((err = _check_index(array, j)) != 0) {
-    return err;
-  }
-  if (i == j) {
-    return 0;
-  }
-  var width = (*array).element_size;
-  var buf = malloc(width);
-  memcpy(buf, (*array)._storage + i * width, width);
-  memcpy((*array)._storage + i * width, (*array)._storage + j * width, width);
-  memcpy((*array)._storage + j * width, buf, width);
-  return 0;
-}
-
-/* MARK: - Comparing Arrays */
-
-/*
- * Returns a Boolean value indicating whether two arrays contain the same
- * elements in the same order.
- */
-static bool array_equal(
-  struct Array* lhs,
-  struct Array* rhs/*,
-  int (*elem_compare)(const void*, const void*)*/
-) {
-  if ((*lhs).count != (*rhs).count) {
-    return false;
-  }
-  if (
-    memcmp(
-      (*lhs)._storage,
-      (*rhs)._storage,
-      (*lhs).count * (*lhs).element_size
-    ) != 0
-  ) {
-    return false;
-  }
-  return true;
 }
 
 /*===----------------------------------------------------------------------===*/
@@ -568,6 +451,7 @@ static bool array_equal(
 /*===----------------------------------------------------------------------===*/
 
 typedef long long int64;
+#define epsilon 1e-5
 
 struct Student {
   int order;
@@ -623,9 +507,9 @@ static void remove_student_2_12412(struct Array* db, int64 sid) {
 
 static int int_compare_reversed_12412(const void* a, const void* b) {
   if (*(int*)a > *(int*)b) {
-    return 1;
-  } else if (*(int*)a < *(int*)b) {
     return -1;
+  } else if (*(int*)a < *(int*)b) {
+    return 1;
   }
   return 0;
 }
@@ -653,7 +537,7 @@ static void _get_rank_list_12412(struct Array* db, struct Array* result) {
   }
   for (i = 0; i < total_score.count; i += 1) {
     var I = 0;
-    array_get(&total_score, i, &I);
+    array_get(&total_score, i, &I); /* I = total_score.get(i) */
     array_get(result, I, &delta);
     if (delta == 0) { /* First insert */
       array_set(result, I, &i);
@@ -666,6 +550,7 @@ static void _get_rank_list_12412(struct Array* db, struct Array* result) {
 static void select_student_12412(struct Array* db, char* name) {
   struct Array rank;
   array_init(&rank, sizeof(int));
+  _get_rank_list_12412(db, &rank);
   
   struct Student delta;
   
@@ -673,7 +558,7 @@ static void select_student_12412(struct Array* db, char* name) {
   var i = 0;
   for (i = 0; i < (*db).count; i += 1) {
     array_get(db, i, &delta);
-    if (strcmp(delta.name, name)) {
+    if (strcmp(delta.name, name) == 0) {
       total_score = delta.scores[0] +
                     delta.scores[1] +
                     delta.scores[2] +
@@ -681,7 +566,7 @@ static void select_student_12412(struct Array* db, char* name) {
       var rnk = 0;
       array_get(&rank, total_score, &rnk);
       printf(
-        "%d %010lld %d %s %d %d %d %d %d %.2f\n",
+        "%d %010lld %d %s %d %d %d %d %d %.2lf\n",
         rnk + 1,
         delta.sid,
         delta.cid,
@@ -691,7 +576,7 @@ static void select_student_12412(struct Array* db, char* name) {
         delta.scores[2],
         delta.scores[3],
         total_score,
-        (double)total_score / 4.000000000000
+        ((double)total_score / 4.000000000000) + epsilon
       );
     }
   }
@@ -702,7 +587,8 @@ static void select_student_12412(struct Array* db, char* name) {
 static void select_student_2_12412(struct Array* db, int64 sid) {
   struct Array rank;
   array_init(&rank, sizeof(int));
-  
+  _get_rank_list_12412(db, &rank);
+
   struct Student delta;
   
   var total_score = 0;
@@ -717,7 +603,7 @@ static void select_student_2_12412(struct Array* db, int64 sid) {
       var rnk = 0;
       array_get(&rank, total_score, &rnk);
       printf(
-        "%d %010lld %d %s %d %d %d %d %d %.2f\n",
+        "%d %010lld %d %s %d %d %d %d %d %.2lf\n",
         rnk + 1,
         delta.sid,
         delta.cid,
@@ -727,7 +613,7 @@ static void select_student_2_12412(struct Array* db, int64 sid) {
         delta.scores[2],
         delta.scores[3],
         total_score,
-        (double)total_score / 4.000000000000
+        ((double)total_score / 4.000000000000) + epsilon
       );
     }
   }
@@ -759,7 +645,7 @@ static void stat_student_12412(struct Array* db, int cid) {
       }
     }
     printf("%s\n", subjects[i]);
-    printf("Average Score: %.2f\n", (double)total / size);
+    printf("Average Score: %.2lf\n", ((double)total / (double)size) + epsilon);
     printf("Number of passed students: %d\n", passed);
     printf("Number of failed students: %d\n", size - passed);
     printf("\n");
@@ -778,7 +664,21 @@ static void stat_student_12412(struct Array* db, int cid) {
         num_pass += 1;
       }
     }
-    pass[num_pass] += 1;
+    if (num_pass == 4) {
+      pass[4] += 1;
+    }
+    if (num_pass >= 3) {
+      pass[3] += 1;
+    }
+    if (num_pass >= 2) {
+      pass[2] += 1;
+    }
+    if (num_pass >= 1) {
+      pass[1] += 1;
+    }
+    if (num_pass == 0) {
+      pass[0] += 1;
+    }
   }
   printf("%s\n", subjects[4]);
   printf("Number of students who passed all subjects: %d\n", pass[4]);
@@ -789,6 +689,120 @@ static void stat_student_12412(struct Array* db, int cid) {
   printf("\n");
 }
 
-void main_12412(void) {
+/* strtoll is not available on macOS in ANSI C, don't know why. */
+static int64 _string2int64(const char* string) {
+  var result = 0ll;
+  var count = (int)strlen(string);
   
+  var i = 0;
+  var pow = 1ll;
+  for (i = count - 1; i >= 0; i -= 1) {
+    result += (string[i] - '0') * pow;
+    pow *= 10;
+  }
+  
+  return result;
+}
+
+void main_12412(void) {
+  char WELCOME[] = "Welcome to Student Performance Management System (SPMS).\n"
+                   "\n"
+                   "1 - Add\n"
+                   "2 - Remove\n"
+                   "3 - Query\n"
+                   "4 - Show ranking\n"
+                   "5 - Show Statistics\n"
+                   "0 - Exit"
+                   "\n";
+  char OP1_MSG[] =
+          "Please enter the SID, CID, name and four scores. Enter 0 to finish.";
+  char OP2_MSG[] = "Please enter SID or name. Enter 0 to finish.";
+  char OP4_MSG[] =
+          "Showing the ranklist hurts students' self-esteem. Don't do that.";
+  char OP5_MSG[] = "Please enter class ID, 0 for the whole statistics.";
+  
+  printf("%s\n", WELCOME);
+  
+  char name_or_sid[11];
+  struct Array db;
+  array_init(&db, sizeof(struct Student));
+  struct Student delta;
+  var op = 0;
+  var order = 0;
+  while (scanf("%d", &op) == 1) {
+    if (op == 0) {
+      break;
+    } else if (op == 1) { /* Add */
+      while (true) {
+        printf("%s\n", OP1_MSG);
+        
+        scanf("%lld", &delta.sid);
+        if (delta.sid == 0) { /* End of OP1 */
+          break;
+        }
+        scanf(
+          "%d %s %d %d %d %d",
+          &delta.cid,
+          delta.name,
+          &delta.scores[0],
+          &delta.scores[1],
+          &delta.scores[2],
+          &delta.scores[3]
+        );
+        delta.order = order;
+        add_student_12412(&db, delta);
+        order += 1;
+      }
+    } else if (op == 2) { /* Remove */
+      while (true) {
+        printf("%s\n", OP2_MSG);
+        
+        scanf("%s", name_or_sid);
+        if (name_or_sid[0] == '0' && strlen(name_or_sid) == 1) {
+          break;
+        }
+        if (isdigit(name_or_sid[0])) { /* sid */
+          remove_student_2_12412(&db, _string2int64(name_or_sid));
+        } else { /* name */
+          remove_student_12412(&db, name_or_sid);
+        }
+      }
+    } else if (op == 3) { /* Select */
+      while (true) {
+        printf("%s\n", OP2_MSG); /* Same as OP2 */
+        
+        scanf("%s", name_or_sid);
+        if (name_or_sid[0] == '0' && strlen(name_or_sid) == 1) {
+          break;
+        }
+        if (isdigit(name_or_sid[0])) { /* sid */
+          select_student_2_12412(&db, _string2int64(name_or_sid));
+        } else { /* name */
+          select_student_12412(&db, name_or_sid);
+        }
+      }
+    } else if (op == 4) { /* ranklist */
+      printf("%s\n", OP4_MSG);
+    } else if (op == 5) {
+      printf("%s\n", OP5_MSG);
+      var alpha = 0;
+      scanf("%d", &alpha);
+      stat_student_12412(&db, alpha);
+    } else if (op == 999) { /* debug use */
+      var i = 0;
+      for (i = 0; i < db.count; i += 1) {
+        printf("%d %lld %s %d %d %d %d %d\n",
+               ((struct Student*)db._storage)[i].order,
+               ((struct Student*)db._storage)[i].sid, 
+               ((struct Student*)db._storage)[i].name,
+               ((struct Student*)db._storage)[i].cid,
+               ((struct Student*)db._storage)[i].scores[0],
+               ((struct Student*)db._storage)[i].scores[1],
+               ((struct Student*)db._storage)[i].scores[2],
+               ((struct Student*)db._storage)[i].scores[3]);
+      }
+    }
+    printf("%s\n", WELCOME);
+  }
+  array_deinit(&db);
 }
