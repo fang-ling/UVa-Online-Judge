@@ -13,6 +13,7 @@
 #import "201.h"
 #import "202.h"
 #import "213.h"
+#import "220.h"
 #import "227.h"
 #import "232.h"
 #import "253.h"
@@ -244,6 +245,41 @@
       stringWithContentsOfFile: [
         path stringByAppendingString:
           [NSString stringWithFormat: @"213.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+- (void)test_220 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 2 (200-299)/"];
+  for (var i = 0; i < 2; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"220.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_220();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"220.%d.out", i]
       ]
       encoding: NSUTF8StringEncoding
       error: nil
