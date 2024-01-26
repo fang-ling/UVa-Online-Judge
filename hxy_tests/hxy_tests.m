@@ -61,6 +61,8 @@
 
 #import "11809.h"
 
+#import "12108.h"
+
 #import "12412.h"
 
 #import "12720.h"
@@ -1434,6 +1436,43 @@
       stringWithContentsOfFile: [
         path stringByAppendingString:
           [NSString stringWithFormat: @"11809.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+// MARK: - Volume 121
+
+- (void)test_12108 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 121 (12100-12199)/"];
+  for (var i = 0; i < 2; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"12108.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_12108();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"12108.%d.out", i]
       ]
       encoding: NSUTF8StringEncoding
       error: nil

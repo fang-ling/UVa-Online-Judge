@@ -1458,7 +1458,7 @@ void main_508(void) {
     strcpy(entry.key.s, C);
     encode_508(entry.key, tbl, &cipher);
     if (!b_tree_contains(&dict, &entry)) {
-      entry
+//      entry
       b_tree_insert(&dict, &entry);
     }
     
