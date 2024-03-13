@@ -921,33 +921,85 @@ static int cmp(const void* a, const void* b) {
 
 void main_10815(void) {
   struct BTree tree;
-  b_tree_init(&tree, 512, sizeof(struct String), false, cmp);
+  b_tree_init(&tree, 5120, sizeof(struct String), false, cmp);
   
   char buf[256];
-  char buf2[128];
+  /*char* line = NULL;*/
+  char buf2[256];
+  /*char* line_copy = NULL;
+  size_t linecap = 0;
+  var linelen = 0;*/
   struct String a;
   while (scanf("%s", buf) == 1) {
     var count = strlen(buf);
     var i = 0;
     for (i = 0; i < count; i += 1) {
-      if (isalpha(buf[i])) {
-        if (isupper(buf[i])) {
-          buf[i] = tolower(buf[i]);
-        }
-      } else {
-        buf[i] = ' ';
+      if (isupper(buf[i])) {
+        buf[i] = tolower(buf[i]);
       }
     }
-    
-    var file = fmemopen(buf, strlen(buf), "r");
-    while (fscanf(file, "%s", buf2) == 1) {
+    var j = 0;
+    for (i = 0; i < count; i += 1) {
+      if (islower(buf[i])) {
+        buf2[j] = buf[i];
+        j += 1;
+      } else {
+        if (j != 0) {
+          buf2[j] = '\0';
+          strcpy(a.s, buf2);
+          b_tree_insert(&tree, &a);
+        }
+        j = 0;
+      }
+    }
+    if (j != 0) {
+      buf2[j] = '\0';
       strcpy(a.s, buf2);
       b_tree_insert(&tree, &a);
     }
-    fclose(file);
   }
-  
-  while (!tree.is_empty) {
+  /*while ((linelen = (int)getline(&line, &linecap, stdin)) > 0) {
+    var i = 0;
+    for (i = 0; i < linelen; i += 1) {
+      if (isalpha(line[i])) {
+        if (isupper(line[i])) {
+          line[i] = tolower(line[i]);
+        }
+      } else {
+        line[i] = ' ';
+      }
+    }
+    line_copy = line;*/
+    /*
+     * Examples: "aaabbb   asdasd asd"
+     *           "    xzcjxzlkadn wdasd"
+     */
+    /*while (*line_copy != '\0') {*/
+      /* Skip leading spaces */
+      /*while (*line_copy == ' ') {
+        line_copy += 1;
+      }*/
+      /* Break if end of string is reached */
+      /*if (*line_copy == '\0') {
+        break;
+      }*/
+      /* Store current token */
+      /*var j = 0;
+      while (*line_copy != ' ' && *line_copy != '\0') {
+        buf2[j] = *line_copy;
+        j += 1;
+        line_copy += 1;
+      }
+      buf2[j] = '\0';
+      if (j <= 0) { *//* Empty string */
+        /*continue;
+      }
+      strcpy(a.s, buf2);
+      b_tree_insert(&tree, &a);
+    }
+  }*/
+  var count = tree.count;
+  while (count--/*tree.is_empty*/) {
     b_tree_min(&tree, &a);
     printf("%s\n", a.s);
     b_tree_remove(&tree, &a);
