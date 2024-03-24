@@ -27,6 +27,7 @@
 #import "455.h"
 #import "458.h"
 #import "489.h"
+#import "494.h"
 
 #import "508.h"
 #import "509.h"
@@ -668,6 +669,41 @@
       stringWithContentsOfFile: [
         path stringByAppendingString:
           [NSString stringWithFormat: @"489.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+- (void)test_494 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
+  for (var i = 0; i < 8; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"494.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_494();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"494.%d.out", i]
       ]
       encoding: NSUTF8StringEncoding
       error: nil
