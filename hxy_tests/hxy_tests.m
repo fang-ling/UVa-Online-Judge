@@ -20,6 +20,7 @@
 #import "232.h"
 #import "253.h"
 #import "272.h"
+#import "299.h"
 
 #import "340.h"
 
@@ -490,25 +491,71 @@
 - (void)test_272 {
   NSString* path = @IO_DATA_PATH;
   path = [path stringByAppendingString: @"Volume 2 (200-299)/"];
-  
-  char buf[1024];
-  freopen([[path stringByAppendingString: @"272.0.in"] UTF8String], "r", stdin);
-  freopen("/dev/null", "a", stdout);
-  setbuf(stdout, buf);
-  main_272();
-  NSString* out = [
-    NSString
-      stringWithContentsOfFile: [path stringByAppendingString: @"272.0.out"]
+  for (var i = 0; i < 1; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"272.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_272();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"272.%d.out", i]
+      ]
       encoding: NSUTF8StringEncoding
       error: nil
-  ];
-  XCTAssertEqualObjects(
-    out,
-    [NSString stringWithCString: buf encoding: NSUTF8StringEncoding]
-  );
-  
-  fclose(stdin);
-  fclose(stdout);
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+- (void)test_299 {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString: @"Volume 2 (200-299)/"];
+  for (var i = 0; i < 6; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [NSString stringWithFormat: @"299.%d.in", i]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    main_299();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"299.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
 }
 
 // MARK: - Volume 3
