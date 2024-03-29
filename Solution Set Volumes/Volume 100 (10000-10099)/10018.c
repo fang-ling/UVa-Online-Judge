@@ -63,7 +63,7 @@ static void get_palindrome(char* s, int count, char* s_rev) {
  * Assumes that the upper and lower case
  * alphabets and digits are each contiguous.
  */
-long long hxy_strtoll(
+static long long hxy_strtoll(
   const char * __restrict nptr,
   char ** __restrict endptr,
   int base
