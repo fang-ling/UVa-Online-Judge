@@ -89,6 +89,8 @@
 
 #import "12412.h"
 
+#import "12626.h"
+
 #import "12720.h"
 
 #import <XCTest/XCTest.h>
@@ -2101,6 +2103,12 @@
     ];
     XCTAssertEqualObjects(sol, out);
   }
+}
+
+// MARK: - Volume 126
+
+- (void)test_126 {
+  general_test(main_12626, 126, 12626, 4);
 }
 
 // MARK: - Volume 127
