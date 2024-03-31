@@ -73,6 +73,7 @@
 #import "11292.h"
 
 #import "11332.h"
+#import "11388.h"
 
 #import "11498.h"
 
@@ -1838,39 +1839,9 @@
 
 // MARK: - Volume 113
 
-- (void)test_11332 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 113 (11300-11399)/"];
-  for (var i = 0; i < 6; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"11332.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_11332();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"11332.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void)test_113 {
+  general_test(main_11332, 113, 11332, 6);
+  general_test(main_11388, 113, 11388, 4);
 }
 
 // MARK: - Volume 114
@@ -2155,6 +2126,51 @@
       stringWithContentsOfFile: [
         path stringByAppendingString:
           [NSString stringWithFormat: @"12720.%d.out", i]
+      ]
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    var sol = [
+      NSString
+      stringWithContentsOfFile: @"/tmp/hxy.out"
+      encoding: NSUTF8StringEncoding
+      error: nil
+    ];
+    XCTAssertEqualObjects(sol, out);
+  }
+}
+
+void general_test(void (*test_main)(void), int volume, int problem, int cases) {
+  NSString* path = @IO_DATA_PATH;
+  path = [path stringByAppendingString:
+          [
+            NSString stringWithFormat:
+            @"Volume %d (%d00-%d99)/",
+            volume,
+            volume,
+            volume
+          ]
+  ];
+  for (var i = 0; i < cases; i += 1) {
+    freopen(
+      [[path
+        stringByAppendingString: [
+          NSString stringWithFormat: @"%d.%d.in", problem, i
+        ]
+       ] UTF8String
+      ],
+      "r",
+      stdin
+    );
+    freopen("/tmp/hxy.out", "w", stdout);
+    test_main();
+    fclose(stdin);
+    fclose(stdout);
+    var out = [
+      NSString
+      stringWithContentsOfFile: [
+        path stringByAppendingString:
+          [NSString stringWithFormat: @"%d.%d.out", problem, i]
       ]
       encoding: NSUTF8StringEncoding
       error: nil
