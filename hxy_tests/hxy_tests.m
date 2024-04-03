@@ -69,6 +69,8 @@
 
 #import "10815.h"
 
+#import "10970.h"
+
 #import "11172.h"
 
 #import "11292.h"
@@ -1632,6 +1634,12 @@
     ];
     XCTAssertEqualObjects(sol, out);
   }
+}
+
+// MARK: - Volume 109
+
+- (void)test_109 {
+  general_test(main_10970, 109, 10970, 4);
 }
 
 // MARK: - Volume 111
