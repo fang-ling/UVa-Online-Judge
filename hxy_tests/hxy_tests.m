@@ -90,6 +90,8 @@
 
 #import "12108.h"
 
+#import "12289.h"
+
 #import "12412.h"
 
 #import "12626.h"
@@ -1943,6 +1945,12 @@
     ];
     XCTAssertEqualObjects(sol, out);
   }
+}
+
+// MARK: - Volume 122
+
+- (void)test_122 {
+  general_test(main_12289, 122, 12289, 3);
 }
 
 // MARK: - Volume 124
