@@ -26,6 +26,7 @@
 
 #import "340.h"
 
+#import "400.h"
 #import "401.h"
 #import "455.h"
 #import "458.h"
@@ -473,182 +474,13 @@
 
 // MARK: - Volume 4
 
-- (void)test_401 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
-  for (var i = 0; i < 1; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"401.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_401();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"401.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
-}
-
-- (void)test_455 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
-  for (var i = 0; i < 2; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"455.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_455();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"455.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
-}
-
-- (void)test_458 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
-  for (var i = 0; i < 3; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"458.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_458();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"458.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
-}
-
-- (void)test_489 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
-  for (var i = 0; i < 6; i += 1) {
-    if (i == 1 || i == 2 || i == 5) { /* Skip these test cases. */
-      continue;
-    }
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"489.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_489();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"489.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
-}
-
-- (void)test_494 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 4 (400-499)/"];
-  for (var i = 0; i < 8; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"494.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_494();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"494.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void)test_4 {
+  general_test(main_400, 4, 400, 5);
+  general_test(main_401, 4, 401, 1);
+  general_test(main_455, 4, 455, 2);
+  general_test(main_458, 4, 458, 3);
+  general_test(main_489, 4, 489, 6 - 3); /* remove original cases: 1, 2, 5 */
+  general_test(main_494, 4, 494, 8);
 }
 
 // MARK: - Volume 5
