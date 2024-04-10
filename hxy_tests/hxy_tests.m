@@ -11,6 +11,7 @@
 #import "101.h"
 #import "113.h"
 #import "133.h"
+#import "136.h"
 #import "156.h"
 
 #import "201.h"
@@ -122,6 +123,7 @@
   general_test(main_101, 1, 101, 5);
   general_test(main_113, 1, 113, 4);
   general_test(main_133, 1, 133, 3);
+  general_test(main_136, 1, 136, 1);
   general_test(main_156, 1, 156, 3);
 }
 
