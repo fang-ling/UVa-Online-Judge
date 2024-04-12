@@ -32,6 +32,7 @@
 #import "455.h"
 #import "458.h"
 #import "489.h"
+#import "492.h"
 #import "494.h"
 
 #import "508.h"
@@ -180,6 +181,7 @@
   general_test(main_455, 4, 455, 2);
   general_test(main_458, 4, 458, 3);
   general_test(main_489, 4, 489, 6 - 3); /* remove original cases: 1, 2, 5 */
+  general_test(main_492, 4, 492, 8);
   general_test(main_494, 4, 494, 8);
 }
 
