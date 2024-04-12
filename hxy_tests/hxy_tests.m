@@ -88,6 +88,7 @@
 
 #import "11547.h"
 
+#import "11703.h"
 #import "11727.h"
 
 #import "11809.h"
@@ -914,39 +915,9 @@
 
 // MARK: - Volume 117
 
-- (void)test_11727 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 117 (11700-11799)/"];
-  for (var i = 0; i < 5; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"11727.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_11727();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"11727.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void)test_117 {
+  general_test(main_11703, 117, 11703, 3);
+  general_test(main_11727, 117, 11727, 5);
 }
 
 // MARK: - Volume 118
