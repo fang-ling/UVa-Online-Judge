@@ -106,6 +106,8 @@
 
 #import "12720.h"
 
+#import "13178.h"
+
 #import <XCTest/XCTest.h>
 #import <stdio.h>
 
@@ -1086,6 +1088,12 @@
     ];
     XCTAssertEqualObjects(sol, out);
   }
+}
+
+// MARK: - Volume 131
+
+- (void)test_131 {
+  general_test(main_13178, 131, 13178, 4);
 }
 
 void general_test(void (*test_main)(void), int volume, int problem, int cases) {
