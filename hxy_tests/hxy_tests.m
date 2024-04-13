@@ -41,6 +41,7 @@
 #import "540.h"
 #import "594.h"
 
+#import "814.h"
 #import "815.h"
 
 #import "1225.h"
@@ -198,39 +199,9 @@
 
 // MARK: - Volume 8
 
-- (void)test_815 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 8 (800-899)/"];
-  for (var i = 0; i < 4; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"815.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_815();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"815.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void)test_8 {
+  general_test(main_814, 8, 814, 3);
+  general_test(main_815, 8, 815, 4);
 }
 
 // MARK: - Volume 12
