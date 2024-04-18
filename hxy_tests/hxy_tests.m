@@ -75,6 +75,7 @@
 
 #import "10474.h"
 
+#import "10763.h"
 #import "10783.h"
 
 #import "10815.h"
@@ -660,39 +661,9 @@
 
 // MARK: - Volume 107
 
-- (void)test_10783 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 107 (10700-10799)/"];
-  for (var i = 0; i < 5; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"10783.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_10783();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"10783.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void)test_107 {
+  general_test(main_10763, 107, 10763, 8);
+  general_test(main_10783, 107, 10783, 5);
 }
 
 // MARK: - Volume 108
