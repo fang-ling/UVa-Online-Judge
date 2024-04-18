@@ -79,6 +79,7 @@
 
 #import "10815.h"
 
+#import "10935.h"
 #import "10970.h"
 
 #import "11172.h"
@@ -734,6 +735,7 @@
 // MARK: - Volume 109
 
 - (void)test_109 {
+  general_test(main_10935, 109, 10935, 5);
   general_test(main_10970, 109, 10970, 4);
 }
 
