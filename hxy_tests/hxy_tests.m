@@ -103,6 +103,7 @@
 
 #import "12096.h"
 
+#import "12100.h"
 #import "12108.h"
 
 #import "12289.h"
@@ -887,44 +888,14 @@
 
 // MARK: - Volume 121
 
-- (void)test_12108 {
-  NSString* path = @IO_DATA_PATH;
-  path = [path stringByAppendingString: @"Volume 121 (12100-12199)/"];
-  for (var i = 0; i < 2; i += 1) {
-    freopen(
-      [[path
-        stringByAppendingString: [NSString stringWithFormat: @"12108.%d.in", i]
-       ] UTF8String
-      ],
-      "r",
-      stdin
-    );
-    freopen("/tmp/hxy.out", "w", stdout);
-    main_12108();
-    fclose(stdin);
-    fclose(stdout);
-    var out = [
-      NSString
-      stringWithContentsOfFile: [
-        path stringByAppendingString:
-          [NSString stringWithFormat: @"12108.%d.out", i]
-      ]
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    var sol = [
-      NSString
-      stringWithContentsOfFile: @"/tmp/hxy.out"
-      encoding: NSUTF8StringEncoding
-      error: nil
-    ];
-    XCTAssertEqualObjects(sol, out);
-  }
+- (void) test_121 {
+  general_test(main_12100, 121, 12100, 6);
+  general_test(main_12108, 121, 12108, 2);
 }
 
 // MARK: - Volume 122
 
-- (void)test_122 {
+- (void) test_122 {
   general_test(main_12289, 122, 12289, 3);
 }
 
