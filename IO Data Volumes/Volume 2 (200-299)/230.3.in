@@ -1,0 +1,12 @@
+"a" by x
+"b" by y
+"c" by z
+END
+BORROW "a"
+BORROW "b"
+SHELVE
+RETURN "a"
+SHELVE
+RETURN "b"
+SHELVE
+END

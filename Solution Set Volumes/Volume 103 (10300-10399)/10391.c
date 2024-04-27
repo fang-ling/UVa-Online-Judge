@@ -351,6 +351,7 @@ static bool red_black_tree_contains(struct RedBlackTree* tree, void* key) {
 }
 
 /* Returns the i-th smallest key in a tree */
+static
 void red_black_tree_select(struct RedBlackTree* tree, int i, void* result) {
   var x = tree -> root;
   while (x != tree -> nil) {

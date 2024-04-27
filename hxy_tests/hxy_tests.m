@@ -21,6 +21,7 @@
 #import "220.h"
 #import "221.h"
 #import "227.h"
+#import "230.h"
 #import "232.h"
 #import "253.h"
 #import "272.h"
@@ -153,6 +154,7 @@
   general_test(main_220, 2, 220, 2);
   general_test(main_221, 2, 221, 2);
   general_test(main_227, 2, 227, 4);
+  general_test(main_230, 2, 230, 4);
   general_test(main_232, 2, 232, 2);
   general_test(main_253, 2, 253, 3);
   general_test(main_272, 2, 272, 1);
