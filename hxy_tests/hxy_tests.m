@@ -65,6 +65,7 @@
 #import "1594.h"
 #import "1595.h"
 #import "1596.h"
+#import "1597.h"
 
 #import "10018.h"
 #import "10035.h"
@@ -344,6 +345,7 @@
   general_test(main_1594, 15, 1594, 4);
   general_test(main_1595, 15, 1595, 7);
   general_test(main_1596, 15, 1596, 4);
+  general_test(main_1597, 15, 1597, 5);
 }
 
 // MARK: - Volume 100
