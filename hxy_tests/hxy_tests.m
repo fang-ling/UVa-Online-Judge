@@ -113,6 +113,8 @@
 
 #import "12412.h"
 
+#import "12504.h"
+
 #import "12626.h"
 
 #import "12720.h"
@@ -942,15 +944,21 @@
   }
 }
 
+// MARK: - Volume 125
+
+- (void) test_125 {
+  general_test(main_12504, 125, 12504, 3);
+}
+
 // MARK: - Volume 126
 
-- (void)test_126 {
+- (void) test_126 {
   general_test(main_12626, 126, 12626, 4);
 }
 
 // MARK: - Volume 127
 
-- (void)test_12720 {
+- (void) test_12720 {
   NSString* path = @IO_DATA_PATH;
   path = [path stringByAppendingString: @"Volume 127 (12700-12799)/"];
   for (var i = 0; i < 2; i += 1) {

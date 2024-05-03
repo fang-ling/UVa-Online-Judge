@@ -1,11 +1,21 @@
 //
-//  1597.c
+//  12504.c
 //  hxy
 //
-//  Created by Fang Ling on 2024/5/1.
+//  Created by Fang Ling on 2024/5/3.
 //
 
 #include <stdio.h>
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
 
 #ifndef types_h
 #define types_h
@@ -27,6 +37,36 @@ typedef double Double;
 #define var __auto_type
 
 #endif /* types_h */
+
+/*===----------------------------------------------------------------------===*/
+/*                                                        ___   ___           */
+/* Array START                                          /'___\ /\_ \          */
+/*                                                     /\ \__/ \//\ \         */
+/* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
+/* Version: 2.0                                         \ \ \_/__ \_\ \_  __  */
+/* Date: April 22, 2024                                  \ \_\/\_\/\____\/\_\ */
+/*                                                        \/_/\/_/\/____/\/_/ */
+/*===----------------------------------------------------------------------===*/
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
 
 #ifndef array_h
 #define array_h
@@ -81,6 +121,17 @@ struct Array {
 };
 
 #endif /* array_h */
+
+
+/*
+ * Error code of Array:
+ * 0: NO ERROR
+ * 1: due to malloc, check `errno`
+ * 2: Array index is out of range
+ * 3: Negative Array index is out of range
+ * 5: due to realloc, check `errno`
+ * 6: Can't remove last element from an empty collection
+ */
 
 static void _array_init(struct Array* array, Int64 count, UInt32 width) {
   /* Rounding up to next power of 2 */
@@ -180,6 +231,56 @@ static void array_append(struct Array* array, void* new_element) {
 
 /* MARK: - Removing Elements */
 
+static void array_remove_all(struct Array* array) {
+  free(array->_storage);
+  array->_storage = NULL;
+  array->count = 0;
+  array->_capacity = 0;
+  array->is_empty = true;
+}
+
+/*===----------------------------------------------------------------------===*/
+/*             ___                            ___                             */
+/*           /'___\                          /\_ \    __                      */
+/*          /\ \__/   __      ___      __    \//\ \  /\_\    ___      __      */
+/*          \ \ ,__\/'__`\  /' _ `\  /'_ `\    \ \ \ \/\ \ /' _ `\  /'_ `\    */
+/*           \ \ \_/\ \L\.\_/\ \/\ \/\ \L\ \    \_\ \_\ \ \/\ \/\ \/\ \L\ \   */
+/*            \ \_\\ \__/.\_\ \_\ \_\ \____ \   /\____\\ \_\ \_\ \_\ \____ \  */
+/*             \/_/ \/__/\/_/\/_/\/_/\/___L\ \  \/____/ \/_/\/_/\/_/\/___L\ \ */
+/* Array END                           /\____/                        /\____/ */
+/*                                     \_/__/                         \_/__/  */
+/*===----------------------------------------------------------------------===*/
+
+/*===----------------------------------------------------------------------===*/
+/*                                                        ___   ___           */
+/* string        START                                  /'___\ /\_ \          */
+/*                                                     /\ \__/ \//\ \         */
+/* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
+/* Version: 1.0                                         \ \ \_/__ \_\ \_  __  */
+/* Date: April 15, 2024                                  \ \_\/\_\/\____\/\_\ */
+/*                                                        \/_/\/_/\/____/\/_/ */
+/*===----------------------------------------------------------------------===*/
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
+
 #ifndef string_h
 #define string_h
 
@@ -233,6 +334,7 @@ static struct String* _string_init(
   string->_utf8_capacity = count;
   string->count = count;
   
+  string->is_empty = true; /* set initial value */
   if (string->_utf8_capacity > 0) {
     string->is_empty = false;
   }
@@ -292,6 +394,16 @@ static void string_deinit(struct String* string) {
   free(string);
 }
 
+/* MARK: - Getting Substrings */
+
+/*
+ * Returns a new contiguous substring of the string.
+ *
+ * It's caller's responsibility to free the returned value.
+ *
+ * Returns NULL if the start is negative, or end is larger than the length of
+ * this string object, or start is larger than end.
+ */
 static struct String* string_substring(
   struct String* string,
   Int64 start,
@@ -308,6 +420,17 @@ static struct String* string_substring(
 
 /* MARK: - Splitting a String */
 
+/*
+ * Returns an array containing substrings from the string that have been divided
+ * by the given separator.
+ * It's caller's responsibility to free the strings stored in the result.
+ */
+/* Example:
+ *                    1                 2    3             4
+ * Assuming: str = "#zyy#jasdjq2n3oasd#zyy##zyy#adn972929#zyy#"
+ *           separator = "#zyy#"
+ *      will return 5 substrings.
+ */
 static void string_components(
   struct String* string,
   struct String* separator,
@@ -359,8 +482,8 @@ static void string_c_string(struct String* string, char* result) {
  * string lhs is greater than, equal to, or less than the string rhs.
  */
 static Int32 string_compare_ascii(const void* lhs, const void* rhs) {
-  var a = (struct String*)lhs;
-  var b = (struct String*)rhs;
+  var a = *(struct String**)lhs;
+  var b = *(struct String**)rhs;
   
   var lim = a->count < b->count ? a->count : b->count;
   
@@ -378,7 +501,49 @@ static Int32 string_compare_ascii(const void* lhs, const void* rhs) {
   }
 }
 
-/* MARK: - Finding Characters */
+/* MARK: - Accessing Elements */
+
+/*===----------------------------------------------------------------------===*/
+/*             ___                            ___                             */
+/*           /'___\                          /\_ \    __                      */
+/*          /\ \__/   __      ___      __    \//\ \  /\_\    ___      __      */
+/*          \ \ ,__\/'__`\  /' _ `\  /'_ `\    \ \ \ \/\ \ /' _ `\  /'_ `\    */
+/*           \ \ \_/\ \L\.\_/\ \/\ \/\ \L\ \    \_\ \_\ \ \/\ \/\ \/\ \L\ \   */
+/*            \ \_\\ \__/.\_\ \_\ \_\ \____ \   /\____\\ \_\ \_\ \_\ \____ \  */
+/*             \/_/ \/__/\/_/\/_/\/_/\/___L\ \  \/____/ \/_/\/_/\/_/\/___L\ \ */
+/* string        END                   /\____/                        /\____/ */
+/*                                     \_/__/                         \_/__/  */
+/*===----------------------------------------------------------------------===*/
+
+/*===----------------------------------------------------------------------===*/
+/*                                                        ___   ___           */
+/* RedBlackTree START                                   /'___\ /\_ \          */
+/*                                                     /\ \__/ \//\ \         */
+/* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
+/* Version: 1.0                                         \ \ \_/__ \_\ \_  __  */
+/* Date: March 18, 2024                                  \ \_\/\_\/\____\/\_\ */
+/*                                                        \/_/\/_/\/____/\/_/ */
+/*===----------------------------------------------------------------------===*/
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
+
+/*
+ * This source file is part of the C Collections open source project
+ *
+ * Copyright (c) 2024 Fang Ling
+ * Licensed under Apache License v2.0
+ *
+ * See https://github.com/fang-ling/C-Collections/blob/main/LICENSE for license
+ * information
+ */
 
 #ifndef red_black_tree_h
 #define red_black_tree_h
@@ -412,7 +577,7 @@ struct RedBlackTreeNode {
 
 struct RedBlackTree {
   struct RedBlackTreeNode* root;
-  struct RedBlackTreeNode* nil;
+  struct RedBlackTreeNode* null;
   
   UInt32 _width;
   
@@ -466,6 +631,17 @@ static void _red_black_tree_node_deinit(struct RedBlackTreeNode* node) {
   free(node);
 }
 
+/*
+ * Red Black Tree Rotation: Modify tree structure without breaking binary
+ * search tree property, i.e. x.left.key < x.key < x.right.key
+ *
+ *        |                               |
+ *       [y]       left_rotate(x)        [x]
+ *      /   \      <--------------      /   \
+ *    [x]    c                         a    [y]
+ *   /   \         -------------->         /   \
+ *  a     b        right_rotate(y)        b     c
+ */
 static void _red_black_tree_rotate(
   struct RedBlackTree* tree,
   struct RedBlackTreeNode* x,
@@ -473,11 +649,11 @@ static void _red_black_tree_rotate(
 ) {
   var y = x->children[is_right ^ 1];
   x->children[is_right ^ 1] = y->children[is_right];
-  if (y->children[is_right] != tree->nil) {
+  if (y->children[is_right] != tree->null) {
     y->children[is_right]->p = x;
   }
   y->p = x->p;
-  if (x->p == tree->nil) {
+  if (x->p == tree->null) {
     tree->root = y;
   } else {
     x->p->children[x == x->p->children[1] ? 1 : 0] = y;
@@ -522,12 +698,18 @@ static void _red_black_tree_insert_fixup(
   tree->root->color = RBT_BLACK;
 }
 
+/*
+ * Replaces one subtree as a child of its parent with another subtree.
+ * When transplant(tree, u, v) replaces the subtree rooted at node u with the
+ * subtree rooted at node v, node u's parent becomes node v's parent, and u's
+ * parent ends up having v as its appropriate child.
+ */
 static void _red_black_tree_transplant(
   struct RedBlackTree* tree,
   struct RedBlackTreeNode* u,
   struct RedBlackTreeNode* v
 ) {
-  if (u->p == tree->nil){
+  if (u->p == tree->null){
     tree->root = v;
   } else {
     u->p->children[(u == u->p->children[0]) ? 0 : 1] = v;
@@ -539,7 +721,7 @@ static struct RedBlackTreeNode* _red_black_tree_minimum(
   struct RedBlackTree* tree,
   struct RedBlackTreeNode* x
 ) {
-  while (x->children[0] != tree->nil) {
+  while (x->children[0] != tree->null) {
     x = x->children[0];
   }
   return x;
@@ -591,7 +773,7 @@ static void _red_black_tree_deinit(
   struct RedBlackTree* tree,
   struct RedBlackTreeNode* node
 ) {
-  if (node != tree->nil) {
+  if (node != tree->null) {
     _red_black_tree_deinit(tree, node->children[0]);
     _red_black_tree_deinit(tree, node->children[1]);
     _red_black_tree_node_deinit(node);
@@ -617,7 +799,7 @@ static struct RedBlackTree* red_black_tree_init(
   tree->allow_duplicates = allow_duplicates;
   tree->compare = compare;
   
-  tree->nil = _red_black_tree_node_init(
+  tree->null = _red_black_tree_node_init(
     NULL,         /* key */
     width,        /* width */
     0,            /* size */
@@ -627,8 +809,8 @@ static struct RedBlackTree* red_black_tree_init(
     NULL,         /* p */
     RBT_BLACK     /* color */
   );
-  tree->root = tree->nil;
-  tree->root->p = tree->nil;
+  tree->root = tree->null;
+  tree->root->p = tree->null;
   
   return tree;
 }
@@ -636,7 +818,7 @@ static struct RedBlackTree* red_black_tree_init(
 /* Destroys a RedBlackTree. (postorder tree traversal) */
 static void red_black_tree_deinit(struct RedBlackTree* tree) {
   _red_black_tree_deinit(tree, tree->root);
-  _red_black_tree_node_deinit(tree->nil);
+  _red_black_tree_node_deinit(tree->null);
   
   free(tree);
 }
@@ -650,18 +832,19 @@ static void red_black_tree_insert(struct RedBlackTree* tree, const void* key) {
    * by calling insert_fixup().
    */
   var x = tree->root;
-  var y = tree->nil;
+  var y = tree->null;
   var z = _red_black_tree_node_init(
     key,                  /* key */
     tree->_width,         /* width */
     1,                    /* size */
     1,                    /* count */
-    tree->nil,            /* left */
-    tree->nil,            /* right */
-    tree->nil,            /* p */
-    RBT_RED /* color */
+    tree->null,           /* left */
+    tree->null,           /* right */
+    tree->null,           /* p */
+    RBT_RED               /* color */
   );
-  while (x != tree->nil) { /* Find the position to insert */
+  var is_success = true;
+  while (x != tree->null) { /* Find the position to insert */
     y = x;
     y->size += 1;
     /* If exists, add `count` by 1. */
@@ -669,13 +852,24 @@ static void red_black_tree_insert(struct RedBlackTree* tree, const void* key) {
       if (tree->allow_duplicates) {
         x->count += 1;
         tree->count += 1;
+        return;
+      } else {
+        is_success = false;
+        break;
       }
-      return;
     }
     x = x->children[(tree->compare(x->key, key) < 0) ? 1 : 0];
   }
+  if (!is_success) { /* Insert duplicate when allow_duplicate is false */
+    /* Restore substree sizes */
+    while (x != tree->null) {
+      x->size -= 1;
+      x = x->p;
+    }
+    return;
+  }
   z->p = y;
-  if (y == tree->nil) {
+  if (y == tree->null) {
     tree->root = z;
   } else {
     y->children[(tree->compare(y->key, key) < 0) ? 1 : 0] = z;
@@ -694,12 +888,12 @@ static void red_black_tree_remove(struct RedBlackTree* tree, const void* key) {
     abort();
   }
   var z = tree->root;
-  var w = tree->nil;
+  var w = tree->null;
   struct RedBlackTreeNode* y;
   struct RedBlackTreeNode* x;
   struct RedBlackTreeNode* delta;
   enum RedBlackTreeColor old_color;
-  while (z != tree->nil) { /* Find a node z with the specific key. */
+  while (z != tree->null) { /* Find a node z with the specific key. */
     w = z;
     w->size -= 1;
     if (tree->compare(key, z->key) == 0) {
@@ -707,7 +901,7 @@ static void red_black_tree_remove(struct RedBlackTree* tree, const void* key) {
     }
     z = z->children[tree->compare(z->key, key) < 0 ? 1 : 0];
   }
-  if (z != tree->nil) {
+  if (z != tree->null) {
     if (z->count > 1) {
       tree->count -= 1;
       z->count -= 1;
@@ -715,10 +909,10 @@ static void red_black_tree_remove(struct RedBlackTree* tree, const void* key) {
     }
     y = z;
     old_color = y->color;
-    if (z->children[0] == tree->nil) {
+    if (z->children[0] == tree->null) {
       x = z->children[1];
       _red_black_tree_transplant(tree, z, z->children[1]);
-    } else if (z->children[1] == tree->nil) {
+    } else if (z->children[1] == tree->null) {
       x = z->children[0];
       _red_black_tree_transplant(tree, z, z->children[0]);
     } else {
@@ -752,7 +946,7 @@ static void red_black_tree_remove(struct RedBlackTree* tree, const void* key) {
     tree->is_empty = tree->count == 0 ? true : false;
     return;
   } else { /* No such keys, restore subtree sizes */
-    while (w != tree->nil) {
+    while (w != tree->null) {
       w->size += 1;
       w = w->p;
     }
@@ -762,16 +956,17 @@ static void red_black_tree_remove(struct RedBlackTree* tree, const void* key) {
 
 /* MARK: - Finding Elements */
 
-/* Returns the i-th smallest key in a tree */
+/* Returns the i-th smallest key in a tree. (Zero-based numbering) */
 static
 void red_black_tree_select(struct RedBlackTree* tree, Int64 i, void* result) {
-  if (i < 1 || i > tree->count) {
+  if (i < 1 - 1 || i > tree->count - 1) {
     fprintf(stderr, RBT_FATAL_ERR_INDOB);
     abort();
   }
   
+  i += 1;
   var x = tree->root;
-  while (x != tree->nil) {
+  while (x != tree->null) {
     if (x->children[0]->size + 1 <= i &&
         x->children[0]->size + x->count >= i) {
       memcpy(result, x->key, tree->_width);
@@ -787,9 +982,13 @@ void red_black_tree_select(struct RedBlackTree* tree, Int64 i, void* result) {
   }
 }
 
+/*
+ * Returns a Boolean value indicating whether the tree contains the given
+ * element.
+ */
 static Bool red_black_tree_contains(struct RedBlackTree* tree, void* key) {
   var x = tree->root;
-  while (x != tree->nil) { /* Find the node with key */
+  while (x != tree->null) { /* Find the node with key */
     if (tree->compare(x->key, key) == 0) {
       return true;
     }
@@ -798,350 +997,201 @@ static Bool red_black_tree_contains(struct RedBlackTree* tree, void* key) {
   return false;
 }
 
-static void red_black_tree_get(struct RedBlackTree* tree, void* key) {
-  var x = tree -> root;
-  while (x != tree -> nil) { /* Find the node with key */
-    if (tree -> compare(x -> key, key) == 0) {
-      memcpy(key, x -> key, tree -> _width);
-      break;
+static
+void red_black_tree_get(struct RedBlackTree* tree, void* key, void* result) {
+  var x = tree->root;
+  while (x != tree->null) { /* Find the node with key */
+    if (tree->compare(x->key, key) == 0) {
+      memcpy(result, x->key, tree->_width);
+      return;
     }
-    x = x -> children[(tree -> compare(x -> key, key) < 0) ? 1 : 0];
+    x = x->children[(tree->compare(x->key, key) < 0) ? 1 : 0];
   }
 }
 
-struct Document {
-  struct Array* lines;
-};
-
-static struct Document* document_init(void) {
-  struct Document* document = malloc(sizeof(struct Document));
-  document->lines = array_init(sizeof(struct String*));
-  return document;
-}
-
-static void document_deinit(struct Document* document) {
-  struct String* string;
-  var i = 0;
-  for (i = 0; i < document->lines->count; i += 1) {
-    array_get(document->lines, i, &string);
-    string_deinit(string);
-  }
-  array_deinit(document->lines);
-  free(document);
-}
-
-struct DocumentIdentifier {
-  Int32 document_number;
-  Int32 line_number;
-};
+/*===----------------------------------------------------------------------===*/
+/*             ___                            ___                             */
+/*           /'___\                          /\_ \    __                      */
+/*          /\ \__/   __      ___      __    \//\ \  /\_\    ___      __      */
+/*          \ \ ,__\/'__`\  /' _ `\  /'_ `\    \ \ \ \/\ \ /' _ `\  /'_ `\    */
+/*           \ \ \_/\ \L\.\_/\ \/\ \/\ \L\ \    \_\ \_\ \ \/\ \/\ \/\ \L\ \   */
+/*            \ \_\\ \__/.\_\ \_\ \_\ \____ \   /\____\\ \_\ \_\ \_\ \____ \  */
+/*             \/_/ \/__/\/_/\/_/\/_/\/___L\ \  \/____/ \/_/\/_/\/_/\/___L\ \ */
+/* RedBlackTree END                    /\____/                        /\____/ */
+/*                                     \_/__/                         \_/__/  */
+/*===----------------------------------------------------------------------===*/
 
 struct Entry {
-  struct String* term;
-  struct Array* dids;
+  struct String* key;
+  struct String* value;
 };
 
-static Int32 compare2(const void* a, const void* b) {
-  var l = *(struct DocumentIdentifier*)a;
-  var r = *(struct DocumentIdentifier*)b;
-  
-  if (l.document_number == r.document_number && l.line_number == r.line_number) {
-    return 0;
-  }
-  
-  /* Unsafe */
-  return l.document_number == r.document_number ?
-         l.line_number - r.line_number :
-         l.document_number - r.document_number;
-}
-
 static Int32 compare(const void* a, const void* b) {
-  var l = (struct Entry*)a;
-  var r = (struct Entry*)b;
-  return string_compare_ascii(l->term, r->term);
+  var _a = *(struct Entry*)a;
+  var _b = *(struct Entry*)b;
+  
+  return string_compare_ascii(&_a.key, &_b.key);
 }
 
-static Int32 compare3(const void* a, const void* b) {
-  var l = *(Int32*)a;
-  var r = *(Int32*)b;
-  return l - r; /* Unsafe */
-}
-
-void main_1597(void) {
-  char output_buf[512];
-  var documents = array_init(sizeof(struct Document*));
-  var inv_index = red_black_tree_init(sizeof(struct Entry), false, compare);
-  var separator = string_init(" ");
+static struct RedBlackTree* parse(char* buf) {
+  var dict = red_black_tree_init(sizeof(struct Entry), false, compare);
   
-  var document_number = 0;
-  var n = 0;
-  scanf("%d\n", &n);
-  while (n--) {
-    char* buf = NULL;
-    var linecap = (unsigned long)0;
-    var linelen = 0;
-
-    var line_number = 0;
-    var document = document_init();
-    /* Read the document */
-    while ((linelen = (int)getline(&buf, &linecap, stdin)) > 0) {
-      buf[linelen - 1] = '\0'; /* Remove \n char */
-      linelen -= 1;
-      if (buf[0] == '*') { /* End of the document */
-        break;
-      }
-      
-      var line = string_init(buf);
-      array_append(document->lines, &line);
-      
-      /* Tokenlize */
-      var i = 0;
-      for (i = 0; i < linelen; i += 1) {
-        if (!isalpha(buf[i])) { /* Replace non-alphabetic character with ' ' */
-          buf[i] = ' ';
-        }
-        if (isupper(buf[i])) {
-          buf[i] = tolower(buf[i]);
-        }
-      }
-      var terms = array_init(sizeof(struct String*));
-      var terms_empty = array_init(sizeof(struct String*));
-      var token_string = string_init(buf);
-      string_components(token_string, separator, terms_empty);
-      for (i = 0; i < terms_empty->count; i += 1) {
-        struct String* string;
-        array_get(terms_empty, i, &string);
-        if (string->is_empty || string->count == 0) { /* Bug in is_empty */
-          string_deinit(string);
-        } else {
-          array_append(terms, &string);
-        }
-      }
-      string_deinit(token_string);
-      array_deinit(terms_empty);
-      /* Construct DID */
-      struct DocumentIdentifier did;
-      did.document_number = document_number;
-      did.line_number = line_number;
-      
-      for (i = 0; i < terms->count; i += 1) {
-        struct String* term;
-        array_get(terms, i, &term);
-        struct Entry entry;
-        entry.term = term;
-        
-        if (red_black_tree_contains(inv_index, &entry)) {
-          entry.dids = NULL;
-          red_black_tree_get(inv_index, &entry);
-          string_deinit(term); /* Deinit duplicate terms */
-          red_black_tree_remove(inv_index, &entry);
-        } else {
-          entry.dids = array_init(sizeof(struct DocumentIdentifier));
-        }
-        array_append(entry.dids, &did);
-        red_black_tree_insert(inv_index, &entry);
-      }
-      line_number += 1;
-    }
-    array_append(documents, &document);
-    document_number += 1;
-  }
+  /* Remove '{' and '}' */
+  var str = buf;
+  var len = (int)strlen(str);
+  str[len - 1] = '\0';
+  str += 1;
+  var string = string_init(str);
+  var separator = string_init(",");
+  var separator2 = string_init(":");
   
-  /* Query */
-  var m = 0;
-  scanf("%d\n", &m);
-  while (m--) {
-    char* buf = NULL;
-    var linecap = (unsigned long)0;
-    var linelen = (int)getline(&buf, &linecap, stdin);
-    
-    buf[linelen - 1] = '\0';
-    linelen -= 1;
-    
-    var query = string_init(buf);
-    var query_tokens = array_init(sizeof(struct String*));
-    
-    string_components(query, separator, query_tokens);
-    
-    var result = red_black_tree_init(
-      sizeof(struct DocumentIdentifier),
-      false,
-      compare2
-    );
-    
-    if (query_tokens->count == 1) {
-      struct String* term;
-      array_get(query_tokens, 0, &term);
-      struct Entry e;
-      e.term = term;
-      red_black_tree_get(inv_index, &e);
-      if (red_black_tree_contains(inv_index, &e)) {
-        var i = 0;
-        for (i = 0; i < e.dids->count; i += 1) {
-          struct DocumentIdentifier did;
-          array_get(e.dids, i, &did);
-          if (!red_black_tree_contains(result, &did)) {
-            red_black_tree_insert(result, &did);
-          }
-        }
-      }
-    } else if (query_tokens->count == 2) {
-      struct String* term;
-      array_get(query_tokens, 1, &term);
-      struct Entry e;
-      e.term = term;
-      e.dids = NULL;
-      red_black_tree_get(inv_index, &e);
-      
-      var not_output = red_black_tree_init(sizeof(Int32), false, compare3);
-      
-      if (e.dids != NULL) { /* Found something */
-        var i = 0;
-        for (i = 0; i < e.dids->count; i += 1) {
-          struct DocumentIdentifier did;
-          array_get(e.dids, i, &did);
-          if (!red_black_tree_contains(not_output, &did.document_number)) {
-            red_black_tree_insert(not_output, &did.document_number);
-          }
-        }
-      }
-      
-      var array = array_init(sizeof(Int32));
-      
-      var i = 0;
-      for (i = 0; i < documents->count; i += 1) {
-        if (red_black_tree_contains(not_output, &i)) {
-          continue;
-        }
-        array_append(array, &i);
-      }
-      for (i = 0; i < array->count; i += 1) {
-        var j = 0;
-        array_get(array, i, &j);
-        struct Document* document;
-        array_get(documents, j, &document);
-        var k = 0;
-        for (k = 0; k < document->lines->count; k += 1) {
-          struct String* line;
-          array_get(document->lines, k, &line);
-          string_c_string(line, output_buf);
-          printf("%s\n", output_buf);
-        }
-        if (i != array->count - 1) {
-          printf("----------\n");
-        }
-      }
-      if (array->count == 0) {
-        printf("Sorry, I found nothing.\n");
-      }
-      
-      array_deinit(array);
-      red_black_tree_deinit(not_output);
-      goto end;
-    } else if (query_tokens->count == 3) {
-      struct String* op;
-      struct String* left;
-      struct String* right;
-      array_get(query_tokens, 0, &left);
-      array_get(query_tokens, 1, &op);
-      array_get(query_tokens, 2, &right);
-      
-      if ((op->_utf8[0] & 0xFF) == 'O') { /* OR */
-        struct Entry e;
-        e.term = left;
-        e.dids = NULL;
-        red_black_tree_get(inv_index, &e);
-        if (red_black_tree_contains(inv_index, &e)) {
-          var i = 0;
-          for (i = 0; i < e.dids->count; i += 1) {
-            struct DocumentIdentifier did;
-            array_get(e.dids, i, &did);
-            if (!red_black_tree_contains(result, &did)) {
-              red_black_tree_insert(result, &did);
-            }
-          }
-        }
-        e.term = right;
-        e.dids = NULL;
-        red_black_tree_get(inv_index, &e);
-        if (red_black_tree_contains(inv_index, &e)) {
-          var i = 0;
-          for (i = 0; i < e.dids->count; i += 1) {
-            struct DocumentIdentifier did;
-            array_get(e.dids, i, &did);
-            if (!red_black_tree_contains(result, &did)) {
-              red_black_tree_insert(result, &did);
-            }
-          }
-        }
-      } else { /* AND */
-        struct Entry e1;
-        e1.term = left;
-        e1.dids = NULL;
-        struct Entry e2;
-        e2.term = right;
-        e2.dids = NULL;
-        red_black_tree_get(inv_index, &e1);
-        red_black_tree_get(inv_index, &e2);
-        if (e1.dids != NULL && e2.dids != NULL) {
-          var i = 0;
-          for (i = 0; i < e1.dids->count; i += 1) {
-            struct DocumentIdentifier did1;
-            array_get(e1.dids, i, &did1);
-            var j = 0;
-            for (j = 0; j < e2.dids->count; j += 1) {
-              struct DocumentIdentifier did2;
-              array_get(e2.dids, j, &did2);
-              
-              if (did1.document_number == did2.document_number) {
-                if (!red_black_tree_contains(result, &did1)) {
-                  red_black_tree_insert(result, &did1);
-                }
-                if (!red_black_tree_contains(result, &did2)) {
-                  red_black_tree_insert(result, &did2);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    /* Output */
-    var last_document = -1;
-    var i = 0;
-    for (i = 1; i <= result->count; i += 1) {
-      struct DocumentIdentifier did;
-      red_black_tree_select(result, i, &did);
-      
-      struct Document* document;
-      struct String* line;
-      array_get(documents, did.document_number, &document);
-      array_get(document->lines, did.line_number, &line);
-      string_c_string(line, output_buf);
-      
-      if (last_document != did.document_number && last_document != -1) {
-        printf("----------\n");
-      }
-      printf("%s\n", output_buf);
-      last_document = did.document_number;
-    }
-    if (result->is_empty) {
-      printf("Sorry, I found nothing.\n");
+  var pairs = array_init(sizeof(struct String*));
+  var kv = array_init(sizeof(struct String*));
+  string_components(string, separator, pairs);
+  var i = 0;
+  for (i = 0; i < pairs->count; i += 1) {
+    struct String* pair;
+    array_get(pairs, i, &pair);
+    if (pair->is_empty) {
+      continue;
     }
     
-  end:
-    printf("==========\n");
+    array_remove_all(kv);
+    string_components(pair, separator2, kv);
+    struct Entry e;
+    array_get(kv, 0, &e.key);
+    array_get(kv, 1, &e.value);
     
-    string_deinit(query);
-    red_black_tree_deinit(result);
+    red_black_tree_insert(dict, &e);
+    
+    string_deinit(pair);
   }
   
   /* Clean up */
-  var i = 0;
-  for (i = 0; i < documents->count; i += 1) {
-    struct Document* document;
-    array_get(documents, i, &document);
-    document_deinit(document);
-  }
+  array_deinit(kv);
+  array_deinit(pairs);
   string_deinit(separator);
-  red_black_tree_deinit(inv_index); /* Memory leak */
+  string_deinit(separator2);
+  string_deinit(string);
+  
+  return dict;
+}
+
+void main_12504(void) {
+  var star = array_init(sizeof(struct String*));
+  var plus = array_init(sizeof(struct String*));
+  var minus = array_init(sizeof(struct String*));
+  
+  char buf[128];
+  var t = 0;
+  scanf("%d", &t);
+  while (t--) {
+    /* init */
+    array_remove_all(star);
+    array_remove_all(plus);
+    array_remove_all(minus);
+    
+    scanf("%s", buf);
+    var old = parse(buf);
+    scanf("%s", buf);
+    var new = parse(buf);
+    
+    var i = 0;
+    for (i = 0; i < old->count; i += 1) {
+      struct Entry e;
+      red_black_tree_select(old, i, &e);
+      if (red_black_tree_contains(new, &e)) { /* Key not changed, check value */
+        struct Entry e2;
+        red_black_tree_get(new, &e, &e2);
+        if (string_compare_ascii(&e.value, &e2.value) == 0) {
+          /* value not changed */
+        } else { /* keys with changed value */
+          array_append(star, &e.key);
+        }
+      } else { /* removed keys */
+        array_append(minus, &e.key);
+      }
+    }
+    
+    for (i = 0; i < new->count; i += 1) {
+      struct Entry e;
+      red_black_tree_select(new, i, &e);
+      if (red_black_tree_contains(old, &e)) {
+        /* Handled in previous for-loop */
+      } else { /* new keys */
+        array_append(plus, &e.key);
+      }
+    }
+  
+    if (star->is_empty && plus->is_empty && minus->is_empty) {
+      printf("No changes\n");
+    } else {
+      if (!plus->is_empty) {
+        printf("+");
+        for (i = 0; i < plus->count; i += 1) {
+          struct String* string;
+          array_get(plus, i, &string);
+          string_c_string(string, buf);
+          printf("%s", buf);
+          if (i == plus->count - 1) {
+            printf("\n");
+          } else {
+            printf(",");
+          }
+        }
+      }
+      if (!minus->is_empty) {
+        printf("-");
+        for (i = 0; i < minus->count; i += 1) {
+          struct String* string;
+          array_get(minus, i, &string);
+          string_c_string(string, buf);
+          printf("%s", buf);
+          if (i == minus->count - 1) {
+            printf("\n");
+          } else {
+            printf(",");
+          }
+        }
+      }
+      if (!star->is_empty) {
+        printf("*");
+        for (i = 0; i < star->count; i += 1) {
+          struct String* string;
+          array_get(star, i, &string);
+          string_c_string(string, buf);
+          printf("%s", buf);
+          if (i == star->count - 1) {
+            printf("\n");
+          } else {
+            printf(",");
+          }
+        }
+      }
+    }
+    printf("\n");
+    
+    /* Clean up RBT and its strings */
+    for (i = 0; i < old->count; i += 1) {
+      struct Entry e;
+      red_black_tree_select(old, i, &e);
+      red_black_tree_remove(old, &e);
+      string_deinit(e.key);
+      string_deinit(e.value);
+    }
+    for (i = 0; i < new->count; i += 1) {
+      struct Entry e;
+      red_black_tree_select(new, i, &e);
+      red_black_tree_remove(new, &e);
+      string_deinit(e.key);
+      string_deinit(e.value);
+    }
+    /* Memory leak will happen */
+    red_black_tree_deinit(old);
+    red_black_tree_deinit(new);
+  }
+  /* Clean up */
+  array_deinit(star);
+  array_deinit(plus);
+  array_deinit(minus);
 }

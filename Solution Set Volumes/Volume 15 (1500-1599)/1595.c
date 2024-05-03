@@ -169,7 +169,7 @@ static void _wkq_quicksort(
   }
 }
 
-void sort(
+static void sort(
   void* base,
   size_t nel,
   size_t width,
