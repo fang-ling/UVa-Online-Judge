@@ -39,6 +39,7 @@
 
 #import "508.h"
 #import "509.h"
+#import "511.h"
 #import "512.h"
 #import "540.h"
 #import "594.h"
@@ -209,6 +210,7 @@
 - (void)test_5 {
   general_test(main_508, 5, 508, 1);
   general_test(main_509, 5, 509, 3);
+  general_test(main_511, 5, 511, 1);
   general_test(main_512, 5, 512, 2);
   general_test(main_540, 5, 540, 4);
   general_test(main_594, 5, 594, 1);
