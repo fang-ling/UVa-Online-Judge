@@ -23,7 +23,6 @@
 #define p594_h
 
 #include "Foundation.h"
-#include "CFoundation.h"
 
 Void main_p594();
 
