@@ -22,6 +22,10 @@
 #ifndef Foundation_h
 #define Foundation_h
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define var __auto_type
 #define let const __auto_type
 
@@ -50,6 +54,49 @@ typedef double Double;
 
 #ifndef false
 #define false 0
+#endif
+
+/**
+ * Checks a necessary condition for making forward progress.
+ *
+ * Use this function to detect conditions that must prevent the program from
+ * proceeding, even in shipping code.
+ *
+ * * In `-O0` builds (the default for Xcode's Debug configuration) and
+ *   `ONLINE_JUDGE` symbol is not defined: If `condition` evaluates to `false`,
+ *   stop program execution in a debuggable state after printing `message`.
+ *
+ * * In `-O2` builds (the default for Xcode's Release configuration) and
+ *   `ONLINE_JUDGE` symbol is not defined: If `condition` evaluates to `false`,
+ *   stop program execution after printing `message`.
+ *
+ * * In any builds with `ONLINE_JUDGE` symbol defined, `condition` is not
+ *   evaluated. Failure to satisfy that assumption is a serious programming
+ *   error.
+ *
+ * - Parameters:
+ *   - condition: The condition to test. `condition` is not evaluated with
+ *     `ONLINE_JUDGE` symbol defined.
+ *   - message: A string to print if `condition` is evaluated to `false`.
+ */
+#ifdef ONLINE_JUDGE
+#define precondition(condition, message) ((void)0)
+#else
+#define precondition(condition, message) \
+        do { \
+          if (!(condition)) { \
+            do { \
+              fprintf( \
+                stderr, \
+                "%s:%d: Fatal error: %s\n", \
+                __FILE__, \
+                __LINE__, \
+                (message) \
+              ); \
+              abort(); \
+            } while (0); \
+          } \
+        } while (0)
 #endif
 
 #endif /* Foundation_h */
