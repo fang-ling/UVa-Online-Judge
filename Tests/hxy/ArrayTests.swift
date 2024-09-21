@@ -20,7 +20,7 @@
  */
 
 import XCTest
-@testable import CUVaOnlineJudge
+@testable import hxy
 
 final class ArrayTests: XCTestCase {
   func testCount() {

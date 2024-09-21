@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -9,10 +9,10 @@ let volume5 = [
 let package = Package(
   name: "hxy",
   targets: [
-    .target(name: "CUVaOnlineJudge"),
+    .target(name: "hxy"),
     .testTarget(
-      name: "hxy",
-      dependencies: ["CUVaOnlineJudge"],
+      name: "hxyTests",
+      dependencies: ["hxy"],
       path: "Tests/hxy",
       resources:
         volume5.map({ .process("Resources/volume_5/\($0).in") }) +
