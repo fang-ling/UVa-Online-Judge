@@ -24,7 +24,7 @@
 
 #include "Foundation.h"
 
-Void main_p594();
+Void p594_main();
 
 #endif /* p594_h */
 

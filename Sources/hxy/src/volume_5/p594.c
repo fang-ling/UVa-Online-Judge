@@ -73,7 +73,7 @@
 
 #include "volume_5/p594.h"
 
-Void main_p594() {
+Void p594_main() {
   var input = 0;
   while (scanf("%d", &input) == 1) {
     let mask = 0x000000FF;

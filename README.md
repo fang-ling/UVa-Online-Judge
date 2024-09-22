@@ -19,3 +19,4 @@ Swift codes are only for Xcode unit tests (`xctest`).
 | # | pid | Problem | Submission Date |
 |--|--|--|--|
 | 29779045 | 594 | One Little, Two Little, Three Little Endians | 2024-09-15 11:58:49 |
+| 29799250 | 12720 | Algorithm of Phil | 2024-09-22 04:33:27 |
