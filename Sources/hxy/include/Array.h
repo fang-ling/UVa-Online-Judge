@@ -102,6 +102,13 @@ Void array_append(struct Array* array, Void* new_element);
  */
 Void array_remove_last(struct Array* array, Void* removed_element);
 
+/**
+ * Removes all elements from the array.
+ *
+ * - Complexity: O(*n*), where *n* is the length of the array.
+ */
+Void array_remove_all(struct Array* array);
+
 /* MARK: - Accessing Elements */
 
 /**

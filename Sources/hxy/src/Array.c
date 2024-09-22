@@ -111,6 +111,16 @@ Void array_remove_last(struct Array* array, Void* removed_element) {
   }
 }
 
+/**
+ * Removes all elements from the array.
+ */
+Void array_remove_all(struct Array* array) {
+  free(array->_buffer);
+  array->_buffer = NULL;
+  array->count = 0;
+  array->_capacity = 0;
+}
+
 /* MARK: - Accessing Elements */
 
 /**
