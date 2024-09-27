@@ -70,7 +70,7 @@ struct Array {
 struct Array* array_init(Int width);
 
 /**
- * Destroying an array.
+ * Destroys an array.
  */
 Void array_deinit(struct Array* array);
 
@@ -105,9 +105,17 @@ Void array_remove_last(struct Array* array, Void* removed_element);
 /**
  * Removes all elements from the array.
  *
- * - Complexity: O(*n*), where *n* is the length of the array.
+ * - Parameter keep_capacity: Pass `true` to request that the collection
+ *   avoid releasing its storage. Retaining the collection's storage can
+ *   be a useful optimization when you're planning to grow the collection
+ *   again.
+ *
+ * - Complexity:
+ *   - O(*n*), when `keep_capacity` is `false`, where *n* is the length of the
+ *   array.
+ *   - O(1), when `keep_capacity` is `true`.
  */
-Void array_remove_all(struct Array* array);
+Void array_remove_all(struct Array* array, Bool keep_capacity);
 
 /* MARK: - Accessing Elements */
 

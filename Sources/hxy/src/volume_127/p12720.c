@@ -91,8 +91,8 @@ Void p12720_main() {
   var case_number = 0;
   for (case_number = 1; case_number <= T; case_number += 1) {
     /* Init */
-    array_remove_all(left);
-    array_remove_all(right);
+    array_remove_all(left, false);
+    array_remove_all(right, false);
     
     /* Input */
     scanf("%s", input);

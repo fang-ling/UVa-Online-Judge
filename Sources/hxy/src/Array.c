@@ -25,10 +25,10 @@
  * Check that the specified `index` is valid, i.e. `0 ≤ index < count`.
  */
 #define _array_check_index(index, count) \
-do { \
-  precondition((index) < (count), "Array index is out of range"); \
-  precondition((index) >= 0, "Negative Array index is out of range"); \
-} while(0)
+        do { \
+          precondition((index) < (count), "Array index is out of range"); \
+          precondition((index) >= 0, "Negative Array index is out of range"); \
+        } while(0)
 
 /* MARK: - Creating and Destroying an Array */
 
@@ -50,7 +50,7 @@ struct Array* array_init(Int width) {
 }
 
 /**
- * Destroying an array.
+ * Destroys an array.
  */
 Void array_deinit(struct Array* array) {
   if (array == NULL) {
@@ -114,11 +114,15 @@ Void array_remove_last(struct Array* array, Void* removed_element) {
 /**
  * Removes all elements from the array.
  */
-Void array_remove_all(struct Array* array) {
-  free(array->_buffer);
-  array->_buffer = NULL;
-  array->count = 0;
-  array->_capacity = 0;
+Void array_remove_all(struct Array* array, Bool keep_capacity) {
+  if (keep_capacity) {
+    array->count = 0;
+  } else {
+    free(array->_buffer);
+    array->_buffer = NULL;
+    array->count = 0;
+    array->_capacity = 0;
+  }
 }
 
 /* MARK: - Accessing Elements */

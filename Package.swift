@@ -3,11 +3,16 @@
 import PackageDescription
 
 let volume5 = [
-  "594.0", "594.1", "594.2"
-]
+  (594, 2)
+].flatMap { problem in
+  (0 ... problem.1).map({ "\(problem.0).\($0)" })
+}
+
 let volume127 = [
-  "12720.0", "12720.1"
-]
+  (12720, 1)
+].flatMap { problem in
+  (0 ... problem.1).map({ "\(problem.0).\($0)" })
+}
 
 let package = Package(
   name: "hxy",

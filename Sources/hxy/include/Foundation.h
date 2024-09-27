@@ -48,6 +48,7 @@ typedef Int64 Int;
 typedef float Float;
 typedef double Double;
 
+typedef Int8 Bool;
 #ifndef true
 #define true 1
 #endif
