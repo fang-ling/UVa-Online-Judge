@@ -9,7 +9,7 @@
 /*===----------------------------------------------------------------------===*/
 
 /*
- * This source file is part of the hxy open source project
+ * This source file is part of the hxy open source project.
  *
  * Copyright (c) 2024 Fang Ling All Rights Reserved.
  *
