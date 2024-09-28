@@ -2,17 +2,24 @@
 
 import PackageDescription
 
-let volume5 = [
-  (594, 2)
-].flatMap { problem in
-  (0 ... problem.1).map({ "\(problem.0).\($0)" })
+fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
+  let allProblems = problems.flatMap { problem in
+    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
+  }
+  
+  var resources = allProblems.map({
+    Resource.process("Resources/volume_\(volume)/\($0).in")
+  })
+  resources += allProblems.map({
+    Resource.process("Resources/volume_\(volume)/\($0).out")
+  })
+  
+  return resources
 }
 
-let volume127 = [
-  (12720, 1)
-].flatMap { problem in
-  (0 ... problem.1).map({ "\(problem.0).\($0)" })
-}
+let volume5 = process(volume: 5, problems: [(594, 3)])
+let volume118 = process(volume: 118, problems: [(11809, 4)])
+let volume127 = process(volume: 127, problems: [(12720, 2)])
 
 let package = Package(
   name: "hxy",
@@ -23,10 +30,7 @@ let package = Package(
       dependencies: ["hxy"],
       path: "Tests/hxy",
       resources:
-        volume5.map({ .process("Resources/volume_5/\($0).in") }) +
-        volume5.map({ .process("Resources/volume_5/\($0).out") }) +
-        volume127.map({ .process("Resources/volume_127/\($0).in") }) +
-        volume127.map({ .process("Resources/volume_127/\($0).out") })
+        volume5 + volume118 + volume127
     )
   ],
   cLanguageStandard: .c89
