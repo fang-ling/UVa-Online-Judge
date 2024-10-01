@@ -84,20 +84,20 @@ typedef Int8 Bool;
 #ifdef ONLINE_JUDGE
 #define precondition(condition, message) ((void)0)
 #else
-#define precondition(condition, message) \
-        do { \
-          if (!(condition)) { \
-            do { \
-              fprintf( \
-                stderr, \
+#define precondition(condition, message)    \
+        do {                                \
+          if (!(condition)) {               \
+            do {                            \
+              fprintf(                      \
+                stderr,                     \
                 "%s:%d: Fatal error: %s\n", \
-                __FILE__, \
-                __LINE__, \
-                (message) \
-              ); \
-              abort(); \
-            } while (0); \
-          } \
+                __FILE__,                   \
+                __LINE__,                   \
+                (message)                   \
+              );                            \
+              abort();                      \
+            } while (0);                    \
+          }                                 \
         } while (0)
 #endif
 

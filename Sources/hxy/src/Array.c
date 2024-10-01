@@ -24,9 +24,9 @@
 /**
  * Check that the specified `index` is valid, i.e. `0 ≤ index < count`.
  */
-#define _array_check_index(index, count) \
-        do { \
-          precondition((index) < (count), "Array index is out of range"); \
+#define _array_check_index(index, count)                                      \
+        do {                                                                  \
+          precondition((index) < (count), "Array index is out of range");     \
           precondition((index) >= 0, "Negative Array index is out of range"); \
         } while(0)
 
