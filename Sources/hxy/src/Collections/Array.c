@@ -19,7 +19,7 @@
  * which have their own licensing terms.
  */
 
-#include "Array.h"
+#include "Collections/Array.h"
 
 /**
  * Check that the specified `index` is valid, i.e. `0 ≤ index < count`.

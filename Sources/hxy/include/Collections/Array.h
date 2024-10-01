@@ -22,7 +22,7 @@
 #ifndef Array_h
 #define Array_h
 
-#include "Foundation.h"
+#include "Foundation/Foundation.h"
 
 /**
  * An ordered, random-access collection.

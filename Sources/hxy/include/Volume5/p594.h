@@ -1,6 +1,6 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Foundation.c                                         /'___\ /\_ \          */
+/* p594.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
 /* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
@@ -19,7 +19,14 @@
  * which have their own licensing terms.
  */
 
-#include "Foundation.h"
+#ifndef p594_h
+#define p594_h
+
+#include "Foundation/Foundation.h"
+
+Void p594_main();
+
+#endif /* p594_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

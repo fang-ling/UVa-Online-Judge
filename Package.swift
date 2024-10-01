@@ -28,10 +28,10 @@ fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
   }
   
   var resources = allProblems.map({
-    Resource.process("Resources/volume_\(volume)/\($0).in")
+    Resource.process("Resources/Volume\(volume)/\($0).in")
   })
   resources += allProblems.map({
-    Resource.process("Resources/volume_\(volume)/\($0).out")
+    Resource.process("Resources/Volume\(volume)/\($0).out")
   })
   
   return resources

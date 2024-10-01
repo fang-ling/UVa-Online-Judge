@@ -22,8 +22,8 @@
 #ifndef p12720_h
 #define p12720_h
 
-#include "Foundation.h"
-#include "Array.h"
+#include "Foundation/Foundation.h"
+#include "Collections/Array.h"
 
 Void p12720_main();
 

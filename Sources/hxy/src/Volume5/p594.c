@@ -71,7 +71,7 @@
  * putting the four bytes in reversed order.
  */
 
-#include "volume_5/p594.h"
+#include "Volume5/p594.h"
 
 Void p594_main() {
   var input = 0;
