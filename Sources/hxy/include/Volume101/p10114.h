@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p10114.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 2, 2024                                \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,42 +19,15 @@
  * which have their own licensing terms.
  */
 
-import PackageDescription
+#ifndef p10114_h
+#define p10114_h
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
-  }
-  
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
-  
-  return resources
-}
+#include "Foundation/Foundation.h"
+#include "Collections/Array.h"
 
-let volume5 = process(volume: 5, problems: [(594, 3)])
-let volume101 = process(volume: 101, problems: [(10114, 2)])
-let volume118 = process(volume: 118, problems: [(11809, 4)])
-let volume127 = process(volume: 127, problems: [(12720, 2)])
+Void p10114_main();
 
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources:
-        volume5 + volume101 + volume118 + volume127
-    )
-  ],
-  cLanguageStandard: .c89
-)
+#endif /* p10114_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

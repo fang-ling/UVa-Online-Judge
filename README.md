@@ -18,6 +18,7 @@ Swift codes are only for Xcode unit tests (`xctest`).
 
 | # | pid | Problem | Submission Date |
 |--|--|--|--|
-| 29779045 | 594 | One Little, Two Little, Three Little Endians | 2024-09-15 11:58:49 |
-| 29799250 | 12720 | Algorithm of Phil | 2024-09-22 04:33:27 |
+| 29836373 | 10114 | Loansome Car Buyer | 2024-10-02 09:50:22 |
 | 29822345 | 11809 | Floating-Point Numbers | 2024-09-28 05:56:18 |
+| 29799250 | 12720 | Algorithm of Phil | 2024-09-22 04:33:27 |
+| 29779045 | 594 | One Little, Two Little, Three Little Endians | 2024-09-15 11:58:49 |
