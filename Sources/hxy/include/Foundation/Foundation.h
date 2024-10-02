@@ -22,10 +22,12 @@
 #ifndef Foundation_h
 #define Foundation_h
 
+#include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 #define var __auto_type
 #define let const __auto_type
@@ -33,23 +35,23 @@
 typedef void Void;
 
 typedef char Int8;
-typedef unsigned char UInt8;
+typedef uint8_t UInt8;
 
-typedef short Int16;
-typedef unsigned short UInt16;
+typedef int16_t Int16;
+typedef uint16_t UInt16;
 
-typedef int Int32;
-typedef unsigned int UInt32;
+typedef int32_t Int32;
+typedef uint32_t UInt32;
 
-typedef long long Int64;
-typedef unsigned long long UInt64;
+typedef int64_t Int64;
+typedef uint64_t UInt64;
 
 typedef Int64 Int;
 
 typedef float Float;
 typedef double Double;
 
-typedef Int8 Bool;
+typedef bool Bool;
 #ifndef true
 #define true 1
 #endif

@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* hxy.swift                                            /'___\ /\_ \          */
+/* p465.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 2, 2024                                \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,59 +19,14 @@
  * which have their own licensing terms.
  */
 
-import XCTest
-@testable import hxy
+#ifndef p465_h
+#define p465_h
 
-final class hxy: XCTestCase {
-  static func judge(
-    solution: () -> Void,
-    for problem: Int,
-    caseCount: Int,
-    skipping: [Int] = []
-  ) throws {
-    for i in 0 ..< caseCount {
-      if (skipping.contains(i)) {
-        continue;
-      }
-      
-      let `case` = "\(problem).\(i)"
-      let inputPath = Bundle.module.path(forResource: `case`, ofType: "in")!
-      let outputPath = Bundle.module.path(forResource: `case`, ofType: "out")!
-      let solutionPath = "/tmp/hxy_\(`case`).out"
-      
-      freopen(inputPath, "r", stdin)
-      freopen(solutionPath, "w", stdout)
-      solution()
-      fclose(stdin)
-      fclose(stdout)
-      
-      let output = try String(contentsOfFile: outputPath, encoding: .utf8)
-      let solution = try String(contentsOfFile: solutionPath, encoding: .utf8)
-      
-      XCTAssertEqual(output, solution)
-    }
-  }
-  
-  func testVolume4() throws {
-    try hxy.judge(solution: p465_main, for: 465, caseCount: 5)
-  }
-  
-  func testVolume5() throws {
-    try hxy.judge(solution: p594_main, for: 594, caseCount: 3)
-  }
-  
-  func testVolume101() throws {
-    try hxy.judge(solution: p10114_main, for: 10114, caseCount: 2)
-  }
-  
-  func testVolume118() throws {
-    try hxy.judge(solution: p11809_main, for: 11809, caseCount: 4)
-  }
-  
-  func testVolume127() throws {
-    try hxy.judge(solution: p12720_main, for: 12720, caseCount: 2)
-  }
-}
+#include "Foundation/Foundation.h"
+
+Void p465_main();
+
+#endif /* p465_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

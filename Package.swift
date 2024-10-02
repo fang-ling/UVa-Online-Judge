@@ -37,6 +37,7 @@ fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
   return resources
 }
 
+let volume4 = process(volume: 4, problems: [(465, 5)])
 let volume5 = process(volume: 5, problems: [(594, 3)])
 let volume101 = process(volume: 101, problems: [(10114, 2)])
 let volume118 = process(volume: 118, problems: [(11809, 4)])
@@ -51,7 +52,7 @@ let package = Package(
       dependencies: ["hxy"],
       path: "Tests/hxy",
       resources:
-        volume5 + volume101 + volume118 + volume127
+        volume4 + volume5 + volume101 + volume118 + volume127
     )
   ],
   cLanguageStandard: .c89
