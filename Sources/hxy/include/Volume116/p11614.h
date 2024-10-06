@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* hxy.swift                                            /'___\ /\_ \          */
+/* p11614.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 6, 2024                                \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -18,68 +18,15 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
+ 
+#ifndef p11614_h
+#define p11614_h
 
-import XCTest
-@testable import hxy
+#include "Foundation/Foundation.h"
 
-final class hxy: XCTestCase {
-  static func judge(
-    solution: () -> Void,
-    for problem: Int,
-    caseCount: Int,
-    skipping: [Int] = []
-  ) throws {
-    for i in 0 ..< caseCount {
-      if (skipping.contains(i)) {
-        continue;
-      }
-      
-      let `case` = "\(problem).\(i)"
-      let inputPath = Bundle.module.path(forResource: `case`, ofType: "in")!
-      let outputPath = Bundle.module.path(forResource: `case`, ofType: "out")!
-      let solutionPath = "/tmp/hxy_\(`case`).out"
-      
-      freopen(inputPath, "r", stdin)
-      freopen(solutionPath, "w", stdout)
-      solution()
-      fclose(stdin)
-      fclose(stdout)
-      
-      let output = try String(contentsOfFile: outputPath, encoding: .utf8)
-      let solution = try String(contentsOfFile: solutionPath, encoding: .utf8)
-      
-      XCTAssertEqual(output, solution)
-    }
-  }
-  
-  func testVolume4() throws {
-    try hxy.judge(solution: p465_main, for: 465, caseCount: 5)
-  }
-  
-  func testVolume5() throws {
-    try hxy.judge(solution: p594_main, for: 594, caseCount: 3)
-  }
-  
-  func testVolume100() throws {
-    try hxy.judge(solution: p10071_main, for: 10071, caseCount: 3)
-  }
-  
-  func testVolume101() throws {
-    try hxy.judge(solution: p10114_main, for: 10114, caseCount: 2)
-  }
-  
-  func testVolume116() throws {
-    try hxy.judge(solution: p11614_main, for: 11614, caseCount: 3)
-  }
-  
-  func testVolume118() throws {
-    try hxy.judge(solution: p11809_main, for: 11809, caseCount: 4)
-  }
-  
-  func testVolume127() throws {
-    try hxy.judge(solution: p12720_main, for: 12720, caseCount: 2)
-  }
-}
+Void p11614_main();
+
+#endif /* p11614_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

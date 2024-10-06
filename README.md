@@ -18,6 +18,7 @@ Swift codes are only for Xcode unit tests (`xctest`).
 
 | # | pid | Problem | Submission Date |
 |--|--|--|--|
+| 29850120 | 11614 | Etruscan Warriors Never Play Chess | 2024-10-06 14:47:53 |
 | 29848742 | 10071 | Back to High School Physics | 2024-10-06 05:40:02 |
 | 29837656 | 465 | Overflow | 2024-10-02 15:29:08 |
 | 29836373 | 10114 | Loansome Car Buyer | 2024-10-02 09:50:22 |
