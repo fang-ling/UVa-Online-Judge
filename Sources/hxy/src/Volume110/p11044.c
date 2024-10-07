@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p11044.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 7, 2024                                \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,48 +19,51 @@
  * which have their own licensing terms.
  */
 
-import PackageDescription
+/*
+ * 11044 Searching for Nessy
+ *
+ * In July 2003, the BBC reported an extensive investigation of Loch Ness by a
+ * BBC team, using 600 separate sonar beams, found no trace of any "sea monster"
+ * (i.e., any large animal, known or unknown) in the loch. The BBC team
+ * concluded that Nessie does not exist. Now we want to repeat the experiment.
+ *
+ * Given a grid of n rows and m columns representing the loch, 6 ≤ n, m ≤ 10000,
+ * find the minimum number s of sonar beams you must put in the square such that
+ * we can control every position in the grid, with the following conditions:
+ *   - one sonar occupies one position in the grid; the sonar beam controls its
+ *     own cell and the contiguous cells;
+ *   - the border cells do not need to be controlled, because Nessy cannot hide
+ *     there (she is too big).
+ *
+ * Input:
+ * The first line of the input contains an integer, t, indicating the number of
+ * test cases. For each test case, there is a line with two numbers separated by
+ * blanks, 6 ≤ n, m ≤ 10000, that is, the size of the grid (n rows and m
+ * columns).
+ *
+ * Output:
+ * For each test case, the output should consist of one line showing the minimum
+ * number of sonars that verifies the conditions above.
+ *
+ * Solution:
+ * row: ceil((n - 2) / 3)
+ * column: ceil((m - 2) / 3)
+ *   why minus 2? ==> (the border cells do not need to be controlled)
+ * s = ceil((n - 2) / 3) * ceil((m - 2) / 3)
+ */
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
+#include "Volume110/p11044.h"
+
+Void p11044_main() {
+  var case_count = 0;
+  scanf("%d", &case_count);
+  while (case_count--) {
+    var n = 0;
+    var m = 0;
+    scanf("%d %d", &n, &m);
+    printf("%d\n", (Int32)(ceil((n - 2) / 3.0) * ceil((m - 2) / 3.0)));
   }
-  
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
-  
-  return resources
 }
-
-let volumes =
-  process(volume: 4, problems: [(465, 5)]) +
-  process(volume: 5, problems: [(594, 3)]) +
-  process(volume: 11, problems: [(1124, 5)]) +
-  process(volume: 100, problems: [(10071, 3)]) +
-  process(volume: 101, problems: [(10114, 2)]) +
-  process(volume: 110, problems: [(11044, 3)]) +
-  process(volume: 116, problems: [(11614, 3)]) +
-  process(volume: 118, problems: [(11809, 4)]) +
-  process(volume: 127, problems: [(12720, 2)]) +
-  process(volume: 130, problems: [(13025, 1)])
-
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources: volumes
-    )
-  ],
-  cLanguageStandard: .c89
-)
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

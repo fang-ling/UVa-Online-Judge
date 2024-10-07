@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p11044.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 7, 2024                                \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,48 +19,14 @@
  * which have their own licensing terms.
  */
 
-import PackageDescription
+#ifndef p11044_h
+#define p11044_h
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
-  }
-  
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
-  
-  return resources
-}
+#include "Foundation/Foundation.h"
 
-let volumes =
-  process(volume: 4, problems: [(465, 5)]) +
-  process(volume: 5, problems: [(594, 3)]) +
-  process(volume: 11, problems: [(1124, 5)]) +
-  process(volume: 100, problems: [(10071, 3)]) +
-  process(volume: 101, problems: [(10114, 2)]) +
-  process(volume: 110, problems: [(11044, 3)]) +
-  process(volume: 116, problems: [(11614, 3)]) +
-  process(volume: 118, problems: [(11809, 4)]) +
-  process(volume: 127, problems: [(12720, 2)]) +
-  process(volume: 130, problems: [(13025, 1)])
+Void p11044_main();
 
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources: volumes
-    )
-  ],
-  cLanguageStandard: .c89
-)
+#endif /* p11044_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

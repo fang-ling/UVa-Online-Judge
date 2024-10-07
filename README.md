@@ -18,6 +18,7 @@ Swift codes are only for Xcode unit tests (`xctest`).
 
 | # | pid | Problem | Submission Date |
 |--|--|--|--|
+| 29853634 | 11044 | Searching for Nessy | 2024-10-07 16:39:45 |
 | 29852840 | 1124 | Celebrity jeopardy | 2024-10-07 13:05:11 |
 | 29850578 | 13025 | Back to the Past | 2024-10-06 17:21:40 |
 | 29850120 | 11614 | Etruscan Warriors Never Play Chess | 2024-10-06 14:47:53 |
