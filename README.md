@@ -17,7 +17,7 @@ Swift codes are only for Swift Testing.
 
 
 | # | pid | Problem |
-|--|--|--|--|
+|--|--|--|
 | 29896270 | 1709 | Amalgamated Artichokes |
 | 29889714 | 12279 | Emoogle Balance |
 | 29885828 | 11799 | Horror Dash |
