@@ -103,6 +103,27 @@ typedef bool Bool;
         } while (0)
 #endif
 
+/* MARK: - Global Numeric Functions */
+/* Use these functions with numeric values and other comparable types. */
+
+/**
+ * Returns the greater of two comparable values.
+ *
+ * - Parameters:
+ *   - x: A value to compare.
+ *   - y: Another value to compare.
+ *
+ * - Returns: The greater of `x` and `y`. If `x` is equal to `y`, returns `y`.
+ */
+#ifndef max
+#define max(x, y)            \
+        ({                   \
+          var _x = (x);      \
+          var _y = (y);      \
+          _x > _y ? _x : _y; \
+        })
+#endif
+
 #endif /* Foundation_h */
 
 /*===----------------------------------------------------------------------===*/
