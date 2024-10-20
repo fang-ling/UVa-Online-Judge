@@ -11,23 +11,28 @@ Caveat:
 
 - Most of the code reiles the GCC's `__auto_type` extension. `__auto_type` is similar to C++11 `auto` but works in C. This requires GCC 4.9+ or a (at least) late 2015 version of clang. 
 
-Swift codes are only for Xcode unit tests (`xctest`).
+Swift codes are only for Swift Testing.
 
 ## Solved Problems
 
 
-| # | pid | Problem | Submission Date |
+| # | pid | Problem |
 |--|--|--|--|
-| 29868276 | 12250 | Language Detection | 2024-10-11 15:54:45 |
-| 29864543 | 11172 | Relational Operator | 2024-10-10 15:35:37 |
-| 29860355 | 11547 | Automatic Answer | 2024-10-09 15:44:43 |
-| 29853634 | 11044 | Searching for Nessy | 2024-10-07 16:39:45 |
-| 29852840 | 1124 | Celebrity jeopardy | 2024-10-07 13:05:11 |
-| 29850578 | 13025 | Back to the Past | 2024-10-06 17:21:40 |
-| 29850120 | 11614 | Etruscan Warriors Never Play Chess | 2024-10-06 14:47:53 |
-| 29848742 | 10071 | Back to High School Physics | 2024-10-06 05:40:02 |
-| 29837656 | 465 | Overflow | 2024-10-02 15:29:08 |
-| 29836373 | 10114 | Loansome Car Buyer | 2024-10-02 09:50:22 |
-| 29822345 | 11809 | Floating-Point Numbers | 2024-09-28 05:56:18 |
-| 29799250 | 12720 | Algorithm of Phil | 2024-09-22 04:33:27 |
-| 29779045 | 594 | One Little, Two Little, Three Little Endians | 2024-09-15 11:58:49 |
+| 29896270 | 1709 | Amalgamated Artichokes |
+| 29889714 | 12279 | Emoogle Balance |
+| 29885828 | 11799 | Horror Dash |
+| 29882703 | 11764 | Jumping Mario |
+| 29879013 | 12372 | Packing for Holiday |
+| 29868276 | 12250 | Language Detection |
+| 29864543 | 11172 | Relational Operator |
+| 29860355 | 11547 | Automatic Answer |
+| 29853634 | 11044 | Searching for Nessy |
+| 29852840 | 1124 | Celebrity jeopardy |
+| 29850578 | 13025 | Back to the Past |
+| 29850120 | 11614 | Etruscan Warriors Never Play Chess |
+| 29848742 | 10071 | Back to High School Physics |
+| 29837656 | 465 | Overflow |
+| 29836373 | 10114 | Loansome Car Buyer |
+| 29822345 | 11809 | Floating-Point Numbers |
+| 29799250 | 12720 | Algorithm of Phil |
+| 29779045 | 594 | One Little, Two Little, Three Little Endians |

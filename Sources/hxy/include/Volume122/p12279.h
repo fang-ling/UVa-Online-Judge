@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p12279.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 17, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,54 +19,14 @@
  * which have their own licensing terms.
  */
 
-import PackageDescription
+#ifndef p12279_h
+#define p12279_h
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
-  }
-  
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
-  
-  return resources
-}
+#include "Foundation/Foundation.h"
 
-let volumes =
-  process(volume: 4, problems: [(465, 5)]) +
-  process(volume: 5, problems: [(594, 3)]) +
-  process(volume: 11, problems: [(1124, 5)]) +
-  process(volume: 17, problems: [(1709, 3)]) +
-  process(volume: 100, problems: [(10071, 3)]) +
-  process(volume: 101, problems: [(10114, 2)]) +
-  process(volume: 110, problems: [(11044, 3)]) +
-  process(volume: 111, problems: [(11172, 8)]) +
-  process(volume: 115, problems: [(11547, 3)]) +
-  process(volume: 116, problems: [(11614, 3)]) +
-  process(volume: 117, problems: [(11764, 2), (11799, 4)]) +
-  process(volume: 118, problems: [(11809, 4)]) +
-  process(volume: 122, problems: [(12250, 4), (12279, 4)]) +
-  process(volume: 123, problems: [(12372, 4)]) +
-  process(volume: 127, problems: [(12720, 2)]) +
-  process(volume: 130, problems: [(13025, 1)])
+Void p12279_main();
 
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources: volumes
-    )
-  ],
-  cLanguageStandard: .c89
-)
+#endif /* p12279_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

@@ -18,7 +18,7 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
-
+/*
 import XCTest
 @testable import hxy
 
@@ -112,7 +112,7 @@ final class ArrayTests: XCTestCase {
     array_deinit(array)
   }
 }
-
+*/
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */

@@ -19,7 +19,43 @@
  * which have their own licensing terms.
  */
 
-import XCTest
+import Foundation
+import Testing
+
+@Suite(.serialized)
+struct UVaOnlineJudgeTests { }
+
+func run(
+  main: () -> Void,
+  for problem: Int,
+  caseCount: Int,
+  skipping: [Int] = []
+) throws -> [(String, String)] {
+  var results: [(String, String)] = []
+  for i in 0 ..< caseCount {
+    if (skipping.contains(i)) {
+      continue;
+    }
+    
+    let `case` = "\(problem).\(i)"
+    let inputPath = Bundle.module.path(forResource: `case`, ofType: "in")!
+    let outputPath = Bundle.module.path(forResource: `case`, ofType: "out")!
+    let solutionPath = "/tmp/hxy_\(`case`).out"
+    
+    freopen(inputPath, "r", stdin)
+    freopen(solutionPath, "w", stdout)
+    main()
+    fclose(stdin)
+    fclose(stdout)
+    
+    let output = try String(contentsOfFile: outputPath, encoding: .utf8)
+    let solution = try String(contentsOfFile: solutionPath, encoding: .utf8)
+    results.append((output, solution))
+  }
+  return results
+}
+
+/*import XCTest
 @testable import hxy
 
 final class hxy: XCTestCase {
@@ -103,7 +139,7 @@ final class hxy: XCTestCase {
   func testVolume130() throws {
     try hxy.judge(solution: p13025_main, for: 13025, caseCount: 1)
   }
-}
+}*/
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
