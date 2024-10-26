@@ -18,6 +18,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 29912506 | 1585 | Score |
 | 29912359 | 11687 | Digits |
 | 29905911 | 11332 | Summing Digits |
 | 29903595 | 11078 | Open Credit System |
