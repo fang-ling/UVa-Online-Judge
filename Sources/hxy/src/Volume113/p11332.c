@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p11332.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 23, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,57 +18,49 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
+ 
+/*
+ * 11332 Summing Digits
+ *
+ * For a positive integer n, let f(n) denote the sum of the digits of n when
+ * represented in base 10. It is easy to see that the sequence of numbers
+ * n, f(n), f(f(n)), f(f(f(n))), ... eventually becomes a single digit number
+ * that repeats forever. Let this single digit be denoted g(n).
+ *
+ * For example, consider n = 1234567892. Then:
+ *   f(n) = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 2 = 47
+ *   f(f(n)) = 4 + 7 = 11
+ *   f(f(f(n))) = 1 + 1 = 2
+ * Therefore, g(1234567892) = 2.
+ *
+ * Input:
+ * Each line of input contains a single positive integer n at most
+ * 2,000,000,000. Input is terminated by n = 0 which should not be processed.
+ *
+ * Output:
+ * For each such integer, you are to output a single line containing g(n).
+ *
+ * Solution:
+ * Simple recursion.
+ */
 
-import PackageDescription
+#include "Volume113/p11332.h"
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
+Int p11332_f(Int n) {
+  var sum = 0ll;
+  while (n > 0) {
+    sum += n % 10;
+    n /= 10;
   }
-  
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
-  
-  return resources
+  return sum < 10 ? sum : p11332_f(sum);
 }
 
-let volumes =
-  process(volume: 4, problems: [(465, 5)]) +
-  process(volume: 5, problems: [(594, 3)]) +
-  process(volume: 11, problems: [(1124, 5)]) +
-  process(volume: 17, problems: [(1709, 3)]) +
-  process(volume: 100, problems: [(10071, 3)]) +
-  process(volume: 101, problems: [(10114, 2)]) +
-  process(volume: 104, problems: [(10424, 7)]) +
-  process(volume: 110, problems: [(11044, 3), (11078, 4)]) +
-  process(volume: 111, problems: [(11172, 8)]) +
-  process(volume: 113, problems: [(11332, 6)]) +
-  process(volume: 115, problems: [(11547, 3)]) +
-  process(volume: 116, problems: [(11614, 3)]) +
-  process(volume: 117, problems: [(11764, 2), (11799, 4)]) +
-  process(volume: 118, problems: [(11809, 4)]) +
-  process(volume: 122, problems: [(12250, 4), (12279, 4)]) +
-  process(volume: 123, problems: [(12372, 4)]) +
-  process(volume: 127, problems: [(12720, 2)]) +
-  process(volume: 130, problems: [(13025, 1)])
-
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources: volumes
-    )
-  ],
-  cLanguageStandard: .c89
-)
+Void p11332_main() {
+  var n = 0;
+  while (scanf("%d", &n) == 1 && n != 0) {
+    printf("%lld\n", p11332_f(n));
+  }
+}
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
