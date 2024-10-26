@@ -1,10 +1,9 @@
-// swift-tools-version: 6.0
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Package.swift                                        /'___\ /\_ \          */
+/* p11687.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: October 26, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,56 +19,67 @@
  * which have their own licensing terms.
  */
 
-import PackageDescription
+/*
+ * 11687 Digits
+ *
+ * A googol written out in decimal has 101 digits. A googolplex has one plus a
+ * googol digits. That’s a lot of digits!
+ *
+ * Given any number x0, define a sequence using the following recurrence:
+ * x_{i+1} = the number of digits in the decimal representation of x_i
+ *
+ * Your task is to determine the smallest positive i such that x_i = x_{i−1}.
+ *
+ * Input:
+ * Input consists of several lines. Each line contains a value of x_0. Every
+ * value of x_0 is non-negative and has no more than one million digits. The
+ * last line of input contains the word 'END'.
+ *
+ * Output:
+ * For each value of x_0 given in the input, output one line containing the
+ * smallest positive i such that
+ * x_i = x{i−1}.
+ *
+ * Solution:
+ * For example:
+ *   x_0 = 42
+ *   x_1 = # digits of 42 = 2
+ *   x_2 = # digits of 2 = 1
+ *   x_3 = # digits of 1 = 1, now we have x_3 == x_2
+ *
+ * Simple recursion.
+ */
 
-fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
-  let allProblems = problems.flatMap { problem in
-    (0 ..< problem.1).map({ "\(problem.0).\($0)" })
+#include "Volume116/p11687.h"
+
+var p11687_depth = 0;
+
+Void p11687_count_digits(Int8* number) {
+  p11687_depth += 1;
+  
+  var count = (Int)strlen(number);
+  if (count == 1 && number[0] == '1') {
+    return;
   }
   
-  var resources = allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).in")
-  })
-  resources += allProblems.map({
-    Resource.process("Resources/Volume\(volume)/\($0).out")
-  })
+  var string = (Int8*)malloc(32 * sizeof(Int8));
+  sprintf(string, "%lld", count);
+  p11687_count_digits(string);
   
-  return resources
+  free(string);
 }
 
-let volumes =
-  process(volume: 4, problems: [(465, 5)]) +
-  process(volume: 5, problems: [(594, 3)]) +
-  process(volume: 11, problems: [(1124, 5)]) +
-  process(volume: 17, problems: [(1709, 3)]) +
-  process(volume: 100, problems: [(10071, 3)]) +
-  process(volume: 101, problems: [(10114, 2)]) +
-  process(volume: 104, problems: [(10424, 7)]) +
-  process(volume: 110, problems: [(11044, 3), (11078, 4)]) +
-  process(volume: 111, problems: [(11172, 8)]) +
-  process(volume: 113, problems: [(11332, 6)]) +
-  process(volume: 115, problems: [(11547, 3)]) +
-  process(volume: 116, problems: [(11614, 3), (11687, 3)]) +
-  process(volume: 117, problems: [(11764, 2), (11799, 4)]) +
-  process(volume: 118, problems: [(11809, 4)]) +
-  process(volume: 122, problems: [(12250, 4), (12279, 4)]) +
-  process(volume: 123, problems: [(12372, 4)]) +
-  process(volume: 127, problems: [(12720, 2)]) +
-  process(volume: 130, problems: [(13025, 1)])
-
-let package = Package(
-  name: "hxy",
-  targets: [
-    .target(name: "hxy"),
-    .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
-      resources: volumes
-    )
-  ],
-  cLanguageStandard: .c89
-)
+Void p11687_main() {
+  var input = (Int8*)malloc(1000000 * sizeof(Int8));
+  
+  while (scanf("%s", input) == 1 && input[0] != 'E') {
+    p11687_depth = 0;
+    p11687_count_digits(input);
+    printf("%d\n", p11687_depth);
+  }
+  
+  free(input);
+}
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
