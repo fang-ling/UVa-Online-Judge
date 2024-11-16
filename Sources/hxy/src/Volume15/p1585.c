@@ -50,14 +50,14 @@
 #include "Volume15/p1585.h"
 
 Void p1585_main() {
-  Int8 input[128];
+  Char input[128];
   
   var case_count = 0;
   scanf("%d", &case_count);
   while (case_count--) {
     scanf("%s", input);
     
-    var count = (Int)strlen(input);
+    var count = (Int64)strlen(input);
     var score = 0;
     var consecutive_count = 0;
     var i = 0;

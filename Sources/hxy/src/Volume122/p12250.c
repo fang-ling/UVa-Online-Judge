@@ -58,7 +58,7 @@
 
 Void p12250_main() {
   var case_count = 0;
-  Int8 word[16];
+  Char word[16];
   while (scanf("%s", word) == 1 && word[0] != '#') {
     case_count += 1;
     if (strcmp(word, "HELLO") == 0) {

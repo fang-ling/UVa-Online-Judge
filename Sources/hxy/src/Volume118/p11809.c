@@ -108,7 +108,7 @@ Void p11809_main() {
     }
   }
   
-  Int8 input_string[32];
+  Char input_string[32];
   while (scanf("%s", input_string) == 1 && strcmp(input_string, "0e0") != 0) {
     /* Input */
     var a_i = 0;

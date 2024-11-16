@@ -54,15 +54,15 @@
 
 var p11687_depth = 0;
 
-Void p11687_count_digits(Int8* number) {
+Void p11687_count_digits(Char* number) {
   p11687_depth += 1;
   
-  var count = (Int)strlen(number);
+  var count = (Int64)strlen(number);
   if (count == 1 && number[0] == '1') {
     return;
   }
   
-  var string = (Int8*)malloc(32 * sizeof(Int8));
+  var string = (Char*)malloc(32 * sizeof(Int8));
   sprintf(string, "%lld", count);
   p11687_count_digits(string);
   
@@ -70,7 +70,7 @@ Void p11687_count_digits(Int8* number) {
 }
 
 Void p11687_main() {
-  var input = (Int8*)malloc(1000000 * sizeof(Int8));
+  var input = (Char*)malloc(1000000 * sizeof(Int8));
   
   while (scanf("%s", input) == 1 && input[0] != 'E') {
     p11687_depth = 0;

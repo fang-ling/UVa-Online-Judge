@@ -81,7 +81,7 @@
 #include "Volume101/p10114.h"
 
 struct p10114_Depreciation {
-  Int month;
+  Int64 month;
   Double rate;
 };
 

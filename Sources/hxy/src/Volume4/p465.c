@@ -45,7 +45,7 @@
 
 #include "Volume4/p465.h"
 
-Bool p465_is_int64_convertible(const Int8* number) {
+Bool p465_is_int64_convertible(const Char* number) {
   /*
    * Remove leading zeros
    * For all zero number, this function still returns true, so it's OK.
@@ -61,9 +61,9 @@ Bool p465_is_int32_convertible(Int64 number) {
 }
 
 Void p465_main() {
-  Int8 lhs_string[256];
-  Int8 operator[2];
-  Int8 rhs_string[256];
+  Char lhs_string[256];
+  Char operator[2];
+  Char rhs_string[256];
   while (scanf("%s %s %s", lhs_string, operator, rhs_string) == 3) {
     printf("%s %s %s\n", lhs_string, operator, rhs_string);
     

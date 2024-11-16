@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* p11764.c                                             /'___\ /\_ \          */
+/* p12503.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 15, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: November 13, 2024                              \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -20,60 +20,78 @@
  */
 
 /*
- * 11764 Jumping Mario
+ * 12503 Robot Instructions
  *
- * Mario is in the final castle. He now needs to jump over few walls and then
- * enter the Koopa’s Chamber where he has to defeat the monster in order to save
- * the princess. For this problem, we are only concerned with the "jumping over
- * the wall" part. You will be given the heights of N walls from left to right.
- * Mario is currently standing on the first wall. He has to jump to the adjacent
- * walls one after another until he reaches the last one. That means, he will
- * make (N − 1) jumps. A high jump is one where Mario has to jump to a taller
- * wall, and similarly, a low jump is one where Mario has to jump to a shorter
- * wall. Can you find out the total number of high jumps and low jumps Mario has
- * to make?
+ * You have a robot standing on the origin of x axis. The robot will be given
+ * some instructions. Your task is to predict its position after executing all
+ * the instructions.
+ *
+ *   - LEFT: move one unit left (decrease p by 1, where p is the position of the
+ *     robot before moving)
+ *   - RIGHT: move one unit right (increase p by 1)
+ *   - SAME AS i: perform the same action as in the i-th instruction. It is
+ *     guaranteed that i is a positive integer not greater than the number of
+ *     instructions before this.
  *
  * Input:
- * The first line of input is an integer T (T < 30) that indicates the number of
- * test cases. Each case starts with an integer N (0 < N < 50) that determines
- * the number of walls. The next line gives the height of the N walls from left
- * to right. Each height is a positive integer not exceeding 10.
+ * The first line contains the number of test cases T (T ≤ 100). Each test case
+ * begins with an integer n (1 ≤ n ≤ 100), the number of instructions. Each of
+ * the following n lines contains an instruction.
  *
  * Output:
- * For each case, output the case number followed by 2 integers, total high
- * jumps and total low jumps, respectively. Look at the sample for exact format.
+ * For each test case, print the final position of the robot. Note that after
+ * processing each test case, the robot should be reset to the origin.
  *
  * Solution:
- * A linear scan to count high and low jumps.
+ * Simple problem: use an array to store the instructions.
  */
 
-#include "Volume117/p11764.h"
+#include "Volume125/p12503.h"
 
-Void p11764_main() {
-  Int64 walls[64];
-  
+enum P12503Instruction {
+  LEFT,
+  RIGHT
+};
+
+Void p12503_main() {
+  enum P12503Instruction instructions[128];
+  char instruction[8];
+  char dummy[4];
+
   var case_count = 0;
   scanf("%d", &case_count);
-  var i = 0;
-  for (i = 1; i <= case_count; i += 1) {
+
+  while (case_count--) {
     var n = 0;
     scanf("%d", &n);
-    var j = 0;
-    for (j = 0; j < n; j += 1) {
-      scanf("%lld", &walls[j]);
-    }
-    
-    var high = 0;
-    var low = 0;
-    for (j = 0; j + 1 < n; j += 1) {
-      if (walls[j] > walls[j + 1]) {
-        low += 1;
-      } else if (walls[j] < walls[j + 1]) {
-        high += 1;
+
+    var p = 0;
+
+    var previous = 0;
+    var i = 0;
+    for (; i < n; i += 1) {
+      scanf("%s", instruction);
+      if (instruction[0] == 'L') {
+        p -= 1;
+        instructions[i] = LEFT;
+      } else if (instruction[0] == 'R') {
+        p += 1;
+        instructions[i] = RIGHT;
+      } else {
+        scanf("%s %d", dummy, &previous);
+        previous -= 1; /* not zero-based */
+        var previous_instruction = instructions[previous];
+        if (previous_instruction == LEFT) {
+          p -= 1;
+          instructions[i] = LEFT;
+        } else {
+          p += 1;
+          instructions[i] = RIGHT;
+        }
       }
     }
-    
-    printf("Case %d: %d %d\n", i, high, low);
+
+    printf("%d\n", p);
   }
 }
 

@@ -58,7 +58,7 @@
 #include "Volume11/p1124.h"
 
 Void p1124_main() {
-  Int8* line = NULL;
+  Char* line = NULL;
   var line_capacity = 0ul;
   var line_count = 0l;
   while ((line_count = getline(&line, &line_capacity, stdin)) > 0) {

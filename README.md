@@ -18,6 +18,9 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 29960105 | 12503 | Robot Instructions |
+| 29957465 | 12015 | Google is Feeling Lucky |
+| 29943169 | 11679 | Sub-prime |
 | 29912506 | 1585 | Score |
 | 29912359 | 11687 | Digits |
 | 29905911 | 11332 | Summing Digits |

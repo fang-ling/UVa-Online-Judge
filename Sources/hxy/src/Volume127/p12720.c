@@ -76,7 +76,7 @@ static Void p12720_rebalance(struct Array* full, struct Array* empty) {
   }
 }
 
-static Int p12720_update_result(Int origin, Int8 c) {
+static Int64 p12720_update_result(Int64 origin, Int8 c) {
   return ((origin << 1) | (c - '0')) % (1000000000ll + 7);
 }
 

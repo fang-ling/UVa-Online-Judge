@@ -23,7 +23,6 @@
 #define p12720_h
 
 #include "Foundation/Foundation.h"
-#include "Collections/Array.h"
 
 Void p12720_main();
 

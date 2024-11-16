@@ -19,7 +19,7 @@
  * which have their own licensing terms.
  */
 
-#include "Collections/Array.h"
+#include "Foundation/Array.h"
 
 /**
  * Check that the specified `index` is valid, i.e. `0 ≤ index < count`.
@@ -35,7 +35,7 @@
 /**
  * Creates a new, empty array.
  */
-struct Array* array_init(Int width) {
+struct Array* array_init(Int64 width) {
   struct Array* array;
   if ((array = malloc(sizeof(struct Array))) == NULL) {
     return NULL;
@@ -66,7 +66,7 @@ Void array_deinit(struct Array* array) {
 /**
  * Adds an element to the end of the array.
  */
-Void array_append(struct Array* array, Void* new_element) {
+Void array_append(struct Array* array, AnyObject new_element) {
   if (array->_capacity == 0) {
     /* Allocate buffer with 1 slot */
     array->_buffer = realloc(array->_buffer, 1 * array->_width);
@@ -90,7 +90,7 @@ Void array_append(struct Array* array, Void* new_element) {
 /**
  * Removes and returns the last element of the array.
  */
-Void array_remove_last(struct Array* array, Void* removed_element) {
+Void array_remove_last(struct Array* array, AnyObject removed_element) {
   precondition(
     array->count > 0,
     "Can't remove last element from an empty array"
@@ -130,7 +130,7 @@ Void array_remove_all(struct Array* array, Bool keep_capacity) {
 /**
  * Reads the element at the specified position.
  */
-Void array_read(struct Array* array, Int index, Void* element) {
+Void array_read(struct Array* array, Int64 index, AnyObject element) {
   _array_check_index(index, array->count);
   
   if (element != NULL) {
@@ -141,7 +141,7 @@ Void array_read(struct Array* array, Int index, Void* element) {
 /**
  * Writes the element to the specified position.
  */
-Void array_write(struct Array* array, Int index, Void* element) {
+Void array_write(struct Array* array, Int64 index, AnyObject element) {
   _array_check_index(index, array->count);
   
   if (element != NULL) {

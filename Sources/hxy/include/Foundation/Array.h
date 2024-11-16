@@ -22,7 +22,8 @@
 #ifndef Array_h
 #define Array_h
 
-#include "Foundation/Foundation.h"
+#include "CFoundation.h"
+#include "Number.h"
 
 /**
  * An ordered, random-access collection.
@@ -47,19 +48,19 @@ struct Array {
    * have a performance cost, but they occur less and less often as the array
    * grows larger.
    */
-  Int _capacity;
-  
+  Int64 _capacity;
+
   /**
    * The number of elements in the array.
    */
-  Int count;
-  
+  Int64 count;
+
   /**
    * The size of the `Element` type of the array.
    */
-  Int _width;
-  
-  Void* _buffer;
+  Int64 _width;
+
+  AnyObject _buffer;
 };
 
 /* MARK: - Creating and Destroying an Array */
@@ -67,7 +68,7 @@ struct Array {
 /**
  * Creates a new, empty array.
  */
-struct Array* array_init(Int width);
+struct Array* array_init(Int64 width);
 
 /**
  * Destroys an array.
@@ -87,7 +88,7 @@ Void array_deinit(struct Array* array);
  * - Complexity: O(1) on average, over many calls to `append()` on the
  *   same array.
  */
-Void array_append(struct Array* array, Void* new_element);
+Void array_append(struct Array* array, AnyObject new_element);
 
 /**
  * Removes and returns the last element of the array.
@@ -100,7 +101,7 @@ Void array_append(struct Array* array, Void* new_element);
  * - Complexity: O(1) on average, over many calls to `remove_last()` on the
  *   same array.
  */
-Void array_remove_last(struct Array* array, Void* removed_element);
+Void array_remove_last(struct Array* array, AnyObject removed_element);
 
 /**
  * Removes all elements from the array.
@@ -129,7 +130,7 @@ Void array_remove_all(struct Array* array, Bool keep_capacity);
  *
  * - Complexity: O(1)
  */
-Void array_read(struct Array* array, Int index, Void* element);
+Void array_read(struct Array* array, Int64 index, AnyObject element);
 
 /**
  * Writes the element to the specified position.
@@ -141,7 +142,7 @@ Void array_read(struct Array* array, Int index, Void* element);
  *
  * - Complexity: O(1)
  */
-Void array_write(struct Array* array, Int index, Void* element);
+Void array_write(struct Array* array, Int64 index, AnyObject element);
 
 #endif /* Array_h */
 
