@@ -18,6 +18,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 29969014 | 12658 | Character Recognition? |
 | 29960105 | 12503 | Robot Instructions |
 | 29957465 | 12015 | Google is Feeling Lucky |
 | 29943169 | 11679 | Sub-prime |
