@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* p11809.h                                             /'___\ /\_ \          */
+/* Volume118Tests.swift                                 /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 28, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date:                                      \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,14 +19,25 @@
  * which have their own licensing terms.
  */
 
-#ifndef p11809_h
-#define p11809_h
+import Foundation
+@testable import hxy
+import Testing
 
-#include "Foundation/Foundation.h"
+extension UVaOnlineJudgeTests {
+  struct Volume118Tests {
+    @Test func testP11805() throws {
+      try run(main: p11805_main, for: 11805, caseCount: 3).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
 
-Void p11809_main();
-
-#endif /* p11809_h */
+    @Test func testP11809() throws {
+      try run(main: p11809_main, for: 11809, caseCount: 4).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
+  }
+}
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

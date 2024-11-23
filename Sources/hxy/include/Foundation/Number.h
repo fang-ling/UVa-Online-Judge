@@ -61,6 +61,11 @@ typedef char Char;
 /* A value type whose instances are either true or false. */
 typedef bool Bool;
 
+/* MARK: - Accessing Numeric Constants */
+
+/* The maximum representable integer in Int32 */
+#define INT32_MAXIMUM 0x7FFFFFFF
+
 /* MARK: - Global Numeric Functions */
 /* Use these functions with numeric values and other comparable types. */
 
@@ -99,6 +104,19 @@ typedef bool Bool;
           _x < _y ? _x : _y; \
         })
 #endif
+
+/**
+ * Returns the absolute value of the given number.
+ *
+ * - Parameter x: A signed number.
+ *
+ * - Returns: The absolute value of `x`.
+ */
+#define abs(x)               \
+        ({                   \
+          var _x = (x);      \
+          _x > 0 ? _x : -_x; \
+        })
 
 #endif /* Number_h */
 

@@ -18,6 +18,10 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 29983375 | 11805 | Bafana Bafana |
+| 29976888 | 10055 | Hashmat the Brave Warrior |
+| 29974279 | 11559 | Event Planning |
+| 29971760 | 12696 | Cabin Baggage |
 | 29969014 | 12658 | Character Recognition? |
 | 29960105 | 12503 | Robot Instructions |
 | 29957465 | 12015 | Google is Feeling Lucky |

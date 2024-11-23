@@ -18,7 +18,16 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
- 
+
+#ifndef p12658_h
+#define p12658_h
+
+#include "Foundation/Foundation.h"
+
+Void p12658_main();
+
+#endif /* p12658_h */
+
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */
@@ -30,12 +39,3 @@
 /*                                 /\____/                        /\____/     */
 /*                                 \_/__/                         \_/__/      */
 /*===----------------------------------------------------------------------===*/
-
-#ifndef p12658_h
-#define p12658_h
-
-#include "Foundation/Foundation.h"
-
-Void p12658_main();
-
-#endif /* p12658_h */
