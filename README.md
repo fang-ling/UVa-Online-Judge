@@ -18,6 +18,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 29986832 | 12478 | Hardest Problem Ever (Easy) |
 | 29983375 | 11805 | Bafana Bafana |
 | 29976888 | 10055 | Hashmat the Brave Warrior |
 | 29974279 | 11559 | Event Planning |
