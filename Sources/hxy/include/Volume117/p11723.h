@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume117Tests.swift                                 /'___\ /\_ \          */
+/* p11723.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 15, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: December 1, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,31 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+#ifndef p11723_h
+#define p11723_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume117Tests {
-    @Test func testP11723() throws {
-      try run(main: p11723_main, for: 11723, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP11764() throws {
-      try run(main: p11764_main, for: 11764, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-    
-    @Test func testP11799() throws {
-      try run(main: p11799_main, for: 11799, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+Void p11723_main();
+
+#endif /* p11723_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
