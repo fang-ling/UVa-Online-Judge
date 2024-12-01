@@ -98,6 +98,12 @@ struct BigInt {
    * The number of words in the `magnitude`.
    */
   Int64 _magnitude_count;
+
+  /**
+   * The total number of words that the `magnitude` can contain without
+   * allocating new storage.
+   */
+  Int64 _magnitude_capacity;
 };
 
 /* MARK: - Converting Strings */
@@ -115,7 +121,7 @@ struct BigInt {
  *   - text: The ASCII representation of a number in the radix passed as
  *   `radix`.
  *   - radix: The radix, or base, to use for converting text to an integer
- *   value. radix must be in the range 2...36.
+ *   value. radix must be in the range 2 ... 36.
  */
 struct BigInt* big_int_init(Char* text, Int64 radix);
 

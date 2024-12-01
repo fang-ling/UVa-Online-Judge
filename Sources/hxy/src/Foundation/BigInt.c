@@ -57,42 +57,18 @@ Int32 BIG_INT_DIGITS_PER_UINT64[] = {
 };
 
 UInt64 BIG_INT_UINT64_RADIX[] = {
-  0x0000000000000000ull,
-  0x0000000000000000ull,
-  0x8000000000000000ull,
-  0xa8b8b452291fe821ull,
-  0x4000000000000000ull,
-  0x6765c793fa10079dull,
-  0x41c21cb8e1000000ull,
-  0x3642798750226111ull,
-  0x8000000000000000ull,
-  0xa8b8b452291fe821ull,
-  0x8ac7230489e80000ull,
-  0x4d28cb56c33fa539ull,
-  0x1eca170c00000000ull,
-  0x780c7372621bd74dull,
-  0x1e39a5057d810000ull,
-  0x5b27ac993df97701ull,
-  0x1000000000000000ull,
-  0x27b95e997e21d9f1ull,
-  0x5da0e1e53c5c8000ull,
-  0xd2ae3299c1c4aedbull,
-  0x16bcc41e90000000ull,
-  0x2d04b7fdd9c0ef49ull,
-  0x5658597bcaa24000ull,
-  0xa0e2073737609371ull,
-  0x0c29e98000000000ull,
-  0x14adf4b7320334b9ull,
-  0x226ed36478bfa000ull,
-  0x383d9170b85ff80bull,
-  0x5a3c23e39c000000ull,
-  0x8e65137388122bcdull,
-  0xdd41bb36d259e000ull,
-  0x0aee5720ee830681ull,
-  0x1000000000000000ull,
-  0x172588ad4f5f0981ull,
-  0x211e44f7d02c1000ull,
-  0x2ee56725f06e5c71ull,
+  0x0000000000000000ull, 0x0000000000000000ull, 0x8000000000000000ull,
+  0xa8b8b452291fe821ull, 0x4000000000000000ull, 0x6765c793fa10079dull,
+  0x41c21cb8e1000000ull, 0x3642798750226111ull, 0x8000000000000000ull,
+  0xa8b8b452291fe821ull, 0x8ac7230489e80000ull, 0x4d28cb56c33fa539ull,
+  0x1eca170c00000000ull, 0x780c7372621bd74dull, 0x1e39a5057d810000ull,
+  0x5b27ac993df97701ull, 0x1000000000000000ull, 0x27b95e997e21d9f1ull,
+  0x5da0e1e53c5c8000ull, 0xd2ae3299c1c4aedbull, 0x16bcc41e90000000ull,
+  0x2d04b7fdd9c0ef49ull, 0x5658597bcaa24000ull, 0xa0e2073737609371ull,
+  0x0c29e98000000000ull, 0x14adf4b7320334b9ull, 0x226ed36478bfa000ull,
+  0x383d9170b85ff80bull, 0x5a3c23e39c000000ull, 0x8e65137388122bcdull,
+  0xdd41bb36d259e000ull, 0x0aee5720ee830681ull, 0x1000000000000000ull,
+  0x172588ad4f5f0981ull, 0x211e44f7d02c1000ull, 0x2ee56725f06e5c71ull,
   0x41c21cb8e1000000ull
 };
 
@@ -155,6 +131,7 @@ struct BigInt* big_int_init(Char* text, Int64 radix) {
   if (cursor == text_count) {
     bigInt->_sign = none;
     bigInt->_magnitude_count = 1;
+    bigInt->_magnitude_capacity = 1;
     bigInt->_magnitude = (UInt64*)malloc(sizeof(UInt64) * 1);
     return bigInt;
   }
@@ -168,6 +145,7 @@ struct BigInt* big_int_init(Char* text, Int64 radix) {
   /* Add 63 to make sure that count is bigger than 64. */
   let magnitude_count = (bits_count + 63) >> 6;
   bigInt->_magnitude_count = magnitude_count;
+  bigInt->_magnitude_capacity = magnitude_count;
   bigInt->_magnitude = (UInt64*)malloc(sizeof(UInt64) * magnitude_count);
 
   /* Process first (potentially short) digit group. */
@@ -210,12 +188,9 @@ struct BigInt* big_int_init(Char* text, Int64 radix) {
     bigInt->_magnitude_count = count - keep;
 
     /* Copy value[keep ..< count] */
-    let magnitude = (UInt64*)malloc(bigInt->_magnitude_count * sizeof(UInt64));
-    memcpy(magnitude,
-           bigInt->_magnitude,
-           bigInt->_magnitude_count * sizeof(UInt64));
-    free(bigInt->_magnitude);
-    bigInt->_magnitude = magnitude;
+    memmove(bigInt->_magnitude,
+            bigInt->_magnitude + keep * sizeof(UInt64),
+            bigInt->_magnitude_count * sizeof(UInt64));
   }
 }
 
