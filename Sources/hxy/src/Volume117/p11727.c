@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume117Tests.swift                                 /'___\ /\_ \          */
+/* p11727.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 15, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: December 1, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,35 +19,57 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+/*
+ * 11727 Cost Cutting
+ *
+ * Company XYZ have been badly hit by recession and is taking a lot of cost
+ * cutting measures. Some of these measures include giving up office space,
+ * going open source, reducing incentives, cutting on luxuries and issuing pink
+ * slips.
+ * They have got three (3) employees working in the accounts department and are
+ * going to lay-off two (2) of them. After a series of meetings, they have
+ * decided to dislodge the person who gets the most salary and the one who gets
+ * the least. This is usually the general trend during crisis like this.
+ * You will be given the salaries of these 3 employees working in the accounts
+ * department. You have to find out the salary of the person who survives.
+ *
+ * Input:
+ * The first line of input is an integer T (T < 20) that indicates the number of
+ * test cases. Each case consists of a line with 3 distinct positive integers.
+ * These 3 integers represent the salaries of the three employees. All these
+ * integers will be in the range [1000, 10000].
+ *
+ * Output:
+ * For each case, output the case number followed by the salary of the person
+ * who survives.
+ *
+ * Solution:
+ * Find the middle in three numbers.
+ */
 
-extension UVaOnlineJudgeTests {
-  struct Volume117Tests {
-    @Test func testP11723() throws {
-      try run(main: p11723_main, for: 11723, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
+#include "Volume117/p11727.h"
+
+Void p11727_main() {
+  var case_count = 0;
+  scanf("%d", &case_count);
+
+  var case_number = 1;
+  for (; case_number <= case_count; case_number += 1) {
+    var a = 0;
+    var b = 0;
+    var c = 0;
+    scanf("%d %d %d", &a, &b, &c);
+
+    var result = 0;
+    if ((a <= b && a >= c) || (a <= c && a >= b)) {
+      result = a;
+    } else if ((b <= a && b >= c) || (b <= c && b >= a)) {
+      result = b;
+    } else {
+      result = c;
     }
 
-    @Test func testP11727() throws {
-      try run(main: p11727_main, for: 11727, caseCount: 7).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP11764() throws {
-      try run(main: p11764_main, for: 11764, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-    
-    @Test func testP11799() throws {
-      try run(main: p11799_main, for: 11799, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+    printf("Case %d: %d\n", case_number, result);
   }
 }
 

@@ -52,7 +52,10 @@ let volumes =
   process(volume: 113, problems: [(11332, 6)]) +
   process(volume: 115, problems: [(11547, 3), (11559, 3)]) +
   process(volume: 116, problems: [(11614, 3), (11679, 3), (11687, 3)]) +
-  process(volume: 117, problems: [(11764, 2), (11799, 4), (11723, 5)]) +
+  process(
+    volume: 117,
+    problems: [(11764, 2), (11799, 4), (11723, 5), (11727, 7)]
+  ) +
   process(volume: 118, problems: [(11809, 4), (11805, 3)]) +
   process(volume: 120, problems: [(12015, 3)]) +
   process(volume: 122, problems: [(12250, 4), (12279, 4)]) +

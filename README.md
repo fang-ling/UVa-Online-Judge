@@ -18,6 +18,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30008909 | 11727 | Cost Cutting |
 | 30008204 | 11723 | Numbering Roads |
 | 29998938 | 621 | Secret Research |
 | 29986832 | 12478 | Hardest Problem Ever (Easy) |
