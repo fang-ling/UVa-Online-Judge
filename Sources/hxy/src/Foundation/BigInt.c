@@ -98,10 +98,12 @@ static Void big_int_destructive_multiply_add(UInt64* x,
   }
 }
 
+/* MARK: - Creating and Destroying a BigInt */
+
 /**
  * Creates a new `BigInt` value from the given string and radix.
  */
-struct BigInt* big_int_init(Char* text, Int64 radix) {
+struct BigInt* big_int_init(const Char* text, Int64 radix) {
   var cursor = 0;
   var text_count = strlen(text);
 
@@ -192,6 +194,20 @@ struct BigInt* big_int_init(Char* text, Int64 radix) {
             bigInt->_magnitude + keep * sizeof(UInt64),
             bigInt->_magnitude_count * sizeof(UInt64));
   }
+
+  return bigInt;
+}
+
+/**
+ * Destroys a BigInt.
+ */
+Void big_int_deinit(struct BigInt* bigInt) {
+  if (bigInt == NULL) {
+    return;
+  }
+
+  free(bigInt->_magnitude);
+  free(bigInt);
 }
 
 /*===----------------------------------------------------------------------===*/

@@ -106,7 +106,7 @@ struct BigInt {
   Int64 _magnitude_capacity;
 };
 
-/* MARK: - Converting Strings */
+/* MARK: - Creating and Destroying a BigInt */
 
 /**
  * Creates a new `BigInt` value from the given string and radix.
@@ -123,7 +123,12 @@ struct BigInt {
  *   - radix: The radix, or base, to use for converting text to an integer
  *   value. radix must be in the range 2 ... 36.
  */
-struct BigInt* big_int_init(Char* text, Int64 radix);
+struct BigInt* big_int_init(const Char* text, Int64 radix);
+
+/**
+ * Destroys a BigInt.
+ */
+Void big_int_deinit(struct BigInt* bigInt);
 
 #endif /* BigInt_h */
 
