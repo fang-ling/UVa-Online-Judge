@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume122Tests.swift                                 /'___\ /\_ \          */
+/* p12289.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 17, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: December 4, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -18,32 +18,15 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
- 
-import Foundation
-@testable import hxy
-import Testing
 
-extension UVaOnlineJudgeTests {
-  struct Volume122Tests {
-    @Test func testP12250() throws {
-      try run(main: p12250_main, for: 12250, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-    
-    @Test func testP12279() throws {
-      try run(main: p12279_main, for: 12279, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#ifndef p12289_h
+#define p12289_h
 
-    @Test func testP12289() throws {
-      try run(main: p12289_main, for: 12289, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#include "Foundation/Foundation.h"
+
+Void p12289_main();
+
+#endif /* p12289_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

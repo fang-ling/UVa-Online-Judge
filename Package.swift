@@ -58,7 +58,7 @@ let volumes =
   ) +
   process(volume: 118, problems: [(11809, 4), (11805, 3)]) +
   process(volume: 120, problems: [(12015, 3)]) +
-  process(volume: 122, problems: [(12250, 4), (12279, 4)]) +
+  process(volume: 122, problems: [(12250, 4), (12279, 4), (12289, 3)]) +
   process(volume: 123, problems: [(12372, 4)]) +
   process(volume: 124, problems: [(12478, 1)]) +
   process(volume: 125, problems: [(12503, 4)]) +

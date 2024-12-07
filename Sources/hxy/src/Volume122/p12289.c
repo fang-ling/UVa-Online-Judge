@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume122Tests.swift                                 /'___\ /\_ \          */
+/* p12289.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 17, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: December 4, 2024                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -18,30 +18,54 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
- 
-import Foundation
-@testable import hxy
-import Testing
 
-extension UVaOnlineJudgeTests {
-  struct Volume122Tests {
-    @Test func testP12250() throws {
-      try run(main: p12250_main, for: 12250, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-    
-    @Test func testP12279() throws {
-      try run(main: p12279_main, for: 12279, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
+/*
+ * 12289 One-Two-Three
+ *
+ * Your little brother has just learnt to write one, two and three, in English.
+ * He has written a lot of those words in a paper, your task is to recognize
+ * them. Note that your little brother is only a child, so he may make small
+ * mistakes: for each word, there might be at most one wrong letter. The word
+ * length is always correct. It is guaranteed that each letter he wrote is in
+ * lower-case, and each word he wrote has a unique interpretation.
+ *
+ * Input:
+ * The first line contains the number of words that your little brother has
+ * written. Each of the following lines contains a single word with all letters
+ * in lower-case. The words satisfy the constraints above: at most one letter
+ * might be wrong, but the word length is always correct. There will be at most
+ * 10 words in the input.
+ *
+ * Output:
+ * For each test case, print the numerical value of the word.
+ *
+ * Solution:
+ * If-else + simple string compare.
+ */
+
+#include "Volume122/p12289.h"
+
+Void p12289_main() {
+  Char number[8];
+  
+  var case_count = 0;
+  scanf("%d", &case_count);
+  while (case_count--) {
+    scanf("%s", number);
+
+    var result = 0;
+    var count = strlen(number);
+    if (count == 5) {
+      result = 3;
+    } else if ((number[0] == 'o' && number[1] == 'n') ||
+               (number[1] == 'n' && number[2] == 'e') ||
+               (number[0] == 'o' && number[2] == 'e')) {
+      result = 1;
+    } else {
+      result = 2;
     }
 
-    @Test func testP12289() throws {
-      try run(main: p12289_main, for: 12289, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+    printf("%d\n", result);
   }
 }
 
