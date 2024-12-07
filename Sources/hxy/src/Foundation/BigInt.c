@@ -98,6 +98,311 @@ static Void big_int_destructive_multiply_add(UInt64* x,
   }
 }
 
+/* Private method to return bit count for a UInt64. */
+#define big_int_bit_count_for_uint64(n) \
+          (64 - __builtin_clzll((n)))
+
+/* The natural log of 2. */
+#define BIG_INT_LOG_TWO 0.6931471805599453
+
+Double BIG_INT_LOG_CACHE[] = {
+  0.0, 0.0,
+  0.6931471805599453, 1.0986122886681098, 1.3862943611198906,
+  1.6094379124341003, 1.791759469228055,  1.9459101490553132,
+  2.0794415416798357, 2.1972245773362196, 2.302585092994046,
+  2.3978952727983707, 2.4849066497880004, 2.5649493574615367,
+  2.6390573296152584, 2.70805020110221,   2.772588722239781,
+  2.833213344056216,  2.8903717578961645, 2.9444389791664403,
+  2.995732273553991,  3.044522437723423,  3.091042453358316,
+  3.1354942159291497, 3.1780538303479458, 3.2188758248682006,
+  3.258096538021482,  3.295836866004329,  3.332204510175204,
+  3.367295829986474,  3.4011973816621555, 3.4339872044851463,
+  3.4657359027997265, 3.4965075614664802, 3.5263605246161616,
+  3.5553480614894135, 3.58351893845611
+};
+
+/**
+ * If `zero_count`, appends that many zeros to the specified `text`;
+ * otherwise, does nothing.
+ *
+ * - Parameters:
+ *   - text: The string buffer that will be appended to.
+ *   - zero_count: The number of zeros to append.
+ */
+static Void big_int_pad_with_zeros(Char* text, Int64 zero_count) {
+  while (zero_count >= 63) {
+    strcat(text,
+           "000000000000000000000000000000000000000000000000000000000000000");
+    zero_count -= 63;
+  }
+  if (zero_count > 0) {
+    strncpy(text,
+            "000000000000000000000000000000000000000000000000000000000000000",
+            zero_count);
+  }
+}
+
+/*
+ * The threshold value for using Schoenhage recursive base conversion. If
+ * the number of ints in the number are larger than this value,
+ * the Schoenhage algorithm will be used. In practice, it appears that the
+ * Schoenhage routine is faster for any threshold down to 2, and is
+ * relatively flat for thresholds between 2-25, so this choice may be
+ * varied within this range for very small effect.
+ */
+#define BIG_INT_SCHOENHAGE_BASE_CONVERSION_THRESHOLD 20
+
+/**
+ * This method is used to perform `to_string()` when arguments are small.
+ * The value must be non-negative. If `padding <= 0` no padding
+ * (pre-pending with zeros) will be effected.
+ *
+ * - Parameters:
+ *   - radix: The base to convert to.
+ *   - text: The string buffer that will be appended to in place.
+ *   - padding: The minimum number of digits to pad to.
+ */
+static Void big_int_small_to_string(struct BigInt* u,
+                                    Int64 radix,
+                                    Char* text,
+                                    Int64 padding) {
+  precondition(u->_sign != minus,
+               "This method can only be called for non-negative numbers.");
+
+  if (u->_sign == none) {
+    big_int_pad_with_zeros(text, padding);
+    return;
+  }
+
+  /* Compute upper bound on number of digit groups and allocate space. */
+  /* FIXME: This upper bound may not enough. */
+  let max_number_digit_groups = (4 * u->_magnitude_count + 6) / 7;
+  var digit_groups = malloc(sizeof(UInt64) * max_number_digit_groups);
+
+  /* Translate number to string, a digit group at a time. */
+
+
+  free(digit_groups);
+}
+
+/**
+ * Converts the specified BigInt to a string and appends to `text`. This
+ * implements the recursive Schoenhage algorithm for base conversions. This
+ * method can only be called for non-negative numbers.
+ *
+ * See Knuth, Donald, _The Art of Computer Programming_, Vol. 2,
+ * Answers to Exercises (4.4) Question 14.
+ *
+ * - Parameters:
+ *   - u: The number to convert to a string.
+ *   - text: The buffer string that will be appended to in place.
+ *   - radix: The base to convert to.
+ *   - padding: The minimum number of digits to pad to.
+ */
+static Void big_int_to_string_schoenhage(struct BigInt* u,
+                                         Char* text,
+                                         Int64 radix,
+                                         Int64 padding) {
+  precondition(u->_sign != minus,
+               "This method can only be called for non-negative numbers.");
+
+  /*
+   * If we're smaller than a certain threshold, use the small_to_string()
+   * method, padding with leading zeroes when necessary unless we're
+   * at the beginning of the string or digits <= 0. As u->_sign >= 0,
+   * small_to_string() will not prepend a negative sign.
+   */
+  if (u->_magnitude_count <= BIG_INT_SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
+
+  }
+//  if (u.mag.length <= SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
+//      u.smallToString(radix, sb, digits);
+//      return;
+//  }
+}
+
+/*
+ * The threshold value for using Burnikel-Ziegler division. If the number
+ * of uint64s in the divisor are larger than this value, Burnikel-Ziegler
+ * division may be used. This value is found experimentally to work well.
+ */
+#define BIG_INT_BURNIKEL_ZIEGLER_THRESHOLD 80
+
+/*
+ * The offset value for using Burnikel-Ziegler division. If the number
+ * of uint64s in the divisor exceeds the Burnikel-Ziegler threshold, and the
+ * number of uint64s in the dividend is greater than the number of uint64s in
+ * the divisor plus this value, Burnikel-Ziegler division will be used. This
+ * value is found experimentally to work well.
+ */
+#define BIG_INT_BURNIKEL_ZIEGLER_OFFSET 40
+
+/*
+ * Removes all the leading zero bytes.
+ * Returnes the count of the array stripped of any leading zero bytes.
+ */
+static Int64 big_int_strip_leading_zero_uint64s(UInt64* value, Int64 count) {
+  var keep = 0;
+  /* Find first nonzero byte. */
+  for (; keep < count && value[keep] == 0; keep += 1);
+  if (keep != 0) {
+    let new_count = count - keep;
+
+    /* Copy value[keep ..< count] */
+    memmove(value, value + keep * sizeof(UInt64), new_count * sizeof(UInt64));
+
+    return new_count;
+  }
+
+  return count;
+}
+
+/*
+ * Ensure that the BigInt is in normal form, specifically making sure that there
+ * are no leading zeros, and that if the magnitude is zero, then count is zero.
+ */
+static Void big_int_normalize(struct BigInt* bigInt) {
+  if (bigInt->_magnitude_count == 0) {
+    bigInt->_sign = none;
+    return;
+  }
+
+  if (bigInt->_magnitude[0] != 0) {
+    return;
+  }
+
+  let new_count = big_int_strip_leading_zero_uint64s(bigInt->_magnitude,
+                                                     bigInt->_magnitude_count);
+  bigInt->_magnitude_count = new_count;
+}
+
+/*
+ * This method is used for division of an n word dividend by a one word divisor.
+ */
+static Void big_int_divide_one_word(struct BigInt* lhs,
+                                    UInt64 divisor,
+                                    struct BigInt** result) {
+  /* Special case of one word dividend. */
+  if (lhs->_magnitude_count == 1) {
+    var dividend_value = lhs->_magnitude[0];
+    var q = dividend_value / divisor;
+    var r = dividend_value % divisor;
+
+    result[0] = malloc(sizeof(struct BigInt));
+    result[0]->_magnitude = malloc(sizeof(UInt64) * 1);
+    result[0]->_magnitude_count = 1;
+    result[0]->_magnitude_capacity = 1;
+    result[0]->_sign = lhs->_sign;
+    result[0]->_magnitude[0] = q;
+
+    result[1] = big_int_copy(result[0]);
+    result[1]->_sign = plus;
+    result[1]->_magnitude[0] = r;
+
+    return;
+  }
+
+  result[0] = malloc(sizeof(struct BigInt));
+  result[0]->_magnitude = malloc(sizeof(UInt64) * lhs->_magnitude_capacity);
+  result[0]->_magnitude_count = 0;
+  result[0]->_magnitude_capacity = lhs->_magnitude_capacity;
+  result[0]->_sign = lhs->_sign;
+
+  var remainder = (Int128)0;
+  var x_count = lhs->_magnitude_count;
+  for (; x_count > 0; x_count -= 1) {
+    var dividend_estimate = (remainder << 64);
+    dividend_estimate |= lhs->_magnitude[lhs->_magnitude_count - x_count];
+
+    var q = (UInt64)(dividend_estimate / divisor);
+    remainder = dividend_estimate % divisor;
+
+    result[0]->_magnitude[lhs->_magnitude_count - x_count] = q;
+  }
+
+  big_int_normalize(result[0]);
+
+  result[1] = malloc(sizeof(struct BigInt));
+  result[1]->_magnitude = malloc(sizeof(UInt64) * 1);
+  result[1]->_magnitude_count = 1;
+  result[1]->_magnitude_capacity = 1;
+  result[1]->_sign = remainder == 0 ? none : plus;
+  result[1]->_magnitude[0] = (UInt64)remainder;
+}
+
+/*
+ * Calculates the quotient of lhs div rhs. The quotient and the remainder object
+ * is returned.
+ *
+ * Uses Algorithm D from Knuth TAOCP Vol. 2, 3rd edition, section 4.3.1.
+ * Many optimizations to that algorithm have been adapted from the Colin Plumb C
+ * library.
+ * It special cases one word divisors for speed. The content of rhs is not
+ * changed.
+ */
+static struct BigInt** big_int_divide_knuth(struct BigInt* lhs,
+                                            struct BigInt* rhs) {
+  precondition(rhs->_sign != none, "BigInt divide by zero");
+
+  /* Return value */
+  var result = (struct BigInt**)malloc(sizeof(struct BigInt*) * 2);
+
+  /* Dividend is zero */
+  if (lhs->_sign == none) {
+    result[0] = big_int_init("0", 2);
+    result[1] = big_int_init("0", 2);
+    return result;
+  }
+
+  let compare_result = big_int_compare(lhs, rhs);
+  /* Dividend less than divisor. */
+  if (compare_result < 0) {
+    result[0] = big_int_init("0", 2);
+    result[1] = big_int_copy(lhs);
+    return result;
+  }
+  /* Dividend equal to divisor. */
+  if (compare_result == 0) {
+    result[0] = big_int_init("1", 2);
+    result[1] = big_int_init("0", 2);
+    return result;
+  }
+
+  /* Special case one word divisor */
+  if (rhs->_magnitude_count == 1) {
+    big_int_divide_one_word(lhs, rhs->_magnitude[0], result);
+    return result;
+  }
+
+  // TODO
+}
+
+/**
+ * Compares the magnitude array of `lhs` with the `rhs`'s. This is the version
+ * of compare() ignoring sign.
+ */
+static Int64 big_int_compare_magnitude(struct BigInt* lhs, struct BigInt* rhs) {
+  if (lhs->_magnitude_count < rhs->_magnitude_count) {
+    return -1;
+  }
+  if (lhs->_magnitude_count > rhs->_magnitude_count) {
+    return 1;
+  }
+  /* Find the first mismatch index */
+  var i = -1;
+  var k = 0;
+  for (; k < lhs->_magnitude_count; k += 1) {
+    if (lhs->_magnitude[k] != rhs->_magnitude[k]) {
+      i = k;
+      break;
+    }
+  }
+  if (i != -1) {
+    return lhs->_magnitude[i] < rhs->_magnitude[i] ? -1 : 1;
+  }
+  return 0;
+}
+
 /* MARK: - Creating and Destroying a BigInt */
 
 /**
@@ -182,20 +487,29 @@ struct BigInt* big_int_init(const Char* text, Int64 radix) {
    * Required for cases where the array was overallocated.
    * Remove leading zeros.
    */
-  var count = bigInt->_magnitude_count;
-  var keep = 0;
-  /* Find first nonzero byte. */
-  for (; keep < count && bigInt->_magnitude[keep] == 0; keep += 1);
-  if (keep != 0) {
-    bigInt->_magnitude_count = count - keep;
-
-    /* Copy value[keep ..< count] */
-    memmove(bigInt->_magnitude,
-            bigInt->_magnitude + keep * sizeof(UInt64),
-            bigInt->_magnitude_count * sizeof(UInt64));
-  }
+  let new_count = big_int_strip_leading_zero_uint64s(bigInt->_magnitude,
+                                                     bigInt->_magnitude_count);
+  bigInt->_magnitude_count = new_count;
 
   return bigInt;
+}
+
+/**
+ * Creates a new `BigInt` containing the value `bigInt`.
+ */
+struct BigInt* big_int_copy(struct BigInt* bigInt) {
+  var value = (struct BigInt*)malloc(sizeof(struct BigInt));
+  /* Copy magnitude */
+  value->_magnitude = malloc(sizeof(UInt64) * bigInt->_magnitude_capacity);
+  memcpy(value->_magnitude,
+         bigInt->_magnitude,
+         sizeof(UInt64) * bigInt->_magnitude_capacity);
+  value->_magnitude_count = bigInt->_magnitude_count;
+  value->_magnitude_capacity = bigInt->_magnitude_capacity;
+  /* Copy others */
+  value->_sign = bigInt->_sign;
+
+  return value;
 }
 
 /**
@@ -208,6 +522,99 @@ Void big_int_deinit(struct BigInt* bigInt) {
 
   free(bigInt->_magnitude);
   free(bigInt);
+}
+
+/**
+ * Creates a string representing the given value in base 10, or some other
+ * specified base.
+ */
+Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase) {
+  if (value->_sign == none) {
+    var text = (Char*)malloc(sizeof(Char) * 2);
+    strcpy(text, "0");
+    return text;
+  }
+  if (radix < 2 || radix > 36) {
+    radix = 10;
+  }
+
+  var abs = big_int_copy(value);
+  abs->_sign = abs->_sign == minus ? plus : abs->_sign;
+
+  /*
+   * Ensure buffer capacity sufficient to contain string representation
+   *     floor(bitLength*log(2)/log(radix)) + 1
+   * plus an additional character for the sign if negative.
+   */
+  let b = big_int_bit_count(abs);
+  var count = (UInt64)floor(b * BIG_INT_LOG_TWO / BIG_INT_LOG_CACHE[radix]) + 1;
+  count += value->_sign == minus ? 1 : 0;
+
+  var text = (Char*)malloc(sizeof(Char) * count);
+  if (value->_sign == minus) {
+    text[0] = '-';
+    
+  } else {
+
+  }
+
+  return text;
+}
+
+/* MARK: - Performing Calculations */
+
+/**
+ * Returns the quotient and remainder of `lhs` divided by the `rhs`.
+ */
+struct BigInt** big_int_divide(struct BigInt* lhs, struct BigInt* rhs) {
+  let difference = lhs->_magnitude_count - rhs->_magnitude_count;
+  if (rhs->_magnitude_count < BIG_INT_BURNIKEL_ZIEGLER_THRESHOLD ||
+      difference < BIG_INT_BURNIKEL_ZIEGLER_OFFSET) {
+    return big_int_divide_knuth(lhs, rhs);
+  }
+  // TODO
+}
+
+/**
+ * Returns -1, 0 or 1 that indicates whether the number object's value is
+ * greater than, equal to, or less than a given number.
+ */
+Int64 big_int_compare(struct BigInt* lhs, struct BigInt* rhs) {
+  if (lhs->_sign == rhs->_sign) {
+    switch (lhs->_sign) {
+      case plus: return big_int_compare_magnitude(lhs, rhs); break;
+      case minus: return big_int_compare(rhs, lhs); break;
+      default: return 0; break;
+    }
+  }
+
+  return lhs->_sign == plus ? 1 : -1;
+}
+
+/* MARK: - Working with Binary Representation */
+
+/**
+ * Returns the number of bits in the minimal two's-complement representation of
+ * this BigInt, **excluding** a sign bit.
+ */
+Int64 big_int_bit_count(struct BigInt* value) {
+  if (value->_sign == none) {
+    return 0;
+  }
+  /* Calculate the bit length of the magnitude. */
+  var bit_count = ((value->_magnitude_count - 1) << 6);
+  bit_count += big_int_bit_count_for_uint64(value->_magnitude[0]);
+  if (value->_sign == minus) {
+    /* Check if magnitude is a power of two. */
+    var is_pow2 = __builtin_popcountll(value->_magnitude[0]) == 1;
+    var i = 1;
+    for (; i < value->_magnitude_count && is_pow2; i += 1) {
+      is_pow2 = (value->_magnitude[i] == 0);
+    }
+    bit_count = is_pow2 ? bit_count - 1 : bit_count;
+  }
+
+  return bit_count;
 }
 
 /*===----------------------------------------------------------------------===*/

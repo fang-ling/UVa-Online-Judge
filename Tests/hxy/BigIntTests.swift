@@ -37,6 +37,32 @@ struct BigIntTests {
     #expect(numberPointer.pointee._magnitude[1] == 6445224650915216852)
     big_int_deinit(numberPointer)
   }
+
+  @Test func testBigIntBitCount() async throws {
+    var numberPointer = big_int_init("123611935819342123331934819306", 10)
+    #expect(big_int_bit_count(numberPointer) == 97)
+    big_int_deinit(numberPointer)
+
+    numberPointer = big_int_init("-123611935819342123331934819306", 10)
+    #expect(big_int_bit_count(numberPointer) == 97)
+    big_int_deinit(numberPointer)
+
+    numberPointer = big_int_init("0", 10)
+    #expect(big_int_bit_count(numberPointer) == 0)
+    big_int_deinit(numberPointer)
+  }
+
+  @Test func testDivideOneWord() async throws {
+    let numberPointer = big_int_init("193581934212361123331930619348", 10)!
+    let divisorPointer = big_int_init("19358", 10)!
+    let results = big_int_divide(numberPointer, divisorPointer)!;
+
+    #expect(
+      results[0]!.pointee._magnitude[0] == 542106 &&
+      results[0]!.pointee._magnitude[1] == UInt64(9275162996903914717)
+    )
+    #expect(results[1]!.pointee._magnitude[0] == 3694)
+  }
 }
 
 /*===----------------------------------------------------------------------===*/

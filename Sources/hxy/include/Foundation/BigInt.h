@@ -130,6 +130,60 @@ struct BigInt* big_int_init(const Char* text, Int64 radix);
  */
 Void big_int_deinit(struct BigInt* bigInt);
 
+/**
+ * Creates a new `BigInt` containing the value `bigInt`.
+ *
+ * The `big_int_copy()` function allocates sufficient memory for a copy of the
+ * `BigInt` `bigInt`, does the copy, and returns a pointer to it. The pointer
+ * may subsequently be used as an argument to the function `big_int_deinit()`.
+ */
+struct BigInt* big_int_copy(struct BigInt* bigInt);
+
+/**
+ * Creates a string representing the given value in base 10, or some other
+ * specified base.
+ *
+ * If the radix is outside the range from 2 ... 36, it will default to 10.
+ * A minus sign is prepended if appropriate.
+ *
+ * The resulting string is dynamically allocated and must be freed by the caller
+ * using free().
+ *
+ * - Parameters:
+ *   - value: The value to convert to a string.
+ *   - radix: The base to use for the string representation. radix must be at
+ *   least 2 and at most 36.
+ *   - uppercase: Pass `true` to use uppercase letters to represent numerals
+ *   greater than 9, or false to use lowercase letters.
+ */
+Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase);
+
+/* MARK: - Performing Calculations */
+
+/**
+ * Returns the quotient and remainder of `lhs` divided by the `rhs`.
+ */
+struct BigInt** big_int_divide(struct BigInt* lhs, struct BigInt* rhs);
+
+/**
+ * Returns -1, 0 or 1 that indicates whether the number object's value is
+ * greater than, equal to, or less than a given number.
+ */
+Int64 big_int_compare(struct BigInt* lhs, struct BigInt* rhs);
+
+/* MARK: - Working with Binary Representation */
+
+/**
+ * Returns the number of bits in the minimal two's-complement representation of
+ * this BigInt, **excluding** a sign bit.
+ *
+ * For positive BigIntegers, this is equivalent to the number of bits in the
+ * ordinary binary representation.  For zero this method returns 0.
+ *
+ * (Computes: ceil(log2(this < 0 ? -this : this+1)).)
+ */
+Int64 big_int_bit_count(struct BigInt* value);
+
 #endif /* BigInt_h */
 
 /*===----------------------------------------------------------------------===*/
