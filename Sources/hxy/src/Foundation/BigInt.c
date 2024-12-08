@@ -21,6 +21,25 @@
  
 #include "Foundation/BigInt.h"
 
+static struct BigInt* big_int_init_internal(UInt64* magnitude,
+                                            Int64 count,
+                                            Int64 capacity,
+                                            enum BigIntSign sign) {
+  precondition(count <= capacity, "count must less than or equal to capacity");
+
+  var bigInt = (struct BigInt*)malloc(sizeof(struct BigInt));
+
+  bigInt->_magnitude = malloc(sizeof(UInt64) * capacity);
+  if (count != 0 && magnitude != NULL) {
+    memcpy(bigInt->_magnitude, magnitude, sizeof(UInt64) * count);
+  }
+  bigInt->_magnitude_count = count;
+  bigInt->_magnitude_capacity = capacity;
+  bigInt->_sign = sign;
+
+  return bigInt;
+}
+
 /*
  * ceil(log2(radix) * 1024)
  * bitsPerDigit in the given radix times 1024.
@@ -288,25 +307,16 @@ static Void big_int_divide_one_word(struct BigInt* lhs,
     var q = dividend_value / divisor;
     var r = dividend_value % divisor;
 
-    result[0] = malloc(sizeof(struct BigInt));
-    result[0]->_magnitude = malloc(sizeof(UInt64) * 1);
-    result[0]->_magnitude_count = 1;
-    result[0]->_magnitude_capacity = 1;
-    result[0]->_sign = lhs->_sign;
-    result[0]->_magnitude[0] = q;
-
-    result[1] = big_int_copy(result[0]);
-    result[1]->_sign = plus;
-    result[1]->_magnitude[0] = r;
+    result[0] = big_int_init_internal(&q, 1, 1, lhs->_sign);
+    result[1] = big_int_init_internal(&r, 1, 1, plus);
 
     return;
   }
 
-  result[0] = malloc(sizeof(struct BigInt));
-  result[0]->_magnitude = malloc(sizeof(UInt64) * lhs->_magnitude_capacity);
-  result[0]->_magnitude_count = 0;
-  result[0]->_magnitude_capacity = lhs->_magnitude_capacity;
-  result[0]->_sign = lhs->_sign;
+  result[0] = big_int_init_internal(NULL,
+                                    0,
+                                    lhs->_magnitude_capacity,
+                                    lhs->_sign);
 
   var remainder = (Int128)0;
   var x_count = lhs->_magnitude_count;
@@ -322,12 +332,11 @@ static Void big_int_divide_one_word(struct BigInt* lhs,
 
   big_int_normalize(result[0]);
 
-  result[1] = malloc(sizeof(struct BigInt));
-  result[1]->_magnitude = malloc(sizeof(UInt64) * 1);
-  result[1]->_magnitude_count = 1;
-  result[1]->_magnitude_capacity = 1;
-  result[1]->_sign = remainder == 0 ? none : plus;
-  result[1]->_magnitude[0] = (UInt64)remainder;
+  var remainder_uint64 = (UInt64)remainder;
+  result[1] = big_int_init_internal(&remainder_uint64,
+                                    1,
+                                    1,
+                                    remainder_uint64 == 0 ? none : plus);
 }
 
 /*
@@ -346,6 +355,8 @@ static struct BigInt** big_int_divide_knuth(struct BigInt* lhs,
 
   /* Return value */
   var result = (struct BigInt**)malloc(sizeof(struct BigInt*) * 2);
+
+  /* FIXME: Optimize big_int_init("X", 2); */
 
   /* Dividend is zero */
   if (lhs->_sign == none) {
