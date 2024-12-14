@@ -126,6 +126,11 @@ struct BigInt {
 struct BigInt* big_int_init(const Char* text, Int64 radix);
 
 /**
+ * Creates a new `BigInt` value with the specified value.
+ */
+struct BigInt* big_int_init_from_int128(Int128 value);
+
+/**
  * Destroys a BigInt.
  */
 Void big_int_deinit(struct BigInt* bigInt);

@@ -25,6 +25,12 @@ import Testing
 
 extension UVaOnlineJudgeTests {
   struct Volume124Tests {
+    @Test func testP12468() throws {
+      try run(main: p12468_main, for: 12468, caseCount: 3).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
+
     @Test func testP12478() throws {
       try run(main: p12478_main, for: 12478, caseCount: 1).forEach { result in
         #expect(result.0 == result.1)

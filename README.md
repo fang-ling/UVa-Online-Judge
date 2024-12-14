@@ -18,6 +18,10 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30042994 | 12917 | Prop hunt! |
+| 30039740 | 12646 | Zero or One |
+| 30037365 | 12577 | Hajj-e-Akbar |
+| 30033807 | 12468 | Zapping |
 | 30017884 | 12289 | One-Two-Three |
 | 30008909 | 11727 | Cost Cutting |
 | 30008204 | 11723 | Numbering Roads |

@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume125Tests.swift                                 /'___\ /\_ \          */
+/* p12917.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: November 13, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: December 12, 2024                              \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,25 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+#ifndef p12917_h
+#define p12917_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume125Tests {
-    @Test func testP12503() throws {
-      try run(main: p12503_main, for: 12503, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP12577() throws {
-      try run(main: p12577_main, for: 12577, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+Void p12917_main();
+
+#endif /* p12917_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

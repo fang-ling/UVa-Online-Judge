@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume125Tests.swift                                 /'___\ /\_ \          */
+/* Volume129Tests.swift                                 /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: November 13, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: December 12, 2024                              \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -24,15 +24,9 @@ import Foundation
 import Testing
 
 extension UVaOnlineJudgeTests {
-  struct Volume125Tests {
-    @Test func testP12503() throws {
-      try run(main: p12503_main, for: 12503, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP12577() throws {
-      try run(main: p12577_main, for: 12577, caseCount: 4).forEach { result in
+  struct Volume129Tests {
+    @Test func testP12917() throws {
+      try run(main: p12917_main, for: 12917, caseCount: 3).forEach { result in
         #expect(result.0 == result.1)
       }
     }

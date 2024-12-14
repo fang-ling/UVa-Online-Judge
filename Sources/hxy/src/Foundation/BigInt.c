@@ -340,6 +340,96 @@ static Void big_int_divide_one_word(struct BigInt* lhs,
 }
 
 /*
+ * The minimum magnitude count for cancelling powers of two before dividing.
+ * If the number of words is less than this threshold, `divide_knuth` does not
+ * eliminate common powers of two from the dividend and divisor.
+ */
+#define BIG_INT_KNUTH_POW2_THRESHOLD_COUNT 6
+
+/*
+ * The minimum number of trailing zero ints for cancelling powers of two before
+ * dividing.
+ * If the dividend and divisor don't share at least this many zero words at the
+ * end, `divide_knuth` does not eliminate common powers of two from the dividend
+ * and divisor.
+ */
+#define BIG_INT_KNUTH_POW2_THRESHOLD_ZEROS 3
+
+/*
+ * Return the index of the lowest set bit in given big int. If the magnitude of
+ * that big int is zero, -1 is returned.
+ */
+static Int64 big_int_get_lowest_set_bit(struct BigInt* value) {
+  if (value->_sign == none) {
+    return -1;
+  }
+  var j = value->_magnitude_count - 1;
+  for (; (j > 0) && (value->_magnitude[j] == 0); j -= 1);
+  let word = value->_magnitude[j];
+  if (word == 0) {
+    return -1;
+  }
+  let bit = (value->_magnitude_count - 1 - j) << 6;
+  return bit + __builtin_ctzll(word);
+}
+
+/*
+ * Left shift the big int n bits, where n is less than 64, placing the result in
+ * the specified array.
+ * Assumes that magnitude_count > 0, n > 0 for speed.
+ */
+static Void big_int_primitive_left_shift(struct BigInt* value,
+                                         Int64 n,
+                                         UInt64* result) {
+  let n2 = 64 - n;
+  let count = value->_magnitude_count - 1;
+  var b = value->_magnitude[0];
+  var i = 0;
+  for (; i < count; i += 1) {
+    var c = value->_magnitude[i + 1];
+    result[i] = (b << n) | (c >> n2);
+    b = c;
+  }
+  result[count] = b << n;
+}
+
+/*
+ * Divide the BigInt by the divisor.
+ *
+ * Given nonnegative integers u = (u_1, u_2, ..., u_m+n)_b and
+ * v = (v1, v2, ..., v_n)_b, where v1 != 0 and n > 1, we form the radix-b
+ * quotient floor(u/v) = (q_0, q_1, ..., q_m)_b and the remainder u  mod v =
+ * (r_1, r_2, ..., r_n)_b.
+ */
+static Void big_int_divide_magnitude(struct BigInt* u,
+                                     struct BigInt* v,
+                                     struct BigInt** result) {
+  /* assert v.magnitude_count > 1 */
+  /*
+   * D1 normalize the divisor
+   * Set d be a value. Then set (u_0, u_1, u_2, ..., u_m+n)_b equal to
+   * (u_1, u_2, ..., u_m+n)_b times d, and set (v_1, v_2, ..., v_n)_b equal to
+   * (v_1, v_2, ..., v_n)_b times d. Any value of d that results in
+   * v_1 >= floor(b / 2) will suffice.
+   */
+  var shift = __builtin_clzll(v->_magnitude[0]);
+  /* Copy v to protect divisor */
+  let divisor_magnitude_count = v->_magnitude_count;
+  UInt64* divisor_magnitude = NULL;
+  var remainder = big_int_init_from_int128(0);
+  if (shift > 0) {
+    divisor_magnitude = malloc(sizeof(UInt64) * divisor_magnitude_count);
+    big_int_primitive_left_shift(v, shift, divisor_magnitude);
+    if (__builtin_clzll(u->_magnitude[0]) >= shift) {
+      remainder->_magnitude = realloc(remainder->_magnitude,
+                                      sizeof(UInt64) * u->_magnitude_count + 1);
+      remainder->_magnitude_count = u->_magnitude_count;
+      remainder
+    }
+  }
+}
+
+/*
  * Calculates the quotient of lhs div rhs. The quotient and the remainder object
  * is returned.
  *
@@ -356,26 +446,24 @@ static struct BigInt** big_int_divide_knuth(struct BigInt* lhs,
   /* Return value */
   var result = (struct BigInt**)malloc(sizeof(struct BigInt*) * 2);
 
-  /* FIXME: Optimize big_int_init("X", 2); */
-
   /* Dividend is zero */
   if (lhs->_sign == none) {
-    result[0] = big_int_init("0", 2);
-    result[1] = big_int_init("0", 2);
+    result[0] = big_int_init_from_int128(0);
+    result[1] = big_int_init_from_int128(0);
     return result;
   }
 
   let compare_result = big_int_compare(lhs, rhs);
   /* Dividend less than divisor. */
   if (compare_result < 0) {
-    result[0] = big_int_init("0", 2);
+    result[0] = big_int_init_from_int128(0);
     result[1] = big_int_copy(lhs);
     return result;
   }
   /* Dividend equal to divisor. */
   if (compare_result == 0) {
-    result[0] = big_int_init("1", 2);
-    result[1] = big_int_init("0", 2);
+    result[0] = big_int_init_from_int128(1);
+    result[1] = big_int_init_from_int128(0);
     return result;
   }
 
@@ -385,7 +473,13 @@ static struct BigInt** big_int_divide_knuth(struct BigInt* lhs,
     return result;
   }
 
-  // TODO
+  /* Cancel common powers of two if we're above the KNUTH_POW2_* thresholds. */
+  if (lhs->_magnitude_count >= BIG_INT_KNUTH_POW2_THRESHOLD_COUNT) {
+    let trailing_zero_bits = min(big_int_get_lowest_set_bit(lhs),
+                                 big_int_get_lowest_set_bit(rhs));
+    // TODO: add left/right shift here
+  }
+
 }
 
 /**
@@ -503,6 +597,28 @@ struct BigInt* big_int_init(const Char* text, Int64 radix) {
   bigInt->_magnitude_count = new_count;
 
   return bigInt;
+}
+
+/**
+ * Creates a new `BigInt` value with the specified value.
+ */
+struct BigInt* big_int_init_from_int128(Int128 value) {
+  var sign = none;
+
+  if (value < 0) {
+    sign = minus;
+    value = -value;
+  } else if (value > 0) {
+    sign = plus;
+  }
+
+  let high_word = (UInt64)(value >> 64);
+  if (high_word == 0) {
+    UInt64 magnitude[1] = { (UInt64)value };
+    return big_int_init_internal(magnitude, 1, 1, sign);
+  }
+  UInt64 magnitude[2] = { high_word, (UInt64)value };
+  return big_int_init_internal(magnitude, 2, 2, sign);
 }
 
 /**
