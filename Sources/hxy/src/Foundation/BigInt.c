@@ -240,21 +240,7 @@ static Void big_int_to_string_schoenhage(struct BigInt* u,
 //  }
 }
 
-/*
- * The threshold value for using Burnikel-Ziegler division. If the number
- * of uint64s in the divisor are larger than this value, Burnikel-Ziegler
- * division may be used. This value is found experimentally to work well.
- */
-#define BIG_INT_BURNIKEL_ZIEGLER_THRESHOLD 80
 
-/*
- * The offset value for using Burnikel-Ziegler division. If the number
- * of uint64s in the divisor exceeds the Burnikel-Ziegler threshold, and the
- * number of uint64s in the dividend is greater than the number of uint64s in
- * the divisor plus this value, Burnikel-Ziegler division will be used. This
- * value is found experimentally to work well.
- */
-#define BIG_INT_BURNIKEL_ZIEGLER_OFFSET 40
 
 /*
  * Removes all the leading zero bytes.
@@ -294,66 +280,6 @@ static Void big_int_normalize(struct BigInt* bigInt) {
                                                      bigInt->_magnitude_count);
   bigInt->_magnitude_count = new_count;
 }
-
-/*
- * This method is used for division of an n word dividend by a one word divisor.
- */
-static Void big_int_divide_one_word(struct BigInt* lhs,
-                                    UInt64 divisor,
-                                    struct BigInt** result) {
-  /* Special case of one word dividend. */
-  if (lhs->_magnitude_count == 1) {
-    var dividend_value = lhs->_magnitude[0];
-    var q = dividend_value / divisor;
-    var r = dividend_value % divisor;
-
-    result[0] = big_int_init_internal(&q, 1, 1, lhs->_sign);
-    result[1] = big_int_init_internal(&r, 1, 1, plus);
-
-    return;
-  }
-
-  result[0] = big_int_init_internal(NULL,
-                                    0,
-                                    lhs->_magnitude_capacity,
-                                    lhs->_sign);
-
-  var remainder = (Int128)0;
-  var x_count = lhs->_magnitude_count;
-  for (; x_count > 0; x_count -= 1) {
-    var dividend_estimate = (remainder << 64);
-    dividend_estimate |= lhs->_magnitude[lhs->_magnitude_count - x_count];
-
-    var q = (UInt64)(dividend_estimate / divisor);
-    remainder = dividend_estimate % divisor;
-
-    result[0]->_magnitude[lhs->_magnitude_count - x_count] = q;
-  }
-
-  big_int_normalize(result[0]);
-
-  var remainder_uint64 = (UInt64)remainder;
-  result[1] = big_int_init_internal(&remainder_uint64,
-                                    1,
-                                    1,
-                                    remainder_uint64 == 0 ? none : plus);
-}
-
-/*
- * The minimum magnitude count for cancelling powers of two before dividing.
- * If the number of words is less than this threshold, `divide_knuth` does not
- * eliminate common powers of two from the dividend and divisor.
- */
-#define BIG_INT_KNUTH_POW2_THRESHOLD_COUNT 6
-
-/*
- * The minimum number of trailing zero ints for cancelling powers of two before
- * dividing.
- * If the dividend and divisor don't share at least this many zero words at the
- * end, `divide_knuth` does not eliminate common powers of two from the dividend
- * and divisor.
- */
-#define BIG_INT_KNUTH_POW2_THRESHOLD_ZEROS 3
 
 /*
  * Return the index of the lowest set bit in given big int. If the magnitude of
@@ -424,63 +350,11 @@ static Void big_int_divide_magnitude(struct BigInt* u,
       remainder->_magnitude = realloc(remainder->_magnitude,
                                       sizeof(UInt64) * u->_magnitude_count + 1);
       remainder->_magnitude_count = u->_magnitude_count;
-      remainder
+//      remainder
     }
   }
 }
 
-/*
- * Calculates the quotient of lhs div rhs. The quotient and the remainder object
- * is returned.
- *
- * Uses Algorithm D from Knuth TAOCP Vol. 2, 3rd edition, section 4.3.1.
- * Many optimizations to that algorithm have been adapted from the Colin Plumb C
- * library.
- * It special cases one word divisors for speed. The content of rhs is not
- * changed.
- */
-static struct BigInt** big_int_divide_knuth(struct BigInt* lhs,
-                                            struct BigInt* rhs) {
-  precondition(rhs->_sign != none, "BigInt divide by zero");
-
-  /* Return value */
-  var result = (struct BigInt**)malloc(sizeof(struct BigInt*) * 2);
-
-  /* Dividend is zero */
-  if (lhs->_sign == none) {
-    result[0] = big_int_init_from_int128(0);
-    result[1] = big_int_init_from_int128(0);
-    return result;
-  }
-
-  let compare_result = big_int_compare(lhs, rhs);
-  /* Dividend less than divisor. */
-  if (compare_result < 0) {
-    result[0] = big_int_init_from_int128(0);
-    result[1] = big_int_copy(lhs);
-    return result;
-  }
-  /* Dividend equal to divisor. */
-  if (compare_result == 0) {
-    result[0] = big_int_init_from_int128(1);
-    result[1] = big_int_init_from_int128(0);
-    return result;
-  }
-
-  /* Special case one word divisor */
-  if (rhs->_magnitude_count == 1) {
-    big_int_divide_one_word(lhs, rhs->_magnitude[0], result);
-    return result;
-  }
-
-  /* Cancel common powers of two if we're above the KNUTH_POW2_* thresholds. */
-  if (lhs->_magnitude_count >= BIG_INT_KNUTH_POW2_THRESHOLD_COUNT) {
-    let trailing_zero_bits = min(big_int_get_lowest_set_bit(lhs),
-                                 big_int_get_lowest_set_bit(rhs));
-    // TODO: add left/right shift here
-  }
-
-}
 
 /**
  * Compares the magnitude array of `lhs` with the `rhs`'s. This is the version
@@ -689,18 +563,6 @@ Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase) {
 }
 
 /* MARK: - Performing Calculations */
-
-/**
- * Returns the quotient and remainder of `lhs` divided by the `rhs`.
- */
-struct BigInt** big_int_divide(struct BigInt* lhs, struct BigInt* rhs) {
-  let difference = lhs->_magnitude_count - rhs->_magnitude_count;
-  if (rhs->_magnitude_count < BIG_INT_BURNIKEL_ZIEGLER_THRESHOLD ||
-      difference < BIG_INT_BURNIKEL_ZIEGLER_OFFSET) {
-    return big_int_divide_knuth(lhs, rhs);
-  }
-  // TODO
-}
 
 /**
  * Returns -1, 0 or 1 that indicates whether the number object's value is

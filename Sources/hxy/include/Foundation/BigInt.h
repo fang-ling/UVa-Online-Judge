@@ -136,15 +136,6 @@ struct BigInt* big_int_init_from_int128(Int128 value);
 Void big_int_deinit(struct BigInt* bigInt);
 
 /**
- * Creates a new `BigInt` containing the value `bigInt`.
- *
- * The `big_int_copy()` function allocates sufficient memory for a copy of the
- * `BigInt` `bigInt`, does the copy, and returns a pointer to it. The pointer
- * may subsequently be used as an argument to the function `big_int_deinit()`.
- */
-struct BigInt* big_int_copy(struct BigInt* bigInt);
-
-/**
  * Creates a string representing the given value in base 10, or some other
  * specified base.
  *
@@ -165,16 +156,9 @@ Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase);
 
 /* MARK: - Performing Calculations */
 
-/**
- * Returns the quotient and remainder of `lhs` divided by the `rhs`.
- */
-struct BigInt** big_int_divide(struct BigInt* lhs, struct BigInt* rhs);
 
-/**
- * Returns -1, 0 or 1 that indicates whether the number object's value is
- * greater than, equal to, or less than a given number.
- */
-Int64 big_int_compare(struct BigInt* lhs, struct BigInt* rhs);
+
+
 
 /* MARK: - Working with Binary Representation */
 
