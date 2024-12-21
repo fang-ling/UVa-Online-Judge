@@ -79,6 +79,13 @@ struct MutableBigInteger* mutable_big_integer_init();
 struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value);
 
 /**
+ * Construct a new MutableBigInteger with the specified value array
+ * up to the length of the array supplied.
+ */
+struct MutableBigInteger* mutable_big_integer_init_from_words(UInt64* magnitude,
+                                                              Int64 count);
+
+/**
  * Creates a new MutableBigInteger containing the given value.
  *
  * The `big_int_copy()` function allocates sufficient memory for a copy of the
@@ -88,6 +95,11 @@ struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value);
  */
 struct MutableBigInteger*
 mutable_big_integer_copy(struct MutableBigInteger* value);
+
+/**
+ * Destroys a MutableBigInteger.
+ */
+Void mutable_big_integer_deinit(struct MutableBigInteger* value);
 
 /* MARK: - Performing Calculations */
 

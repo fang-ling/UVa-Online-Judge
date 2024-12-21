@@ -554,6 +554,23 @@ struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value) {
 }
 
 /**
+ * Construct a new MutableBigInteger with the specified value array
+ * up to the length of the array supplied.
+ */
+struct MutableBigInteger* mutable_big_integer_init_from_words(UInt64* magnitude,
+                                                              Int64 count) {
+  var n = (struct MutableBigInteger*)malloc(sizeof(struct MutableBigInteger));
+
+  n->_magnitude = malloc(sizeof(UInt64) * count);
+  memcpy(n->_magnitude, magnitude, sizeof(UInt64) * count);
+  n->_magnitude_capacity = count;
+  n->_magnitude_count = count;
+  n->_offset = 0;
+
+  return n;
+}
+
+/**
  * Creates a new MutableBigInteger containing the given value.
  */
 struct MutableBigInteger*
@@ -569,6 +586,18 @@ mutable_big_integer_copy(struct MutableBigInteger* value) {
   n->_offset = 0;
 
   return n;
+}
+
+/**
+ * Destroys a MutableBigInteger.
+ */
+Void mutable_big_integer_deinit(struct MutableBigInteger* value) {
+  if (value == NULL) {
+    return;
+  }
+
+  free(value->_magnitude);
+  free(value);
 }
 
 /* MARK: - Performing Calculations */

@@ -23,6 +23,7 @@
 #define BigInteger_h
 
 #include "CFoundation.h"
+#include "MutableBigInteger.h"
 #include "Number.h"
 
 enum BigIntegerSign {
@@ -125,53 +126,62 @@ struct BigInteger {
  */
 struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix);
 
+/**
+ * Creates a new `BigInteger` containing the given value.
+ */
+struct BigInteger* big_integer_copy(struct BigInteger* value);
+
+/**
+ * Destroys a BigInteger.
+ */
+Void big_integer_deinit(struct BigInteger* value);
+
 ///**
 // * Creates a new `BigInt` value with the specified value.
 // */
 //struct BigInt* big_int_init_from_int128(Int128 value);
 
-///**
-// * Destroys a BigInt.
-// */
-//Void big_int_deinit(struct BigInt* bigInt);
+/* MARK: - Converting Numeric Values */
 
-///**
-// * Creates a string representing the given value in base 10, or some other
-// * specified base.
-// *
-// * If the radix is outside the range from 2 ... 36, it will default to 10.
-// * A minus sign is prepended if appropriate.
-// *
-// * The resulting string is dynamically allocated and must be freed by the caller
-// * using free().
-// *
-// * - Parameters:
-// *   - value: The value to convert to a string.
-// *   - radix: The base to use for the string representation. radix must be at
-// *   least 2 and at most 36.
-// *   - uppercase: Pass `true` to use uppercase letters to represent numerals
-// *   greater than 9, or false to use lowercase letters.
-// */
-//Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase);
-//
+/**
+ * Creates a string representing the given value in base 10, or some other
+ * specified base.
+ *
+ * If the radix is outside the range from 2 ... 36, it will default to 10.
+ * A minus sign is prepended if appropriate.
+ *
+ * The resulting string is dynamically allocated and must be freed by the caller
+ * using free().
+ *
+ * - Parameters:
+ *   - value: The value to convert to a string.
+ *   - radix: The base to use for the string representation. radix must be at
+ *   least 2 and at most 36.
+ *   - is_uppercase: Pass `true` to use uppercase letters to represent numerals
+ *   greater than 9, or false to use lowercase letters.
+ */
+Char* big_integer_to_string(struct BigInteger* value,
+                            Int64 radix,
+                            Bool is_uppercase);
+
 ///* MARK: - Performing Calculations */
 //
 //
 //
 //
 //
-///* MARK: - Working with Binary Representation */
-//
-///**
-// * Returns the number of bits in the minimal two's-complement representation of
-// * this BigInt, **excluding** a sign bit.
-// *
-// * For positive BigIntegers, this is equivalent to the number of bits in the
-// * ordinary binary representation.  For zero this method returns 0.
-// *
-// * (Computes: ceil(log2(this < 0 ? -this : this+1)).)
-// */
-//Int64 big_int_bit_count(struct BigInt* value);
+/* MARK: - Working with Binary Representation */
+
+/**
+ * Returns the number of bits in the minimal two's-complement representation of
+ * this BigInt, **excluding** a sign bit.
+ *
+ * For positive BigIntegers, this is equivalent to the number of bits in the
+ * ordinary binary representation.  For zero this method returns 0.
+ *
+ * (Computes: ceil(log2(this < 0 ? -this : this+1)).)
+ */
+Int64 big_integer_bit_count(struct BigInteger* value);
 
 #endif /* BigInteger_h */
 
