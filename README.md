@@ -15,9 +15,10 @@ Swift codes are only for Swift Testing.
 
 ## Solved Problems
 
-
 | # | pid | Problem |
 |--|--|--|
+| 30052425 | 10300 | Ecological Premium |
+| 30050488 | 272 | TEX Quotes |
 | 30042994 | 12917 | Prop hunt! |
 | 30039740 | 12646 | Zero or One |
 | 30037365 | 12577 | Hajj-e-Akbar |

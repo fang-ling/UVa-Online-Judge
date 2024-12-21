@@ -1,6 +1,6 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* BigInt.h                                             /'___\ /\_ \          */
+/* BigInteger.h                                         /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
 /* Date: November 30, 2024                              \ \ \_/__ \_\ \_  __  */
@@ -19,13 +19,13 @@
  * which have their own licensing terms.
  */
 
-#ifndef BigInt_h
-#define BigInt_h
+#ifndef BigInteger_h
+#define BigInteger_h
 
 #include "CFoundation.h"
 #include "Number.h"
 
-enum BigIntSign {
+enum BigIntegerSign {
   plus,
   minus,
   none
@@ -61,36 +61,36 @@ enum BigIntSign {
  * Bit operations operate on a single bit of the two's-complement
  * representation of their operand.  If necessary, the operand is sign-extended
  * so that it contains the designated bit.  None of the single-bit
- * operations can produce a `BigInt` with a different sign from the
- * `BigInt` being operated on, as they affect only a single bit, and the
+ * operations can produce a `BigInteger` with a different sign from the
+ * `BigInteger` being operated on, as they affect only a single bit, and the
  * arbitrarily large abstraction provided by this class ensures that
  * conceptually there are infinitely many "virtual sign bits" preceding each
- * `BigInt`.
+ * `BigInteger`.
  *
  * For the sake of brevity and clarity, pseudo-code is used throughout the
- * descriptions of `BigInt` methods.  The pseudo-code expression
- * `(i + j)` is shorthand for "a `BigInt` whose value is that of the `BigInt`
- * `i` plus that of the `BigInt` `j`." The pseudo-code expression `(i == j)` is
- * shorthand for "true if and only if the `BigInt` `i` represents the same
- * value as the `BigInt` `j`."  Other pseudo-code expressions are interpreted
- * similarly.
+ * descriptions of `BigInteger` methods.  The pseudo-code expression `(i + j)`
+ * is shorthand for "a `BigInteger` whose value is that of the `BigInteger`
+ * `i` plus that of the `BigInteger` `j`." The pseudo-code expression `(i == j)`
+ * is shorthand for "true if and only if the `BigInteger` `i` represents the
+ * same value as the `BigInteger` `j`."  Other pseudo-code expressions are
+ * interpreted similarly.
  */
-struct BigInt {
+struct BigInteger {
   /**
-   * The sign of this `BigInt`: `minus` for negative, `none` for zero, or
+   * The sign of this `BigInteger`: `minus` for negative, `none` for zero, or
    * `plus` for positive.  Note that the BigInteger zero **must** have
    * a sign of `none`.  This is necessary to ensures that there is exactly one
-   * representation for each `BigInt` value.
+   * representation for each `BigInteger` value.
    */
-  enum BigIntSign _sign;
+  enum BigIntegerSign _sign;
 
   /**
-   * The magnitude of this `BigInt`, in *big-endian* order: the
+   * The magnitude of this `BigInteger`, in *big-endian* order: the
    * zeroth element of this array is the most-significant int of the
    * magnitude.  The magnitude must be "minimal" in that the most-significant
    * word, `magnitude[0]` must be non-zero. This is necessary to ensure that
-   * there is exactly one representation for each `BigInt` value.  Note that
-   * this implies that the `BigInt` zero has a zero-length magnitude array.
+   * there is exactly one representation for each `BigInteger` value.  Note that
+   * this implies that the `BigInteger` zero has a zero-length magnitude array.
    */
   UInt64* _magnitude;
 
@@ -106,16 +106,16 @@ struct BigInt {
   Int64 _magnitude_capacity;
 };
 
-/* MARK: - Creating and Destroying a BigInt */
+/* MARK: - Creating and Destroying a BigInteger */
 
 /**
- * Creates a new `BigInt` value from the given string and radix.
+ * Creates a new `BigInteger` value from the given string and radix.
  *
- * Translates the String representation of a `BigInt` in the specified `radix`
- * into a `BigInt`.  The String representation consists of an optional minus or
- * plus sign followed by a sequence of one or more digits in the specified
- * radix. The String may not contain any extraneous characters (whitespace, for
- * example).
+ * Translates the String representation of a `BigInteger` in the specified
+ * `radix` into a `BigInteger`.  The String representation consists of an
+ * optional minus or plus sign followed by a sequence of one or more digits in
+ * the specified radix. The String may not contain any extraneous characters
+ * (whitespace, for example).
  *
  * - Parameters:
  *   - text: The ASCII representation of a number in the radix passed as
@@ -123,57 +123,57 @@ struct BigInt {
  *   - radix: The radix, or base, to use for converting text to an integer
  *   value. radix must be in the range 2 ... 36.
  */
-struct BigInt* big_int_init(const Char* text, Int64 radix);
+struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix);
 
-/**
- * Creates a new `BigInt` value with the specified value.
- */
-struct BigInt* big_int_init_from_int128(Int128 value);
+///**
+// * Creates a new `BigInt` value with the specified value.
+// */
+//struct BigInt* big_int_init_from_int128(Int128 value);
 
-/**
- * Destroys a BigInt.
- */
-Void big_int_deinit(struct BigInt* bigInt);
+///**
+// * Destroys a BigInt.
+// */
+//Void big_int_deinit(struct BigInt* bigInt);
 
-/**
- * Creates a string representing the given value in base 10, or some other
- * specified base.
- *
- * If the radix is outside the range from 2 ... 36, it will default to 10.
- * A minus sign is prepended if appropriate.
- *
- * The resulting string is dynamically allocated and must be freed by the caller
- * using free().
- *
- * - Parameters:
- *   - value: The value to convert to a string.
- *   - radix: The base to use for the string representation. radix must be at
- *   least 2 and at most 36.
- *   - uppercase: Pass `true` to use uppercase letters to represent numerals
- *   greater than 9, or false to use lowercase letters.
- */
-Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase);
+///**
+// * Creates a string representing the given value in base 10, or some other
+// * specified base.
+// *
+// * If the radix is outside the range from 2 ... 36, it will default to 10.
+// * A minus sign is prepended if appropriate.
+// *
+// * The resulting string is dynamically allocated and must be freed by the caller
+// * using free().
+// *
+// * - Parameters:
+// *   - value: The value to convert to a string.
+// *   - radix: The base to use for the string representation. radix must be at
+// *   least 2 and at most 36.
+// *   - uppercase: Pass `true` to use uppercase letters to represent numerals
+// *   greater than 9, or false to use lowercase letters.
+// */
+//Char* big_int_to_string(struct BigInt* value, Int64 radix, Bool uppercase);
+//
+///* MARK: - Performing Calculations */
+//
+//
+//
+//
+//
+///* MARK: - Working with Binary Representation */
+//
+///**
+// * Returns the number of bits in the minimal two's-complement representation of
+// * this BigInt, **excluding** a sign bit.
+// *
+// * For positive BigIntegers, this is equivalent to the number of bits in the
+// * ordinary binary representation.  For zero this method returns 0.
+// *
+// * (Computes: ceil(log2(this < 0 ? -this : this+1)).)
+// */
+//Int64 big_int_bit_count(struct BigInt* value);
 
-/* MARK: - Performing Calculations */
-
-
-
-
-
-/* MARK: - Working with Binary Representation */
-
-/**
- * Returns the number of bits in the minimal two's-complement representation of
- * this BigInt, **excluding** a sign bit.
- *
- * For positive BigIntegers, this is equivalent to the number of bits in the
- * ordinary binary representation.  For zero this method returns 0.
- *
- * (Computes: ceil(log2(this < 0 ? -this : this+1)).)
- */
-Int64 big_int_bit_count(struct BigInt* value);
-
-#endif /* BigInt_h */
+#endif /* BigInteger_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

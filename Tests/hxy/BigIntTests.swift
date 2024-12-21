@@ -64,25 +64,25 @@ struct BigIntTests {
 //    #expect(results[1]!.pointee._magnitude[0] == 3694)
 //  }
 
-  @Test func testDivide() async throws {
-    let a = big_int_init("193581934212361123331930619348", 10)!
-    let b = big_int_init("193581934212361123331930619324", 10)!
-
-    let dividendPointer = mutable_big_integer_init()!
-    dividendPointer.pointee._magnitude = a.pointee._magnitude
-    dividendPointer.pointee._magnitude_capacity = a.pointee._magnitude_capacity
-    dividendPointer.pointee._magnitude_count = a.pointee._magnitude_count
-
-    let divisorPointer = mutable_big_integer_init()!
-    divisorPointer.pointee._magnitude = b.pointee._magnitude
-    divisorPointer.pointee._magnitude_capacity = b.pointee._magnitude_capacity
-    divisorPointer.pointee._magnitude_count = a.pointee._magnitude_count
-
-    var result = mutable_big_integer_divide(dividendPointer, divisorPointer)!
-
-    print(result[0]!.pointee._magnitude[0])
-    print(result[1]!.pointee._magnitude[0])
-  }
+//  @Test func testDivide() async throws {
+//    let a = big_int_init("193581934212361123331930619348", 10)!
+//    let b = big_int_init("193581934212361123331930619324", 10)!
+//
+//    let dividendPointer = mutable_big_integer_init()!
+//    dividendPointer.pointee._magnitude = a.pointee._magnitude
+//    dividendPointer.pointee._magnitude_capacity = a.pointee._magnitude_capacity
+//    dividendPointer.pointee._magnitude_count = a.pointee._magnitude_count
+//
+//    let divisorPointer = mutable_big_integer_init()!
+//    divisorPointer.pointee._magnitude = b.pointee._magnitude
+//    divisorPointer.pointee._magnitude_capacity = b.pointee._magnitude_capacity
+//    divisorPointer.pointee._magnitude_count = a.pointee._magnitude_count
+//
+//    var result = mutable_big_integer_divide(dividendPointer, divisorPointer)!
+//
+//    print(result[0]!.pointee._magnitude[0])
+//    print(result[1]!.pointee._magnitude[0])
+//  }
 }
 
 /*===----------------------------------------------------------------------===*/
