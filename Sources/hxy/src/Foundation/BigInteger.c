@@ -38,40 +38,69 @@ Int32 BIG_INTEGER_BITS_PER_DIGIT[] = {
 /*
  * The following two arrays are used for fast String conversions. Both are
  * indexed by radix.  The first is the number of digits of the given radix that
- * can fit in a UInt64 without overflow, i.e., the highest integer n such that
- * radix**n < 2**64 - 1.
+ * can fit in a Int64 without overflow, i.e., the highest integer n such that
+ * radix**n < 2**63.
  *
- * The second is the "UInt64 radix" that tears each number into "UInt64 digits",
+ * The second is the "Int64 radix" that tears each number into "Int64 digits",
  * each of which consists of the number of digits in the corresponding element
  * in DIGITS_PER_UINT64 (UINT64_RADIX[i] = i ** DIGITS_PER_UINT64[i]).
  *
  * Both arrays have nonsense values in their 0 and 1 elements, as radixes 0 and
  * 1 are not used.
  */
-Int32 BIG_INTEGER_DIGITS_PER_UINT64[] = {
-   0,  0, 63, 40, 31, 27, /*  0 ...  5 */
-  24, 22, 21, 20, 19, 18, /*  6 ... 11 */
+Int64 BIG_INTEGER_DIGITS_PER_DOUBLE_WORD[] = {
+   0,  0, 62, 39, 31, 27, /*  0 ...  5 */
+  24, 22, 20, 19, 18, 18, /*  6 ... 11 */
   17, 17, 16, 16, 15, 15, /* 12 ... 17 */
-  15, 15, 14, 14, 14, 14, /* 18 ... 23 */
-  13, 13, 13, 13, 13, 13, /* 24 ... 29 */
-  13, 12, 12, 12, 12, 12, /* 30 ... 35 */
-  12                      /* 36 */
+  15, 14, 14, 14, 14, 13, /* 18 ... 23 */
+  13, 13, 13, 13, 13, 12, /* 24 ... 29 */
+  12, 12, 12, 12, 12, 12, /* 30 ... 35 */
+  12                      /* 36        */
 };
 
-UInt64 BIG_INTEGER_UINT64_RADIX[] = {
-  0x0000000000000000ull, 0x0000000000000000ull, 0x8000000000000000ull,
-  0xa8b8b452291fe821ull, 0x4000000000000000ull, 0x6765c793fa10079dull,
-  0x41c21cb8e1000000ull, 0x3642798750226111ull, 0x8000000000000000ull,
-  0xa8b8b452291fe821ull, 0x8ac7230489e80000ull, 0x4d28cb56c33fa539ull,
-  0x1eca170c00000000ull, 0x780c7372621bd74dull, 0x1e39a5057d810000ull,
-  0x5b27ac993df97701ull, 0x1000000000000000ull, 0x27b95e997e21d9f1ull,
-  0x5da0e1e53c5c8000ull, 0xd2ae3299c1c4aedbull, 0x16bcc41e90000000ull,
-  0x2d04b7fdd9c0ef49ull, 0x5658597bcaa24000ull, 0xa0e2073737609371ull,
-  0x0c29e98000000000ull, 0x14adf4b7320334b9ull, 0x226ed36478bfa000ull,
-  0x383d9170b85ff80bull, 0x5a3c23e39c000000ull, 0x8e65137388122bcdull,
-  0xdd41bb36d259e000ull, 0x0aee5720ee830681ull, 0x1000000000000000ull,
-  0x172588ad4f5f0981ull, 0x211e44f7d02c1000ull, 0x2ee56725f06e5c71ull,
-  0x41c21cb8e1000000ull
+Int64 BIG_INTEGER_DOUBLE_WORD_RADIX[] = {
+  0x0000000000000000ll, 0x0000000000000000ll, 0x4000000000000000ll,
+  0x383d9170b85ff80bll, 0x4000000000000000ll, 0x6765c793fa10079dll,
+  0x41c21cb8e1000000ll, 0x3642798750226111ll, 0x1000000000000000ll,
+  0x12bf307ae81ffd59ll,  0xde0b6b3a7640000ll, 0x4d28cb56c33fa539ll,
+  0x1eca170c00000000ll, 0x780c7372621bd74dll, 0x1e39a5057d810000ll,
+  0x5b27ac993df97701ll, 0x1000000000000000ll, 0x27b95e997e21d9f1ll,
+  0x5da0e1e53c5c8000ll,  0xb16a458ef403f19ll, 0x16bcc41e90000000ll,
+  0x2d04b7fdd9c0ef49ll, 0x5658597bcaa24000ll,  0x6feb266931a75b7ll,
+   0xc29e98000000000ll, 0x14adf4b7320334b9ll, 0x226ed36478bfa000ll,
+  0x383d9170b85ff80bll, 0x5a3c23e39c000000ll,  0x4e900abb53e6b71ll,
+   0x7600ec618141000ll,  0xaee5720ee830681ll, 0x1000000000000000ll,
+  0x172588ad4f5f0981ll, 0x211e44f7d02c1000ll, 0x2ee56725f06e5c71ll,
+  0x41c21cb8e1000000ll
+};
+
+/*
+ * These two arrays are the integer analogue of above.
+ */
+Int64 BIG_INTEGER_DIGITS_PER_WORD[] = {
+   0,  0, 30, 19, 15, 13, /*  0 ...  5 */
+  11, 11, 10,  9,  9,  8, /*  6 ... 11 */
+   8,  8,  8,  7,  7,  7, /* 12 ... 17 */
+   7,  7,  7,  7,  6,  6, /* 18 ... 23 */
+   6,  6,  6,  6,  6,  6, /* 24 ... 29 */
+   6,  6,  6,  6,  6,  6, /* 30 ... 35 */
+   5                      /* 36        */
+};
+
+Int32 BIG_INTEGER_WORD_RADIX[] = {
+  0x00000000, 0x00000000, 0x40000000,
+  0x4546b3db, 0x40000000, 0x48c27395,
+  0x159fd800, 0x75db9c97, 0x40000000,
+  0x17179149, 0x3b9aca00,  0xcc6db61,
+  0x19a10000, 0x309f1021, 0x57f6c100,
+   0xa2f1b6f, 0x10000000, 0x18754571,
+  0x247dbc80, 0x3547667b, 0x4c4b4000,
+  0x6b5a6e1d,  0x6c20a40,  0x8d2d931,
+   0xb640000,  0xe8d4a51, 0x1269ae40,
+  0x17179149, 0x1cb91000, 0x23744899,
+  0x2b73a840, 0x34e63b41, 0x40000000,
+  0x4cfa3cc1, 0x5c13d840, 0x6d91b519,
+  0x39aa400
 };
 
 /* The natural log of 2. */
@@ -94,6 +123,11 @@ Double BIG_INTEGER_LOG_CACHE[] = {
 };
 
 /*
+ * This mask is used to obtain the value of an int32 as if it were unsigned.
+ */
+#define BIG_INTEGER_INT64_MASK 0xffffffffll
+
+/*
  * The threshold value for using Schoenhage recursive base conversion. If
  * the number of ints in the number are larger than this value,
  * the Schoenhage algorithm will be used. In practice, it appears that the
@@ -106,28 +140,31 @@ Double BIG_INTEGER_LOG_CACHE[] = {
 /* MARK: - Private methods */
 
 /* Multiply x array times word y in place, and add word z. */
-static Void big_integer_destructive_multiply_add(UInt64* x,
+static Void big_integer_destructive_multiply_add(Int32* x,
                                                  Int64 count,
-                                                 UInt64 y,
-                                                 UInt64 z) {
+                                                 Int32 y,
+                                                 Int32 z) {
   /* Perform the multiplication word by word */
-  UInt128 product = 0;
-  UInt64 carry = 0;
+  var y_int64 = y & BIG_INTEGER_INT64_MASK;
+  var z_int64 = z & BIG_INTEGER_INT64_MASK;
+
+  var product = (Int64)0;
+  var carry = (Int64)0;
   var i = count - 1;
   for (; i >= 0; i -= 1) {
-    product = (UInt128)y * x[i] + carry;
-    x[i] = (UInt64)product;
-    carry = product >> 64;
+    product = y_int64 * (x[i] & BIG_INTEGER_INT64_MASK) + carry;
+    x[i] = (Int32)product;
+    carry = ((UInt64)product) >> 32;
   }
 
   /* Perform the addition */
-  var sum = (UInt128)x[count - 1] + z;
-  x[count - 1] = (UInt64)sum;
-  carry = sum >> 64;
+  var sum = (x[count - 1] & BIG_INTEGER_INT64_MASK) + z_int64;
+  x[count - 1] = (Int32)sum;
+  carry = ((UInt64)sum) >> 32;
   for (i = count - 2; i >= 0; i -= 1) {
-    sum = x[i] + carry;
-    x[i] = (UInt64)sum;
-    carry = sum >> 64;
+    sum = (x[i] & BIG_INTEGER_INT64_MASK) + carry;
+    x[i] = (Int32)sum;
+    carry = ((UInt64)sum) >> 32;
   }
 }
 
@@ -136,8 +173,8 @@ static Void big_integer_destructive_multiply_add(UInt64* x,
  * Returnes the count of the array stripped of any leading zero bytes.
  * Since the source is trusted the copying is skipped.
  */
-static Int64 big_integer_trusted_strip_leading_zero_uint64s(UInt64* value,
-                                                            Int64 count) {
+static Int64 big_integer_trusted_strip_leading_zero_words(Int32* value,
+                                                          Int64 count) {
   var keep = 0;
   /* Find first nonzero byte. */
   for (; keep < count && value[keep] == 0; keep += 1);
@@ -145,7 +182,7 @@ static Int64 big_integer_trusted_strip_leading_zero_uint64s(UInt64* value,
     let new_count = count - keep;
 
     /* Copy value[keep ..< count] */
-    memmove(value, value + keep * sizeof(UInt64), new_count * sizeof(UInt64));
+    memmove(value, value + keep, new_count * sizeof(Int32));
 
     return new_count;
   }
@@ -153,16 +190,17 @@ static Int64 big_integer_trusted_strip_leading_zero_uint64s(UInt64* value,
   return count;
 }
 
-/* Private method to return bit count for a UInt64. */
-#define big_integer_bit_count_for_uint64(n) \
-          (64 - __builtin_clzll((n)))
+/* Private method to return bit count for a word. */
+#define big_integer_bit_count_for_word(n) \
+          (32 - __builtin_clz((n)))
 
-struct BigInteger* big_integer_init_from_words(UInt64* magnitude,                                                                Int64 count,
+struct BigInteger* big_integer_init_from_words(Int32* magnitude,
+                                               Int64 count,
                                                enum BigIntegerSign sign) {
   var n = (struct BigInteger*)malloc(sizeof(struct BigInteger));
 
-  n->_magnitude = malloc(sizeof(UInt64) * count);
-  memcpy(n->_magnitude, magnitude, sizeof(UInt64) * count);
+  n->_magnitude = malloc(sizeof(Int32) * count);
+  memcpy(n->_magnitude, magnitude, sizeof(Int32) * count);
   n->_magnitude_capacity = count;
   n->_magnitude_count = count;
   n->_sign = count == 0 ? none : sign;
@@ -177,7 +215,7 @@ big_integer_mutable_big_integer_to_big_integer(struct MutableBigInteger* value,
   if (value->_magnitude_count == 0 || sign == none) {
     var n = (struct BigInteger*)malloc(sizeof(struct BigInteger));
 
-    n->_magnitude = malloc(sizeof(UInt64) * 0);
+    n->_magnitude = malloc(sizeof(UInt32) * 0);
     n->_magnitude_count = 0;
     n->_magnitude_capacity = 0;
     n->_sign = none;
@@ -206,7 +244,7 @@ static Void big_integer_pad_with_zeros(Char* text,
     zero_count -= 63;
   }
   if (zero_count > 0) {
-    strncpy(text + offset,
+    strncat(text + offset,
             "000000000000000000000000000000000000000000000000000000000000000",
             zero_count);
   }
@@ -222,12 +260,15 @@ static Void big_integer_pad_with_zeros(Char* text,
  *   - text: The string buffer that will be appended to in place.
  *   - offset: The start index of `text`.
  *   - padding: The minimum number of digits to pad to.
+ *   - is_uppercase: Pass `true` to use uppercase letters to represent numerals
+ *   greater than 9, or false to use lowercase letters.
  */
 static Void big_integer_small_to_string(struct BigInteger* u,
                                         Int64 radix,
                                         Char* text,
                                         Int64 offset,
-                                        Int64 padding) {
+                                        Int64 padding,
+                                        Bool is_uppercase) {
   precondition(u->_sign != minus,
                "This method can only be called for non-negative numbers.");
 
@@ -237,19 +278,18 @@ static Void big_integer_small_to_string(struct BigInteger* u,
   }
 
   /* Compute upper bound on number of digit groups and allocate space. */
-  /* FIXME: This upper bound may not enough. */
-  let max_number_digit_groups = (4 * u->_magnitude_count + 6) / 7;
-  var digit_groups = (UInt64*)malloc(sizeof(UInt64) * max_number_digit_groups);
+  let max_number_digit_groups = (4 * u->_magnitude_capacity + 6) / 7;
+  var digit_groups = (Int32*)malloc(sizeof(Int32) * max_number_digit_groups);
 
   /* Translate number to string, a digit group at a time. */
   var tmp = big_integer_copy(u);
   var group_count = 0;
   while (tmp->_sign != none) {
-    var d = BIG_INTEGER_UINT64_RADIX[radix];
+    var d = BIG_INTEGER_DOUBLE_WORD_RADIX[radix];
 
     var a = mutable_big_integer_init_from_words(tmp->_magnitude,
                                                 tmp->_magnitude_count);
-    var b = mutable_big_integer_init_from_words(&d, 1);
+    var b = mutable_big_integer_init_from_int64(&d);
     var quotient_and_remainder = mutable_big_integer_divide(a, b);
     var q = quotient_and_remainder[0];
     var r = quotient_and_remainder[1];
@@ -272,11 +312,11 @@ static Void big_integer_small_to_string(struct BigInteger* u,
   big_integer_deinit(tmp); /* Free the last q2 */
 
   /* Get string version of first digit group. */
-  Char s[64 + 1];
-  ansi_itoaull(digit_groups[group_count - 1], s, (Int32)radix);
+  Char s[64];
+  ansi_itoall(digit_groups[group_count - 1], s, (Int32)radix, is_uppercase);
 
   /* Pad with internal zeros if necessary. */
-  let digits = (group_count - 1) * BIG_INTEGER_DIGITS_PER_UINT64[radix];
+  let digits = (group_count - 1) * BIG_INTEGER_DIGITS_PER_DOUBLE_WORD[radix];
   big_integer_pad_with_zeros(text,
                              offset,
                              padding - (strlen(s) + digits));
@@ -288,8 +328,8 @@ static Void big_integer_small_to_string(struct BigInteger* u,
   var i = group_count - 2;
   for (; i >= 0; i -= 1) {
     /* Prepend (any) leading zeros for this digit group. */
-    ansi_itoaull(digit_groups[i], s, (Int32)radix);
-    let leading_zeros = BIG_INTEGER_DIGITS_PER_UINT64[radix] - strlen(s);
+    ansi_itoall(digit_groups[i], s, (Int32)radix, is_uppercase);
+    let leading_zeros = BIG_INTEGER_DIGITS_PER_DOUBLE_WORD[radix] - strlen(s);
     if (leading_zeros != 0) {
       strncat(text + offset,
               "000000000000000000000000000000000000000000000000000000000000000",
@@ -315,12 +355,15 @@ static Void big_integer_small_to_string(struct BigInteger* u,
  *   - offset: The start index of `text`.
  *   - radix: The base to convert to.
  *   - padding: The minimum number of digits to pad to.
+ *   - is_uppercase: Pass `true` to use uppercase letters to represent numerals
+ *   greater than 9, or false to use lowercase letters.
  */
 static Void big_integer_to_string_schoenhage(struct BigInteger* u,
                                              Char* text,
                                              Int64 offset,
                                              Int64 radix,
-                                             Int64 padding) {
+                                             Int64 padding,
+                                             Bool is_uppercase) {
   precondition(u->_sign != minus,
                "This method can only be called for non-negative numbers.");
 
@@ -331,12 +374,9 @@ static Void big_integer_to_string_schoenhage(struct BigInteger* u,
    * small_to_string() will not prepend a negative sign.
    */
   if (u->_magnitude_count <= BIG_INTEGER_SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
-    big_integer_small_to_string(u, radix, text, offset, padding);
+    big_integer_small_to_string(u, radix, text, offset, padding, is_uppercase);
+    return;
   }
-//  if (u.mag.length <= SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
-//      u.smallToString(radix, sb, digits);
-//      return;
-//  }
 }
 
 
@@ -517,9 +557,10 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
     value->_sign = none;
     value->_magnitude_count = 0;
     value->_magnitude_capacity = 0;
-    value->_magnitude = (UInt64*)malloc(sizeof(UInt64) * 0);
+    value->_magnitude = (Int32*)malloc(sizeof(Int32) * 0);
     return value;
   }
+
   let digits_count = (Int64)text_count - cursor;
 
   /*
@@ -528,34 +569,37 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
    */
   var bits_count = ((digits_count * BIG_INTEGER_BITS_PER_DIGIT[radix]) >> 10);
   bits_count += 1;
-  /* Add 63 to make sure that count is bigger than 64. */
-  let magnitude_count = (bits_count + 63) >> 6;
+  /* Add 31 to make sure that count is bigger than 32. */
+  let magnitude_count = (bits_count + 31) >> 5;
   value->_magnitude_count = magnitude_count;
   value->_magnitude_capacity = magnitude_count;
-  value->_magnitude = (UInt64*)malloc(sizeof(UInt64) * magnitude_count);
+  value->_magnitude = (Int32*)malloc(sizeof(Int32) * magnitude_count);
 
   /* Process first (potentially short) digit group. */
-  var first_group_count = digits_count % BIG_INTEGER_DIGITS_PER_UINT64[radix];
+  var first_group_count = digits_count % BIG_INTEGER_DIGITS_PER_WORD[radix];
   if (first_group_count == 0) {
-    first_group_count = BIG_INTEGER_DIGITS_PER_UINT64[radix];
+    first_group_count = BIG_INTEGER_DIGITS_PER_WORD[radix];
   }
-  Char group[64 + 1];
+  Char group[32];
   memcpy(group, text + cursor * sizeof(Char), first_group_count);
   group[first_group_count] = '\0';
   cursor += first_group_count;
-  value->_magnitude[magnitude_count - 1] = ansi_strtoull(group,
+  value->_magnitude[magnitude_count - 1] = (Int32)strtol(group,
                                                          NULL,
                                                          (Int32)radix);
+  precondition(value->_magnitude[magnitude_count - 1] >= 0, "Illegal digit");
+
   /* Process remaining digit groups */
-  let super_radix = BIG_INTEGER_UINT64_RADIX[radix];
-  var group_value = 0ull;
+  let super_radix = BIG_INTEGER_WORD_RADIX[radix];
+  var group_value = 0;
   while (cursor < text_count) {
     memcpy(group,
-           text + cursor * sizeof(Char),
-           BIG_INTEGER_DIGITS_PER_UINT64[radix]);
-    group[BIG_INTEGER_DIGITS_PER_UINT64[radix]] = '\0';
-    cursor += BIG_INTEGER_DIGITS_PER_UINT64[radix];
-    group_value = ansi_strtoull(group, NULL, (Int32)radix);
+           text + cursor,
+           BIG_INTEGER_DIGITS_PER_WORD[radix]);
+    group[BIG_INTEGER_DIGITS_PER_WORD[radix]] = '\0';
+    cursor += BIG_INTEGER_DIGITS_PER_WORD[radix];
+    group_value = (Int32)strtol(group, NULL, (Int32)radix);
+    precondition(group_value >= 0, "Illegal digit");
     big_integer_destructive_multiply_add(value->_magnitude,
                                          value->_magnitude_count,
                                          super_radix,
@@ -568,8 +612,8 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
    */
   let count = value->_magnitude_count;
   let magnitude = value->_magnitude;
-  let new_count = big_integer_trusted_strip_leading_zero_uint64s(magnitude,
-                                                                 count);
+  let new_count = big_integer_trusted_strip_leading_zero_words(magnitude,
+                                                               count);
   value->_magnitude_count = new_count;
 
   return value;
@@ -581,10 +625,10 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
 struct BigInteger* big_integer_copy(struct BigInteger* value) {
   var copy = (struct BigInteger*)malloc(sizeof(struct BigInteger));
   /* Copy magnitude */
-  copy->_magnitude = malloc(sizeof(UInt64) * value->_magnitude_capacity);
+  copy->_magnitude = malloc(sizeof(Int32) * value->_magnitude_capacity);
   memcpy(copy->_magnitude,
          value->_magnitude,
-         sizeof(UInt64) * value->_magnitude_capacity);
+         sizeof(Int32) * value->_magnitude_capacity);
   copy->_magnitude_count = value->_magnitude_count;
   copy->_magnitude_capacity = value->_magnitude_capacity;
   /* Copy others */
@@ -653,11 +697,13 @@ Char* big_integer_to_string(struct BigInteger* value,
    * Ensure buffer capacity sufficient to contain string representation
    *     floor(bitLength*log(2)/log(radix)) + 1
    * plus an additional character for the sign if negative.
+   * Plus one again for the null terminator.
    */
   let b = big_integer_bit_count(abs);
   let log_cache_radix = BIG_INTEGER_LOG_CACHE[radix];
-  var count = (UInt64)floor(b * BIG_INTEGER_LOG_TWO / log_cache_radix) + 1;
+  var count = (Int64)floor(b * BIG_INTEGER_LOG_TWO / log_cache_radix) + 1;
   count += value->_sign == minus ? 1 : 0;
+  count += 1;
 
   var text = (Char*)malloc(sizeof(Char) * count);
   var offset = 0;
@@ -665,9 +711,10 @@ Char* big_integer_to_string(struct BigInteger* value,
     text[0] = '-';
     offset += 1;
   }
+  text[offset] = '\0';
 
   /* Use recursive toString. */
-  big_integer_to_string_schoenhage(abs, text, offset, radix, 0);
+  big_integer_to_string_schoenhage(abs, text, offset, radix, 0, is_uppercase);
 
   return text;
 }
@@ -701,8 +748,8 @@ Int64 big_integer_bit_count(struct BigInteger* value) {
     return 0;
   }
   /* Calculate the bit length of the magnitude. */
-  var bit_count = ((value->_magnitude_count - 1) << 6);
-  bit_count += big_integer_bit_count_for_uint64(value->_magnitude[0]);
+  var bit_count = ((value->_magnitude_count - 1) << 5);
+  bit_count += big_integer_bit_count_for_word(value->_magnitude[0]);
   if (value->_sign == minus) {
     /* Check if magnitude is a power of two. */
     var is_pow2 = __builtin_popcountll(value->_magnitude[0]) == 1;

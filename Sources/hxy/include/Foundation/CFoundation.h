@@ -188,7 +188,7 @@ unsigned long long ansi_strtoull(const char* nptr, char** endptr, int base);
  * Converts an integer value to a null-terminated string using the specified
  * base and stores the result in the array given by text parameter.
  */
-void ansi_itoaull(unsigned long long value, char* text, int radix);
+void ansi_itoall(long long value, char* text, int radix, bool is_uppercase);
 
 #endif /* CFoundation_h */
 

@@ -242,7 +242,7 @@ void ansi_strrev(char* str) {
  * Converts an integer value to a null-terminated string using the specified
  * base and stores the result in the array given by text parameter.
  */
-void ansi_itoaull(unsigned long long value, char* text, int radix) {
+void ansi_itoall(long long value, char* text, int radix, bool is_uppercase) {
   var sum = value;
   var i = 0;
   var digit = 0;
@@ -251,7 +251,7 @@ void ansi_itoaull(unsigned long long value, char* text, int radix) {
     if (digit < 0xA) {
       text[i++] = '0' + digit;
     } else {
-      text[i++] = 'A' + digit - 0xA;
+      text[i++] = (is_uppercase ? 'A' : 'a') + digit - 0xA;
     }
     sum /= radix;
   } while (sum);

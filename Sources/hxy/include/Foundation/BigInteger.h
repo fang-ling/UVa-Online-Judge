@@ -90,10 +90,10 @@ struct BigInteger {
    * zeroth element of this array is the most-significant int of the
    * magnitude.  The magnitude must be "minimal" in that the most-significant
    * word, `magnitude[0]` must be non-zero. This is necessary to ensure that
-   * there is exactly one representation for each `BigInteger` value.  Note that
+   * there is exactly one representation for each `BigInteger` value. Note that
    * this implies that the `BigInteger` zero has a zero-length magnitude array.
    */
-  UInt64* _magnitude;
+  Int32* _magnitude;
 
   /**
    * The number of words in the `magnitude`.

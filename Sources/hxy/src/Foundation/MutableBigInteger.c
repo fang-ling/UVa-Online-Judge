@@ -24,6 +24,11 @@
 /* MARK: - Private Constants */
 
 /*
+ * This mask is used to obtain the value of an int32 as if it were unsigned.
+ */
+#define MUTABLE_BIG_INTEGER_INT64_MASK 0xffffffffll
+
+/*
  * The threshold value for using Burnikel-Ziegler division. If the number of
  * words in the divisor are larger than this value, Burnikel-Ziegler division
  * may be used. This value is found experimentally to work well.
@@ -92,9 +97,9 @@ static Void mutable_big_integer_normalize(struct MutableBigInteger* value) {
  */
 static Void
 mutable_big_integer_divide_one_word(struct MutableBigInteger* dividend,
-                                    UInt64 divisor,
+                                    Int32 divisor,
                                     struct MutableBigInteger* quotient,
-                                    UInt64* remainder) {
+                                    Int32* remainder) {
   /* Special case of one word dividend. */
   if (dividend->_magnitude_count == 1) {
     var dividend_value = dividend->_magnitude[dividend->_offset];
@@ -110,46 +115,47 @@ mutable_big_integer_divide_one_word(struct MutableBigInteger* dividend,
   }
 
   if (quotient->_magnitude_capacity < dividend->_magnitude_count) {
-    let size = sizeof(UInt64) * dividend->_magnitude_count;
+    let size = sizeof(Int32) * dividend->_magnitude_count;
     quotient->_magnitude = realloc(quotient->_magnitude, size);
   }
   quotient->_offset = 0;
   quotient->_magnitude_count = dividend->_magnitude_count;
 
-  var r = (UInt128)0;
+  var r = (UInt64)0;
   var x_count = dividend->_magnitude_count;
   for (; x_count > 0; x_count -= 1) {
-    var dividend_estimate = (r << 64);
+    var dividend_estimate = r << 32;
     let index = dividend->_offset + dividend->_magnitude_count - x_count;
-    dividend_estimate |= dividend->_magnitude[index];
+    let temp = dividend->_magnitude[index] & MUTABLE_BIG_INTEGER_INT64_MASK;
+    dividend_estimate |= temp;
 
-    var q = (UInt64)(dividend_estimate / divisor);
-    r = dividend_estimate % divisor;
+    var q = (Int32)(dividend_estimate / divisor);
+    r = (UInt64)dividend_estimate % (UInt64)divisor;
 
     quotient->_magnitude[dividend->_magnitude_count - x_count] = q;
   }
 
   mutable_big_integer_normalize(quotient);
-  *remainder = r;
+  *remainder = (Int32)r;
 }
 
 /*
- * Left shift the MutableBigInteger n bits, where n is less than 64, placing
+ * Left shift the MutableBigInteger n bits, where n is less than 32, placing
  * the result in the specified array.
  * Assumes that magnitude_count > 0, n > 0 for speed.
  */
 static Void
 mutable_big_integer_primitive_left_shift(struct MutableBigInteger* value,
                                          Int64 n,
-                                         UInt64* result,
+                                         Int32* result,
                                          Int64 starting) {
-  var n2 = 64 - n;
+  var n2 = 32 - n;
   let count = value->_magnitude_count - 1;
   var b = value->_magnitude[value->_offset];
   var i = 0;
   for (; i < count; i += 1) {
     var c = value->_magnitude[value->_offset + i + 1];
-    result[starting + i] = (b << n) | (c >> n2);
+    result[starting + i] = (b << n) | (((UInt32)c) >> n2);
     b = c;
   }
   result[starting + count] = b << n;
@@ -157,22 +163,22 @@ mutable_big_integer_primitive_left_shift(struct MutableBigInteger* value,
 
 /*
  * Right shift this MutableBigInteger n bits, where n is
- * less than 64, placing the result in the specified array.
+ * less than 32, placing the result in the specified array.
  * Assumes that intLen > 0, n > 0 for speed.
  */
 static Void
 mutable_big_integer_primitive_right_shift(struct MutableBigInteger* value,
                                           Int64 n,
-                                          UInt64* result,
+                                          Int32* result,
                                           Int64 starting) {
-  var n2 = 64 - n;
+  var n2 = 32 - n;
   var b = value->_magnitude[value->_offset];
-  result[starting] = b >> n;
-  var i = 0;
+  result[starting] = ((UInt32)b) >> n;
+  var i = 1;
   for (; i < value->_magnitude_count; i += 1) {
     var c = b;
     b = value->_magnitude[value->_offset + i];
-    result[starting + i] = (c << n2) | (b >> n);
+    result[starting + i] = (c << n2) | (((UInt32)b) >> n);
   }
 }
 
@@ -181,22 +187,29 @@ mutable_big_integer_primitive_right_shift(struct MutableBigInteger* value,
  * input x, and subtracts the n word product from q. This is needed when
  * subtracting qhat*divisor from dividend.
  */
-static UInt64 mutable_big_integer_mulsub(UInt64* q,
-                                         UInt64* a,
-                                         UInt64 x,
-                                         Int64 count,
-                                         Int64 offset) {
-  var carry = (UInt128)0;
+static Int32 mutable_big_integer_mulsub(Int32* q,
+                                        Int32* a,
+                                        Int32 x,
+                                        Int64 count,
+                                        Int64 offset) {
+  var x_int64 = x & MUTABLE_BIG_INTEGER_INT64_MASK;
+  var carry = (Int64)0;
   offset += count;
 
   var j = count - 1;
   for (; j >= 0; j -= 1) {
-    var product = ((UInt128)a[j]) * x + carry;
-    var difference = ((UInt128)q[offset]) - product;
-    q[offset--] = difference;
-    carry = (product >> 64) + ((difference > ~(UInt64)product) ? 1 : 0);
+    var product = (a[j] & MUTABLE_BIG_INTEGER_INT64_MASK) * x_int64 + carry;
+    var difference = q[offset] - product;
+    q[offset] = (Int32)difference;
+    offset -= 1;
+
+    let difference_int64 = difference & MUTABLE_BIG_INTEGER_INT64_MASK;
+    let product_int64 = (~(Int32)product) & MUTABLE_BIG_INTEGER_INT64_MASK;
+    carry = (UInt64)product >> 32;
+    carry += difference_int64 > product_int64 ? 1 : 0;
   }
-  return carry;
+
+  return (Int32)carry;
 }
 
 /*
@@ -204,20 +217,21 @@ static UInt64 mutable_big_integer_mulsub(UInt64* q,
  * divisor a back to the dividend result at a specified offset. It is used when
  * qhat was estimated too large, and must be adjusted.
  */
-static UInt64 mutable_big_integer_divadd(UInt64* a,
-                                         Int64 count,
-                                         UInt64* result,
-                                         Int64 offset) {
-  var carry = (UInt128)0;
+static Int32 mutable_big_integer_divadd(Int32* a,
+                                        Int64 count,
+                                        Int32* result,
+                                        Int64 offset) {
+  var carry = (Int64)0;
 
   var j = count - 1;
   for (; j >= 0; j -= 1) {
-    var sum = ((UInt128)a[j]) + result[j + offset] + carry;
-    result[j + offset] = sum;
-    carry = sum >> 64;
+    var sum = a[j] & MUTABLE_BIG_INTEGER_INT64_MASK;
+    sum += (result[j + offset] & MUTABLE_BIG_INTEGER_INT64_MASK) + carry;
+    result[j + offset] = (Int32)sum;
+    carry = (UInt64)sum >> 32;
   }
 
-  return carry;
+  return (Int32)carry;
 }
 
 /* Divide this MutableBigInteger by the divisor. */
@@ -228,18 +242,18 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                      struct MutableBigInteger* remainder) {
   /* assert divisor.magnitude_count > 1 */
   /* D1 normalize the divisor */
-  let shift = __builtin_clzll(divisor->_magnitude[divisor->_offset]);
+  let shift = __builtin_clz(divisor->_magnitude[divisor->_offset]);
   /* Copy divisor value to protect divisor */
   let divisor_magnitude_count = divisor->_magnitude_count;
-  UInt64* divisor_magnitude;
+  Int32* divisor_magnitude;
   if (shift > 0) {
-    divisor_magnitude = malloc(sizeof(UInt64) * divisor_magnitude_count);
+    divisor_magnitude = malloc(sizeof(Int32) * divisor_magnitude_count);
     mutable_big_integer_primitive_left_shift(divisor,
                                              shift,
                                              divisor_magnitude,
                                              0);
-    if (__builtin_clzll(dividend->_magnitude[dividend->_offset]) >= shift) {
-      let size = sizeof(UInt64) * (dividend->_magnitude_count + 1);
+    if (__builtin_clz(dividend->_magnitude[dividend->_offset]) >= shift) {
+      let size = sizeof(Int32) * (dividend->_magnitude_count + 1);
       var remainder_magnitude = remainder->_magnitude;
       remainder->_magnitude = realloc(remainder_magnitude, size);
       remainder->_magnitude_capacity = size;
@@ -250,30 +264,30 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                                remainder->_magnitude,
                                                1);
     } else {
-      let size = sizeof(UInt64) * (dividend->_magnitude_count + 2);
+      let size = sizeof(Int32) * (dividend->_magnitude_count + 2);
       var remainder_magnitude = remainder->_magnitude;
       remainder->_magnitude = realloc(remainder_magnitude, size);
       remainder->_magnitude_capacity = size;
       remainder->_magnitude_count = dividend->_magnitude_count + 1;
       remainder->_offset = 1;
       var r_from = dividend->_offset;
-      var c = (UInt64)0;
-      var n2 = 64 - shift;
+      var c = 0;
+      var n2 = 32 - shift;
       var i = 1;
       for (; i < dividend->_magnitude_count + 1; i += 1, r_from += 1) {
         var b = c;
         c = dividend->_magnitude[r_from];
-        remainder->_magnitude[i] = (b << shift) | (c >> n2);
+        remainder->_magnitude[i] = (b << shift) | ((UInt32)c >> n2);
       }
       let index = dividend->_magnitude_count + 1;
       remainder->_magnitude[index] = c << shift;
     }
   } else {
-    divisor_magnitude = malloc(sizeof(UInt64) * divisor->_magnitude_count);
+    divisor_magnitude = malloc(sizeof(Int32) * divisor->_magnitude_count);
     memcpy(divisor_magnitude,
            divisor->_magnitude + divisor->_offset,
-           sizeof(UInt64) * divisor->_magnitude_count);
-    let size = sizeof(UInt64) * (dividend->_magnitude_count + 1);
+           sizeof(Int32) * divisor->_magnitude_count);
+    let size = sizeof(Int32) * (dividend->_magnitude_count + 1);
     var remainder_magnitude = remainder->_magnitude;
     remainder->_magnitude = realloc(remainder_magnitude, size);
     memcpy(remainder->_magnitude + 1,
@@ -289,7 +303,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
   let limit = n_count - divisor_magnitude_count + 1;
   if (quotient->_magnitude_capacity < limit) {
     quotient->_magnitude = realloc(quotient->_magnitude,
-                                   sizeof(UInt64) * limit);
+                                   sizeof(Int32) * limit);
     quotient->_magnitude_capacity = limit;
     quotient->_offset = 0;
   }
@@ -301,6 +315,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
   remainder->_magnitude_count += 1;
 
   var dh = divisor_magnitude[0];
+  var dh_int64 = dh & MUTABLE_BIG_INTEGER_INT64_MASK;
   var dl = divisor_magnitude[1];
 
   /* D2 Initialize j */
@@ -310,21 +325,22 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
      * D3 Calculate qhat
      * estimate qhat
      */
-    var qhat = (UInt64)0;
-    var qrem = (UInt64)0;
+    var qhat = 0;
+    var qrem = 0;
     var skip_correction = false;
     var index = j + remainder->_offset;
     var nh = remainder->_magnitude[index];
+    var nh2 = nh + 0x80000000;
     var nm = remainder->_magnitude[index + 1];
 
     if (nh == dh) {
-      qhat = -1;
+      qhat = ~0;
       qrem = nh + nm;
-      skip_correction = qrem < nh;
+      skip_correction = qrem + 0x80000000 < nh2;
     } else {
-      var n_chunk = (((UInt128)nh) << 64) | nm;
-      qhat = n_chunk / dh;
-      qrem = n_chunk % dh;
+      var n_chunk = (((Int64)nh) << 32) | (nm & MUTABLE_BIG_INTEGER_INT64_MASK);
+      qhat = (Int32)((UInt64)n_chunk / (UInt64)dh_int64);
+      qrem = (Int32)((UInt64)n_chunk % (UInt64)dh_int64);
     }
 
     if (qhat == 0) {
@@ -333,17 +349,18 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
 
     if (!skip_correction) { /* Correct qhat */
       index = j + remainder->_offset + 2;
-      var nl = (UInt128)remainder->_magnitude[index];
-      var rs = (((UInt128)qrem) << 64) | nl;
-      var est_product = (UInt128)dl * qhat;
+      var nl = remainder->_magnitude[index] & MUTABLE_BIG_INTEGER_INT64_MASK;
+      var rs = ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) << 32) | nl;
+      var est_product = dl & MUTABLE_BIG_INTEGER_INT64_MASK;
+      est_product *= qhat & MUTABLE_BIG_INTEGER_INT64_MASK;
 
-      if (est_product > rs) {
+      if ((UInt64)est_product > (UInt64)rs) {
         qhat -= 1;
-        qrem += dh; /* Let it overflow */
-        if (qrem >= dh) {
-          est_product -= dl;
-          rs = ((UInt128)qrem) << 64 | nl;
-          if (est_product > rs) {
+        qrem = (Int32)((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) + dh_int64);
+        if ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) >= dh) {
+          est_product -= (dl & MUTABLE_BIG_INTEGER_INT64_MASK);
+          rs = (((qrem & MUTABLE_BIG_INTEGER_INT64_MASK)) << 32) | nl;
+          if ((UInt64)est_product > (UInt64)rs) {
             qhat -= 1;
           }
         }
@@ -360,7 +377,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                             index);
 
     /* D5 Test remainder */
-    if (borrow > nh) {
+    if (borrow + 0x80000000 > nh2) {
       /* D6 Add back */
       mutable_big_integer_divadd(divisor_magnitude,
                                  divisor_magnitude_count,
@@ -377,37 +394,39 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
    * D3 Calculate qhat
    * estimate qhat
    */
-  var qhat = (UInt64)0;
-  var qrem = (UInt64)0;
+  var qhat = 0;
+  var qrem = 0;
   var skip_correction = false;
   var index = limit - 1 + remainder->_offset;
   var nh = remainder->_magnitude[index];
+  var nh2 = nh + 0x80000000;
   var nm = remainder->_magnitude[index + 1];
 
   if (nh == dh) {
-    qhat = -1;
+    qhat = ~0;
     qrem = nh + nm;
-    skip_correction = qrem < nh;
+    skip_correction = qrem + 0x80000000 < nh2;
   } else {
-    var n_chunk = (((UInt128)nh) << 64) | nm;
-    qhat = n_chunk / dh;
-    qrem = n_chunk % dh;
+    var n_chunk = (((Int64)nh) << 32) | (nm & MUTABLE_BIG_INTEGER_INT64_MASK);
+    qhat = (Int32)((UInt64)n_chunk / (UInt64)dh_int64);
+    qrem = (Int32)((UInt64)n_chunk % (UInt64)dh_int64);
   }
 
   if (qhat != 0) {
     if (!skip_correction) { /* Correct qhat */
       index = limit + 1 + remainder->_offset;
-      var nl = (UInt128)remainder->_magnitude[index];
-      var rs = (((UInt128)qrem) << 64) | nl;
-      var est_product = (UInt128)dl * qhat;
+      var nl = remainder->_magnitude[index] & MUTABLE_BIG_INTEGER_INT64_MASK;
+      var rs = ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) << 32) | nl;
+      var est_product = dl & MUTABLE_BIG_INTEGER_INT64_MASK;
+      est_product *= qhat & MUTABLE_BIG_INTEGER_INT64_MASK;
 
-      if (est_product > rs) {
+      if ((UInt64)est_product > (UInt64)rs) {
         qhat -= 1;
-        qrem += dh; /* Let it overflow */
-        if (qrem >= dh) {
-          est_product -= dl;
-          rs = ((UInt128)qrem) << 64 | nl;
-          if (est_product > rs) {
+        qrem = (Int32)((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) + dh_int64);;
+        if ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) >= dh_int64) {
+          est_product -= dl & MUTABLE_BIG_INTEGER_INT64_MASK;
+          rs = ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) << 32) | nl;
+          if ((UInt64)est_product > (UInt64)rs) {
             qhat -= 1;
           }
         }
@@ -424,7 +443,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                             index);
 
     /* D5 Test remainder */
-    if (borrow > nh) {
+    if (borrow + 0x80000000 > nh2) {
       /* D6 Add back */
       mutable_big_integer_divadd(divisor_magnitude,
                                  divisor_magnitude_count,
@@ -434,7 +453,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
     }
 
     /* Store the quotient digit */
-    quotient->_magnitude[j] = qhat;
+    quotient->_magnitude[limit - 1] = qhat;
   }
 
   /* D8 Unnormalize */
@@ -480,7 +499,7 @@ Void mutable_big_integer_divide_knuth(struct MutableBigInteger* u,
   }
   /* Dividend equal to divisor. */
   if (compare_result == 0) {
-    result[0] = mutable_big_integer_init_from_int128(1);
+    result[0] = mutable_big_integer_init_from_int64(1);
     result[1] = mutable_big_integer_init();
     return;
   }
@@ -488,7 +507,7 @@ Void mutable_big_integer_divide_knuth(struct MutableBigInteger* u,
   /* Special case one word divisor */
   if (v->_magnitude_count == 1) {
     result[0] = mutable_big_integer_init();
-    var r = (UInt64)0;
+    var r = 0;
     mutable_big_integer_divide_one_word(u,
                                         v->_magnitude[v->_offset],
                                         result[0],
@@ -496,7 +515,7 @@ Void mutable_big_integer_divide_knuth(struct MutableBigInteger* u,
     if (r == 0) {
       result[1] = mutable_big_integer_init();
     } else {
-      result[1] = mutable_big_integer_init_from_int128(r);
+      result[1] = mutable_big_integer_init_from_int64(r);
     }
     return;
   }
@@ -522,7 +541,7 @@ Void mutable_big_integer_divide_knuth(struct MutableBigInteger* u,
 struct MutableBigInteger* mutable_big_integer_init() {
   var n = (struct MutableBigInteger*)malloc(sizeof(struct MutableBigInteger));
 
-  n->_magnitude = malloc(sizeof(UInt64));
+  n->_magnitude = malloc(sizeof(Int32));
   n->_magnitude_capacity = 1;
   n->_magnitude_count = 0;
   n->_offset = 0;
@@ -531,20 +550,23 @@ struct MutableBigInteger* mutable_big_integer_init() {
 }
 
 /**
- * Construct a new MutableBigInteger with a magnitude specified by the int128
+ * Construct a new MutableBigInteger with a magnitude specified by the int64
  * value.
  */
-struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value) {
+struct MutableBigInteger* mutable_big_integer_init_from_int64(Int64 value) {
   var n = (struct MutableBigInteger*)malloc(sizeof(struct MutableBigInteger));
 
-  var high_word = (UInt64)(value >> 64);
+  var high_word = (Int32)((UInt64)value >> 32);
   if (high_word == 0) {
-    n->_magnitude = malloc(sizeof(UInt64));
+    n->_magnitude = malloc(sizeof(Int32));
+    n->_magnitude[0] = (Int32)value;
     n->_magnitude_capacity = 1;
-    n->_magnitude_count = ((UInt64)value) != 0 ? 1 : 0;
+    n->_magnitude_count = ((Int32)value) != 0 ? 1 : 0;
     n->_offset = 0;
   } else {
-    n->_magnitude = malloc(sizeof(UInt64) * 2);
+    n->_magnitude = malloc(sizeof(UInt32) * 2);
+    n->_magnitude[0] = high_word;
+    n->_magnitude[1] = (Int32)value;
     n->_magnitude_capacity = 2;
     n->_magnitude_count = 2;
     n->_offset = 0;
@@ -557,12 +579,12 @@ struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value) {
  * Construct a new MutableBigInteger with the specified value array
  * up to the length of the array supplied.
  */
-struct MutableBigInteger* mutable_big_integer_init_from_words(UInt64* magnitude,
+struct MutableBigInteger* mutable_big_integer_init_from_words(Int32* magnitude,
                                                               Int64 count) {
   var n = (struct MutableBigInteger*)malloc(sizeof(struct MutableBigInteger));
 
-  n->_magnitude = malloc(sizeof(UInt64) * count);
-  memcpy(n->_magnitude, magnitude, sizeof(UInt64) * count);
+  n->_magnitude = malloc(sizeof(Int32) * count);
+  memcpy(n->_magnitude, magnitude, sizeof(Int32) * count);
   n->_magnitude_capacity = count;
   n->_magnitude_count = count;
   n->_offset = 0;
@@ -577,11 +599,11 @@ struct MutableBigInteger*
 mutable_big_integer_copy(struct MutableBigInteger* value) {
   var n = (struct MutableBigInteger*)malloc(sizeof(struct MutableBigInteger));
 
-  n->_magnitude = malloc(sizeof(UInt64) * value->_magnitude_count);
+  n->_magnitude = malloc(sizeof(Int32) * value->_magnitude_count);
   n->_magnitude_capacity = value->_magnitude_count;
   memcpy(n->_magnitude,
          value->_magnitude + value->_offset,
-         (value->_offset + value->_magnitude_count) * sizeof(UInt64));
+         (value->_offset + value->_magnitude_count) * sizeof(Int32));
   n->_magnitude_count = value->_magnitude_count;
   n->_offset = 0;
 

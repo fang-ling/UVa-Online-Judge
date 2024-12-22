@@ -30,14 +30,18 @@ struct BigIntegerTests {
       "193581934212361123331930619348",
       10
     )!
-    #expect(numberPointer.pointee._magnitude_count == 2)
-    #expect(numberPointer.pointee._magnitude_capacity == 2)
+    #expect(numberPointer.pointee._magnitude_count == 4)
+    #expect(numberPointer.pointee._magnitude_capacity == 4)
     /*
      * 193581934212361123331930619348 equals
-     * 10494097681 * 2**64 + 6445224650915216852
+     * 2 * 2**96 + 1904163089 * 2 ** 64 + 1500645803 * 2 ** 32 + U(-144409132)
+     *
+     * U(-144409132) = 4150558164
      */
-    #expect(numberPointer.pointee._magnitude[0] == 10494097681)
-    #expect(numberPointer.pointee._magnitude[1] == 6445224650915216852)
+    #expect(numberPointer.pointee._magnitude[0] == 2)
+    #expect(numberPointer.pointee._magnitude[1] == 1904163089)
+    #expect(numberPointer.pointee._magnitude[2] == 1500645803)
+    #expect(numberPointer.pointee._magnitude[3] == -144409132)
     big_integer_deinit(numberPointer)
   }
 
@@ -48,7 +52,7 @@ struct BigIntegerTests {
     )!
 
     let stringPointer = big_integer_to_string(numberPointer, 10, false)!;
-    var string = String(cString: stringPointer);
+    let string = String(cString: stringPointer);
     #expect(string == "193581934212361123331930619348")
   }
 

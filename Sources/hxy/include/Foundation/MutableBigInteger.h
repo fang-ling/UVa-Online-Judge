@@ -42,7 +42,7 @@ struct MutableBigInteger {
    * The magnitude may start at an offset into the array, and it may end before
    * the length of the value array.
    */
-  UInt64* _magnitude;
+  Int32* _magnitude;
 
   /**
    * The total number of words that the `_magnitude` can contain without
@@ -73,16 +73,16 @@ struct MutableBigInteger {
 struct MutableBigInteger* mutable_big_integer_init();
 
 /**
- * Construct a new MutableBigInteger with a magnitude specified by the int128
+ * Construct a new MutableBigInteger with a magnitude specified by the int64
  * value.
  */
-struct MutableBigInteger* mutable_big_integer_init_from_int128(Int128 value);
+struct MutableBigInteger* mutable_big_integer_init_from_int64(Int64 value);
 
 /**
  * Construct a new MutableBigInteger with the specified value array
  * up to the length of the array supplied.
  */
-struct MutableBigInteger* mutable_big_integer_init_from_words(UInt64* magnitude,
+struct MutableBigInteger* mutable_big_integer_init_from_words(Int32* magnitude,
                                                               Int64 count);
 
 /**
