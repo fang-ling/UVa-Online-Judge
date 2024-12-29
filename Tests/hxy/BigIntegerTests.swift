@@ -26,7 +26,7 @@ import Testing
 @Suite
 struct BigIntegerTests {
   @Test func testBigIntegerInitWhiteBox() async throws {
-    let numberPointer = big_integer_init_from_string(
+    var numberPointer = big_integer_init_from_string(
       "193581934212361123331930619348",
       10
     )!
@@ -43,17 +43,81 @@ struct BigIntegerTests {
     #expect(numberPointer.pointee._magnitude[2] == 1500645803)
     #expect(numberPointer.pointee._magnitude[3] == -144409132)
     big_integer_deinit(numberPointer)
+
+    numberPointer = big_integer_init_from_string("de0b6b3a7640000", 16)!
+    #expect(numberPointer.pointee._magnitude_count == 2)
+    #expect(numberPointer.pointee._magnitude_capacity == 2)
+    /*
+     * 0xde0b6b3a7640000 equals 232830643 * 2**32 + 2808348672
+     *
+     * U(-1486618624) = 2808348672
+     */
+    #expect(numberPointer.pointee._magnitude[0] == 232830643)
+    #expect(numberPointer.pointee._magnitude[1] == -1486618624)
+    big_integer_deinit(numberPointer)
   }
 
   @Test func testBigIntegerToString() async throws {
-    let numberPointer = big_integer_init_from_string(
+    var numberPointer = big_integer_init_from_string(
       "193581934212361123331930619348",
       10
     )!
 
-    let stringPointer = big_integer_to_string(numberPointer, 10, false)!;
-    let string = String(cString: stringPointer);
+    var stringPointer = big_integer_to_string(numberPointer, 10, false)!
+    var string = String(cString: stringPointer);
     #expect(string == "193581934212361123331930619348")
+    stringPointer.deallocate()
+
+    let longString = "193581934212361123331930619348" + "1935819342123611233319306193481"// +
+//    "193581934212361123331930619348"
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348" +
+//      "193581934212361123331930619348" + "193581934212361123331930619348"
+    numberPointer = big_integer_init_from_string(longString, 10)!
+    stringPointer = big_integer_to_string(numberPointer, 10, false)!
+    string = String(cString: stringPointer)
+    #expect(string == longString)
+    stringPointer.deallocate()
+  }
+
+  @Test func testMutableBigIntegerDivide() async throws {
+    let dividend = big_integer_init_from_string(
+      "10000000000000000000",
+      10
+    )!
+    let divisor = big_integer_init_from_string("de0b6b3a7640000", 16)!
+
+    let lhs = mutable_big_integer_init_from_words(
+      dividend.pointee._magnitude,
+      dividend.pointee._magnitude_count
+    )
+    let rhs = mutable_big_integer_init_from_words(
+      divisor.pointee._magnitude,
+      divisor.pointee._magnitude_count
+    )
+    let quotientAndRemainder = mutable_big_integer_divide(lhs, rhs)!
+    let quotient = quotientAndRemainder[0]!
+    let remainder = quotientAndRemainder[1]!
+
+//    for i in quotient.pointee._offset ..< quotient.pointee._magnitude_count
+    for i in quotient.pointee._offset ..< quotient.pointee._offset + quotient.pointee._magnitude_count {
+      print(UInt32(bitPattern: quotient.pointee._magnitude[Int(i)]))
+    }
+//    print(quotient.pointee._magnitude[3])
+    print("#######")
+    for i in remainder.pointee._offset ..< remainder.pointee._offset + remainder.pointee._magnitude_count {
+      print(UInt32(bitPattern: remainder.pointee._magnitude[Int(i)]))
+    }
+//    print(remainder.pointee._magnitude[0])
+//    print(remainder.pointee._magnitude[1])
+//    print(remainder.pointee._magnitude[2])
+//    print(remainder.pointee._magnitude[3])
   }
 
 //  @Test func testBigIntBitCount() async throws {

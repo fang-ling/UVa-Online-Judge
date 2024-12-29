@@ -253,10 +253,11 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                              divisor_magnitude,
                                              0);
     if (__builtin_clz(dividend->_magnitude[dividend->_offset]) >= shift) {
-      let size = sizeof(Int32) * (dividend->_magnitude_count + 1);
+      let count = dividend->_magnitude_count + 1;
       var remainder_magnitude = remainder->_magnitude;
-      remainder->_magnitude = realloc(remainder_magnitude, size);
-      remainder->_magnitude_capacity = size;
+      remainder->_magnitude = realloc(remainder_magnitude,
+                                      sizeof(Int32) * count);
+      remainder->_magnitude_capacity = count;
       remainder->_magnitude_count = dividend->_magnitude_count;
       remainder->_offset = 1;
       mutable_big_integer_primitive_left_shift(dividend,
@@ -264,10 +265,11 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                                remainder->_magnitude,
                                                1);
     } else {
-      let size = sizeof(Int32) * (dividend->_magnitude_count + 2);
+      let count = dividend->_magnitude_count + 2;
       var remainder_magnitude = remainder->_magnitude;
-      remainder->_magnitude = realloc(remainder_magnitude, size);
-      remainder->_magnitude_capacity = size;
+      remainder->_magnitude = realloc(remainder_magnitude,
+                                      sizeof(Int32) * count);
+      remainder->_magnitude_capacity = count;
       remainder->_magnitude_count = dividend->_magnitude_count + 1;
       remainder->_offset = 1;
       var r_from = dividend->_offset;
@@ -287,13 +289,14 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
     memcpy(divisor_magnitude,
            divisor->_magnitude + divisor->_offset,
            sizeof(Int32) * divisor->_magnitude_count);
-    let size = sizeof(Int32) * (dividend->_magnitude_count + 1);
+    let count = dividend->_magnitude_count + 1;
     var remainder_magnitude = remainder->_magnitude;
-    remainder->_magnitude = realloc(remainder_magnitude, size);
+    remainder->_magnitude = realloc(remainder_magnitude, sizeof(Int32) * count);
     memcpy(remainder->_magnitude + 1,
            dividend->_magnitude + dividend->_offset,
            dividend->_magnitude_count);
     remainder->_magnitude_count = dividend->_magnitude_count;
+    remainder->_magnitude_capacity = count;
     remainder->_offset = 1;
   }
 
@@ -660,10 +663,13 @@ Int64 mutable_big_integer_compare(struct MutableBigInteger* lhs,
   var i = lhs->_offset;
   var j = rhs->_offset;
   for (; i < lhs->_magnitude_count + lhs->_offset; i += 1, j += 1) {
-    if (lhs->_magnitude[i] < rhs->_magnitude[j]) {
+    /* Unsigned integer comparison. */
+    let b1 = (UInt32)lhs->_magnitude[i];
+    let b2 = (UInt32)rhs->_magnitude[j];
+    if (b1 < b2) {
       return -1;
     }
-    if (lhs->_magnitude[i] > rhs->_magnitude[j]) {
+    if (b1 > b2) {
       return 1;
     }
   }

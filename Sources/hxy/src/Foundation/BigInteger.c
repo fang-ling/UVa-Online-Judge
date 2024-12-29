@@ -298,8 +298,14 @@ static Void big_integer_small_to_string(struct BigInteger* u,
     var r2 = big_integer_mutable_big_integer_to_big_integer(r, tmp->_sign);
 
     /* r2.int64Value() */
-    digit_groups[group_count] = (((Int64)r2->_magnitude[0]) << 32);
-    digit_groups[group_count] += r2->_magnitude[1] & BIG_INTEGER_INT64_MASK;
+    if (r2->_magnitude_count == 2) {
+      digit_groups[group_count] = (((Int64)r2->_magnitude[0]) << 32);
+      digit_groups[group_count] += r2->_magnitude[1] & BIG_INTEGER_INT64_MASK;
+    } else if (r2->_magnitude_count == 1) {
+      digit_groups[group_count] = r2->_magnitude[0] & BIG_INTEGER_INT64_MASK;
+    } else {
+      digit_groups[group_count] = 0;
+    }
     group_count += 1;
 
     mutable_big_integer_deinit(a);
@@ -375,10 +381,10 @@ static Void big_integer_to_string_schoenhage(struct BigInteger* u,
    * at the beginning of the string or digits <= 0. As u->_sign >= 0,
    * small_to_string() will not prepend a negative sign.
    */
-  if (u->_magnitude_count <= BIG_INTEGER_SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
+//  if (u->_magnitude_count <= BIG_INTEGER_SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
     big_integer_small_to_string(u, radix, text, offset, padding, is_uppercase);
     return;
-  }
+//  }
 }
 
 
