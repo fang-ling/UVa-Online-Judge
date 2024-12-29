@@ -564,7 +564,7 @@ struct MutableBigInteger* mutable_big_integer_init_from_int64(Int64 value) {
     n->_magnitude_count = ((Int32)value) != 0 ? 1 : 0;
     n->_offset = 0;
   } else {
-    n->_magnitude = malloc(sizeof(UInt32) * 2);
+    n->_magnitude = malloc(sizeof(Int32) * 2);
     n->_magnitude[0] = high_word;
     n->_magnitude[1] = (Int32)value;
     n->_magnitude_capacity = 2;

@@ -289,7 +289,7 @@ static Void big_integer_small_to_string(struct BigInteger* u,
 
     var a = mutable_big_integer_init_from_words(tmp->_magnitude,
                                                 tmp->_magnitude_count);
-    var b = mutable_big_integer_init_from_int64(&d);
+    var b = mutable_big_integer_init_from_int64(d);
     var quotient_and_remainder = mutable_big_integer_divide(a, b);
     var q = quotient_and_remainder[0];
     var r = quotient_and_remainder[1];
