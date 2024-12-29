@@ -279,7 +279,7 @@ static Void big_integer_small_to_string(struct BigInteger* u,
 
   /* Compute upper bound on number of digit groups and allocate space. */
   let max_number_digit_groups = (4 * u->_magnitude_capacity + 6) / 7;
-  var digit_groups = (Int32*)malloc(sizeof(Int32) * max_number_digit_groups);
+  var digit_groups = (Int64*)malloc(sizeof(Int64) * max_number_digit_groups);
 
   /* Translate number to string, a digit group at a time. */
   var tmp = big_integer_copy(u);
@@ -297,7 +297,9 @@ static Void big_integer_small_to_string(struct BigInteger* u,
     var q2 = big_integer_mutable_big_integer_to_big_integer(q, tmp->_sign);
     var r2 = big_integer_mutable_big_integer_to_big_integer(r, tmp->_sign);
 
-    digit_groups[group_count] = r2->_magnitude[0];
+    /* r2.int64Value() */
+    digit_groups[group_count] = (((Int64)r2->_magnitude[0]) << 32);
+    digit_groups[group_count] += r2->_magnitude[1] & BIG_INTEGER_INT64_MASK;
     group_count += 1;
 
     mutable_big_integer_deinit(a);
