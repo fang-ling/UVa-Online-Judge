@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume113Tests.swift                                 /'___\ /\_ \          */
+/* p11364.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: October 23, 2024                               \ \ \_/__ \_\ \_  __  */
+/* Date: December 25, 2024                              \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -18,26 +18,15 @@
  * This source code may include problem descriptions from some online judges,
  * which have their own licensing terms.
  */
- 
-import Foundation
-@testable import hxy
-import Testing
 
-extension UVaOnlineJudgeTests {
-  struct Volume113Tests {
-    @Test func testP11332() throws {
-      try run(main: p11332_main, for: 11332, caseCount: 6).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#ifndef p11364_h
+#define p11364_h
 
-    @Test func testP11364() throws {
-      try run(main: p11364_main, for: 11364, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#include "Foundation/Foundation.h"
+
+Void p11364_main();
+
+#endif /* p11364_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

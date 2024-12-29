@@ -50,8 +50,8 @@ typedef const Void* AnyConstantObject;
  *   stop program execution in a debuggable state after printing `message`.
  *
  * * In `-O2` builds (the default for Xcode's Release configuration) and
- *   `ONLINE_JUDGE` symbol is not defined: If `condition` evaluates to `false`,
- *   stop program execution after printing `message`.
+ *   `ONLINE_JUDGE` symbol is not defined: `condition` is not evaluated. Failure
+ *   to satisfy that assumption is a serious programming error.
  *
  * * In any builds with `ONLINE_JUDGE` symbol defined, `condition` is not
  *   evaluated. Failure to satisfy that assumption is a serious programming
@@ -62,7 +62,7 @@ typedef const Void* AnyConstantObject;
  *     `ONLINE_JUDGE` symbol defined.
  *   - message: A string to print if `condition` is evaluated to `false`.
  */
-#ifdef ONLINE_JUDGE
+#if defined(ONLINE_JUDGE) || !defined(DEBUG)
 #define precondition(condition, message) ((void)0)
 #else
 #define precondition(condition, message)    \
