@@ -69,7 +69,7 @@ struct BigIntegerTests {
     stringPointer.deallocate()
     numberPointer.deallocate()
 
-    let longString =
+    var longString =
       "1935819342123611233319306193481" + "193581934212361123331930619348" +
       "193581934212361123331930619348" + "193581934212361123331930619348" +
       "193581934212361123331930619348" + "193581934212361123331930619348" +
@@ -84,6 +84,18 @@ struct BigIntegerTests {
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
     string = String(cString: stringPointer)
     #expect(string == longString)
+    stringPointer.deallocate()
+    numberPointer.deallocate()
+
+    longString = ""
+    for i in 0 ..< 2 {
+      longString += "\(i)"
+    }
+    numberPointer = big_integer_init_from_string(longString, 10)!
+    stringPointer = big_integer_to_string(numberPointer, 10, false)!
+    string = String(cString: stringPointer)
+    #expect(string == longString)
+    #expect(string.count == longString.count)
     stringPointer.deallocate()
     numberPointer.deallocate()
   }

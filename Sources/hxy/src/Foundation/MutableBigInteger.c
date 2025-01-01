@@ -468,6 +468,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
   }
   mutable_big_integer_normalize(quotient);
   mutable_big_integer_normalize(remainder);
+  free(divisor_magnitude);
 }
 
 /*
