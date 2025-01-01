@@ -299,8 +299,14 @@ static Void big_integer_small_to_string(struct BigInteger* u,
 
     /* r2.int64Value() */
     if (r2->_magnitude_count == 2) {
-      digit_groups[group_count] = (((Int64)r2->_magnitude[0]) << 32);
-      digit_groups[group_count] += r2->_magnitude[1] & BIG_INTEGER_INT64_MASK;
+      var result = (Int64)0;
+      var i = 1;
+      for (; i >= 0; i -= 1) {
+        result = result << 32;
+        let index = r2->_magnitude_count - i - 1;
+        result += r2->_magnitude[index] & BIG_INTEGER_INT64_MASK;
+      }
+      digit_groups[group_count] = result;
     } else if (r2->_magnitude_count == 1) {
       digit_groups[group_count] = r2->_magnitude[0] & BIG_INTEGER_INT64_MASK;
     } else {

@@ -333,13 +333,13 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
     var skip_correction = false;
     var index = j + remainder->_offset;
     var nh = remainder->_magnitude[index];
-    var nh2 = nh + 0x80000000;
+    var nh2 = (Int32)(nh + 0x80000000);
     var nm = remainder->_magnitude[index + 1];
 
     if (nh == dh) {
       qhat = ~0;
       qrem = nh + nm;
-      skip_correction = qrem + 0x80000000 < nh2;
+      skip_correction = (Int32)(qrem + 0x80000000) < nh2;
     } else {
       var n_chunk = (((Int64)nh) << 32) | (nm & MUTABLE_BIG_INTEGER_INT64_MASK);
       qhat = (Int32)((UInt64)n_chunk / (UInt64)dh_int64);
@@ -360,7 +360,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
       if ((UInt64)est_product > (UInt64)rs) {
         qhat -= 1;
         qrem = (Int32)((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) + dh_int64);
-        if ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) >= dh) {
+        if ((qrem & MUTABLE_BIG_INTEGER_INT64_MASK) >= dh_int64) {
           est_product -= (dl & MUTABLE_BIG_INTEGER_INT64_MASK);
           rs = (((qrem & MUTABLE_BIG_INTEGER_INT64_MASK)) << 32) | nl;
           if ((UInt64)est_product > (UInt64)rs) {
@@ -380,7 +380,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                             index);
 
     /* D5 Test remainder */
-    if (borrow + 0x80000000 > nh2) {
+    if ((Int32)(borrow + 0x80000000) > nh2) {
       /* D6 Add back */
       mutable_big_integer_divadd(divisor_magnitude,
                                  divisor_magnitude_count,
@@ -402,13 +402,13 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
   var skip_correction = false;
   var index = limit - 1 + remainder->_offset;
   var nh = remainder->_magnitude[index];
-  var nh2 = nh + 0x80000000;
+  var nh2 = (Int32)(nh + 0x80000000);
   var nm = remainder->_magnitude[index + 1];
 
   if (nh == dh) {
     qhat = ~0;
     qrem = nh + nm;
-    skip_correction = qrem + 0x80000000 < nh2;
+    skip_correction = (Int32)(qrem + 0x80000000) < nh2;
   } else {
     var n_chunk = (((Int64)nh) << 32) | (nm & MUTABLE_BIG_INTEGER_INT64_MASK);
     qhat = (Int32)((UInt64)n_chunk / (UInt64)dh_int64);
@@ -446,7 +446,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
                                             index);
 
     /* D5 Test remainder */
-    if (borrow + 0x80000000 > nh2) {
+    if ((Int32)(borrow + 0x80000000) > nh2) {
       /* D6 Add back */
       mutable_big_integer_divadd(divisor_magnitude,
                                  divisor_magnitude_count,

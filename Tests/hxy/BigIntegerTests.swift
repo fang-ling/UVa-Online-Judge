@@ -68,17 +68,17 @@ struct BigIntegerTests {
     #expect(string == "193581934212361123331930619348")
     stringPointer.deallocate()
 
-    let longString = "193581934212361123331930619348" + "1935819342123611233319306193481"// +
-//    "193581934212361123331930619348"
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348" +
-//      "193581934212361123331930619348" + "193581934212361123331930619348"
+    let longString =
+      "1935819342123611233319306193481" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348" +
+      "193581934212361123331930619348" + "193581934212361123331930619348"
     numberPointer = big_integer_init_from_string(longString, 10)!
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
     string = String(cString: stringPointer)
@@ -86,39 +86,53 @@ struct BigIntegerTests {
     stringPointer.deallocate()
   }
 
-  @Test func testMutableBigIntegerDivide() async throws {
-    let dividend = big_integer_init_from_string(
-      "10000000000000000000",
-      10
-    )!
-    let divisor = big_integer_init_from_string("de0b6b3a7640000", 16)!
-
-    let lhs = mutable_big_integer_init_from_words(
-      dividend.pointee._magnitude,
-      dividend.pointee._magnitude_count
-    )
-    let rhs = mutable_big_integer_init_from_words(
-      divisor.pointee._magnitude,
-      divisor.pointee._magnitude_count
-    )
-    let quotientAndRemainder = mutable_big_integer_divide(lhs, rhs)!
-    let quotient = quotientAndRemainder[0]!
-    let remainder = quotientAndRemainder[1]!
-
-//    for i in quotient.pointee._offset ..< quotient.pointee._magnitude_count
-    for i in quotient.pointee._offset ..< quotient.pointee._offset + quotient.pointee._magnitude_count {
-      print(UInt32(bitPattern: quotient.pointee._magnitude[Int(i)]))
-    }
-//    print(quotient.pointee._magnitude[3])
-    print("#######")
-    for i in remainder.pointee._offset ..< remainder.pointee._offset + remainder.pointee._magnitude_count {
-      print(UInt32(bitPattern: remainder.pointee._magnitude[Int(i)]))
-    }
-//    print(remainder.pointee._magnitude[0])
-//    print(remainder.pointee._magnitude[1])
-//    print(remainder.pointee._magnitude[2])
-//    print(remainder.pointee._magnitude[3])
-  }
+//  @Test func testMutableBigIntegerDivide() async throws {
+//    let dividend = big_integer_init_from_string(
+//      "1935819342123611233319306193481935819342123",
+//      10
+//    )!
+//    let divisor = big_integer_init_from_string("de0b6b3a7640000", 16)!
+//
+//
+//    for i in 0 ..< dividend.pointee._magnitude_count {
+//      print(dividend.pointee._magnitude[Int(i)], terminator: ", ")
+//    }
+//    print()
+//    for i in 0 ..< divisor.pointee._magnitude_count {
+//      print(divisor.pointee._magnitude[Int(i)], terminator: ", ")
+//    }
+//    print()
+//
+//    let lhs = mutable_big_integer_init_from_words(
+//      dividend.pointee._magnitude,
+//      dividend.pointee._magnitude_count
+//    )
+//    let rhs = mutable_big_integer_init_from_words(
+//      divisor.pointee._magnitude,
+//      divisor.pointee._magnitude_count
+//    )
+//    let quotientAndRemainder = mutable_big_integer_divide(lhs, rhs)!
+//    let quotient = quotientAndRemainder[0]!
+//    let remainder = quotientAndRemainder[1]!
+//
+////    for i in quotient.pointee._offset ..< quotient.pointee._magnitude_count
+//    var j = 0
+//    for i in (quotient.pointee._offset ..< quotient.pointee._offset + quotient.pointee._magnitude_count).reversed() {
+//      print("\(UInt32(bitPattern: quotient.pointee._magnitude[Int(i)])) * 2 ** (\(32 * j))", terminator: " + ")
+//      j += 1;
+//    }
+//    j = 0;
+////    print(quotient.pointee._magnitude[3])
+//    print("\n#######")
+//    for i in (remainder.pointee._offset ..< remainder.pointee._offset + remainder.pointee._magnitude_count).reversed() {
+//      print("\(UInt32(bitPattern: remainder.pointee._magnitude[Int(i)])) * 2 ** (\(32 * j))", terminator: " + ")
+//      j += 1
+//    }
+////    print(remainder.pointee._magnitude[0])
+////    print(remainder.pointee._magnitude[1])
+////    print(remainder.pointee._magnitude[2])
+////    print(remainder.pointee._magnitude[3])
+//  }
 
 //  @Test func testBigIntBitCount() async throws {
 //    var numberPointer = big_int_init("123611935819342123331934819306", 10)
