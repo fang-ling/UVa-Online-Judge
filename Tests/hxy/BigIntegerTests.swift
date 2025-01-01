@@ -67,6 +67,7 @@ struct BigIntegerTests {
     var string = String(cString: stringPointer);
     #expect(string == "193581934212361123331930619348")
     stringPointer.deallocate()
+    numberPointer.deallocate()
 
     let longString =
       "1935819342123611233319306193481" + "193581934212361123331930619348" +
@@ -84,7 +85,26 @@ struct BigIntegerTests {
     string = String(cString: stringPointer)
     #expect(string == longString)
     stringPointer.deallocate()
+    numberPointer.deallocate()
   }
+
+//  @Test func testBigIntegerAdd() async throws {
+//    let a = "18863046225568582542016021945328306014125955818525918809"
+//    let b = "49558s923010544057053463173587344941434565966176383118780" +
+//            "0740923395817893020463093092080"
+//    let c = "49558923010544057053463173587346827739188523034637320382" +
+//            "2686251701832018976281619010889"
+//    let aPointer = big_integer_init_from_string(a, 10)!
+//    let bPointer = big_integer_init_from_string(b, 10)!
+//    let cPointer = big_integer_add(aPointer, bPointer)!
+//    let stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//  }
 
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(

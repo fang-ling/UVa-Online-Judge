@@ -164,12 +164,20 @@ Char* big_integer_to_string(struct BigInteger* value,
                             Int64 radix,
                             Bool is_uppercase);
 
-///* MARK: - Performing Calculations */
-//
-//
-//
-//
-//
+/* MARK: - Performing Calculations */
+
+/**
+ * Adds two values and produces their sum.
+ *
+ * - Parameters:
+ *   - lhs: The first value to add.
+ *   - rhs: The second value to add.
+ *
+ * - Returns: Returns a new BigInteger whose value is `lhs + rhs`.
+ */
+struct BigInteger* big_integer_add(struct BigInteger* lhs,
+                                   struct BigInteger* rhs);
+
 /* MARK: - Working with Binary Representation */
 
 /**

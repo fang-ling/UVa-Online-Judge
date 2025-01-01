@@ -393,6 +393,72 @@ static Void big_integer_to_string_schoenhage(struct BigInteger* u,
 //  }
 }
 
+/*
+ * Adds the contents of the int32 arrays x and y. This method allocates a new
+ * int32 array to hold the answer and returns a pointer to that array.
+ */
+static Int32* big_integer_add_words(Int32* x,
+                                    Int64 x_count,
+                                    Int32* y,
+                                    Int64 y_count,
+                                    Int64* result_count) {
+  /* If x is shorter, swap the two arrays */
+  if (x_count < y_count) {
+    var delta = x;
+    x = y;
+    y = delta;
+
+    var delta2 = x_count;
+    x_count = y_count;
+    y_count = delta2;
+  }
+
+  var x_index = x_count;
+  var y_index = y_count;
+  var result = (Int32*)malloc(sizeof(Int32) * x_index);
+  *result_count = x_index;
+  var sum = (Int64)0;
+  if (y_index == 1) {
+    x_index -= 1;
+    sum = (x[x_index] & BIG_INTEGER_INT64_MASK);
+    sum += y[0] & BIG_INTEGER_INT64_MASK;
+    result[x_index] = (Int32)sum;
+  } else {
+    /* Add common parts of both numbers */
+    while (y_index > 0) {
+      x_index -= 1;
+      y_index -= 1;
+      var x_i = x[x_index] & BIG_INTEGER_INT64_MASK;
+      var y_i = y[y_index] & BIG_INTEGER_INT64_MASK;
+      sum = x_i + y_i + (Int64)(((UInt64)sum) >> 32);
+      result[x_index] = (Int32)sum;
+    }
+  }
+
+  /* Copy remainder of longer number while carry propagation is required */
+  var carry = (((UInt64)sum) >> 32) != 0;
+  while (x_index > 0 && carry) {
+    x_index -= 1;
+    result[x_index] = x[x_index] + 1;
+    carry = result[x_index] == 0;
+  }
+
+  /* Copy remainder of longer number */
+  while (x_index > 0) {
+    x_index -= 1;
+    result[x_index] = x[x_index];
+  }
+
+  /* Grow result if necessary */
+  if (carry) {
+    var bigger = (Int32*)malloc(sizeof(Int32) * (*result_count + 1));
+    memcpy(bigger + 1, result, sizeof(Int32) * (*result_count));
+    bigger[0] = 0x01;
+    *result_count += 1;
+    return bigger;
+  }
+  return result;
+}
 
 ///*
 // * Ensure that the BigInt is in normal form, specifically making sure that there
@@ -449,62 +515,6 @@ static Void big_integer_to_string_schoenhage(struct BigInteger* u,
 //  }
 //  let bit = (value->_magnitude_count - 1 - j) << 6;
 //  return bit + __builtin_ctzll(word);
-//}
-//
-///*
-// * Left shift the big int n bits, where n is less than 64, placing the result in
-// * the specified array.
-// * Assumes that magnitude_count > 0, n > 0 for speed.
-// */
-//static Void big_int_primitive_left_shift(struct BigInt* value,
-//                                         Int64 n,
-//                                         UInt64* result) {
-//  let n2 = 64 - n;
-//  let count = value->_magnitude_count - 1;
-//  var b = value->_magnitude[0];
-//  var i = 0;
-//  for (; i < count; i += 1) {
-//    var c = value->_magnitude[i + 1];
-//    result[i] = (b << n) | (c >> n2);
-//    b = c;
-//  }
-//  result[count] = b << n;
-//}
-//
-///*
-// * Divide the BigInt by the divisor.
-// *
-// * Given nonnegative integers u = (u_1, u_2, ..., u_m+n)_b and
-// * v = (v1, v2, ..., v_n)_b, where v1 != 0 and n > 1, we form the radix-b
-// * quotient floor(u/v) = (q_0, q_1, ..., q_m)_b and the remainder u  mod v =
-// * (r_1, r_2, ..., r_n)_b.
-// */
-//static Void big_int_divide_magnitude(struct BigInt* u,
-//                                     struct BigInt* v,
-//                                     struct BigInt** result) {
-//  /* assert v.magnitude_count > 1 */
-//  /*
-//   * D1 normalize the divisor
-//   * Set d be a value. Then set (u_0, u_1, u_2, ..., u_m+n)_b equal to
-//   * (u_1, u_2, ..., u_m+n)_b times d, and set (v_1, v_2, ..., v_n)_b equal to
-//   * (v_1, v_2, ..., v_n)_b times d. Any value of d that results in
-//   * v_1 >= floor(b / 2) will suffice.
-//   */
-//  var shift = __builtin_clzll(v->_magnitude[0]);
-//  /* Copy v to protect divisor */
-//  let divisor_magnitude_count = v->_magnitude_count;
-//  UInt64* divisor_magnitude = NULL;
-//  var remainder = big_int_init_from_int128(0);
-//  if (shift > 0) {
-//    divisor_magnitude = malloc(sizeof(UInt64) * divisor_magnitude_count);
-//    big_int_primitive_left_shift(v, shift, divisor_magnitude);
-//    if (__builtin_clzll(u->_magnitude[0]) >= shift) {
-//      remainder->_magnitude = realloc(remainder->_magnitude,
-//                                      sizeof(UInt64) * u->_magnitude_count + 1);
-//      remainder->_magnitude_count = u->_magnitude_count;
-////      remainder
-//    }
-//  }
 //}
 //
 //
@@ -733,7 +743,31 @@ Char* big_integer_to_string(struct BigInteger* value,
   return text;
 }
 
-///* MARK: - Performing Calculations */
+/* MARK: - Performing Calculations */
+
+/**
+ * Adds two values and produces their sum.
+ */
+struct BigInteger* big_integer_add(struct BigInteger* lhs,
+                                   struct BigInteger* rhs) {
+  if (rhs->_sign == none) {
+    return big_integer_copy(lhs);
+  }
+  if (lhs->_sign == none) {
+    return big_integer_copy(rhs);
+  }
+  if (lhs->_sign == rhs->_sign) {
+    var result_count = (Int64)0;
+    var result = big_integer_add_words(lhs->_magnitude,
+                                       lhs->_magnitude_count,
+                                       rhs->_magnitude,
+                                       rhs->_magnitude_count,
+                                       &result_count);
+    return big_integer_init_from_words(result, result_count, lhs->_sign);
+  }
+  // TODO: different sign
+}
+
 //
 ///**
 // * Returns -1, 0 or 1 that indicates whether the number object's value is
