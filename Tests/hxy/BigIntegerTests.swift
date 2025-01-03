@@ -88,8 +88,8 @@ struct BigIntegerTests {
     numberPointer.deallocate()
 
     longString = ""
-    for i in 0 ..< 2 {
-      longString += "\(i)"
+    for _ in 1 ... 2430 {
+      longString += "\(1)"
     }
     numberPointer = big_integer_init_from_string(longString, 10)!
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
@@ -134,7 +134,7 @@ struct BigIntegerTests {
 
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(
-//      "1935819342123611233319306193481935819342123",
+//      String(String(repeating: "1", count: 2431)),
 //      10
 //    )!
 //    let divisor = big_integer_init_from_string("de0b6b3a7640000", 16)!

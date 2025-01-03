@@ -597,7 +597,7 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
   let magnitude_count = (bits_count + 31) >> 5;
   value->_magnitude_count = magnitude_count;
   value->_magnitude_capacity = magnitude_count;
-  value->_magnitude = (Int32*)malloc(sizeof(Int32) * magnitude_count);
+  value->_magnitude = (Int32*)calloc(magnitude_count, sizeof(Int32));
 
   /* Process first (potentially short) digit group. */
   var first_group_count = digits_count % BIG_INTEGER_DIGITS_PER_WORD[radix];
@@ -797,7 +797,7 @@ Int64 big_integer_bit_count(struct BigInteger* value) {
   }
   /* Calculate the bit length of the magnitude. */
   var bit_count = ((value->_magnitude_count - 1) << 5);
-  bit_count += big_integer_bit_count_for_word(value->_magnitude[0]);
+  bit_count += big_integer_bit_count_for_word((UInt32)value->_magnitude[0]);
   if (value->_sign == minus) {
     /* Check if magnitude is a power of two. */
     var is_pow2 = __builtin_popcountll(value->_magnitude[0]) == 1;
