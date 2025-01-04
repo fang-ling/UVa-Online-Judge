@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30080909 | 424 | Integer Inquiry |
 | 30065274 | 11498 | Division of Nlogonia |
 | 30064829 | 11364 | Parking |
 | 30052425 | 10300 | Ecological Premium |
