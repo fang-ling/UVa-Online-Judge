@@ -117,6 +117,7 @@ mutable_big_integer_divide_one_word(struct MutableBigInteger* dividend,
   if (quotient->_magnitude_capacity < dividend->_magnitude_count) {
     let size = sizeof(Int32) * dividend->_magnitude_count;
     quotient->_magnitude = realloc(quotient->_magnitude, size);
+    memset(quotient->_magnitude, 0, size);
   }
   quotient->_offset = 0;
   quotient->_magnitude_count = dividend->_magnitude_count;
@@ -257,6 +258,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
       var remainder_magnitude = remainder->_magnitude;
       remainder->_magnitude = realloc(remainder_magnitude,
                                       sizeof(Int32) * count);
+      memset(remainder->_magnitude, 0, sizeof(Int32) * count);
       remainder->_magnitude_capacity = count;
       remainder->_magnitude_count = dividend->_magnitude_count;
       remainder->_offset = 1;
@@ -269,6 +271,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
       var remainder_magnitude = remainder->_magnitude;
       remainder->_magnitude = realloc(remainder_magnitude,
                                       sizeof(Int32) * count);
+      memset(remainder->_magnitude, 0, sizeof(Int32) * count);
       remainder->_magnitude_capacity = count;
       remainder->_magnitude_count = dividend->_magnitude_count + 1;
       remainder->_offset = 1;
@@ -292,6 +295,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
     let count = dividend->_magnitude_count + 1;
     var remainder_magnitude = remainder->_magnitude;
     remainder->_magnitude = realloc(remainder_magnitude, sizeof(Int32) * count);
+    memset(remainder->_magnitude, 0, sizeof(Int32) * count);
     memcpy(remainder->_magnitude + 1,
            dividend->_magnitude + dividend->_offset,
            dividend->_magnitude_count);
@@ -307,6 +311,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
   if (quotient->_magnitude_capacity < limit) {
     quotient->_magnitude = realloc(quotient->_magnitude,
                                    sizeof(Int32) * limit);
+    memset(quotient->_magnitude, 0, sizeof(Int32) * limit);
     quotient->_magnitude_capacity = limit;
     quotient->_offset = 0;
   }

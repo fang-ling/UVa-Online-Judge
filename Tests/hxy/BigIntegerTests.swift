@@ -98,6 +98,15 @@ struct BigIntegerTests {
     #expect(string.count == longString.count)
     stringPointer.deallocate()
     numberPointer.deallocate()
+
+    longString = "1" + String(repeating: "0", count: 2500)
+    numberPointer = big_integer_init_from_string(longString, 10)!
+    stringPointer = big_integer_to_string(numberPointer, 10, false)!
+    string = String(cString: stringPointer)
+    #expect(string == longString)
+    #expect(string.count == longString.count)
+    stringPointer.deallocate()
+    numberPointer.deallocate()
   }
 
   @Test func testBigIntegerAdd() async throws {
@@ -130,18 +139,31 @@ struct BigIntegerTests {
     bPointer.deallocate()
     cPointer.deallocate()
     stringPointer.deallocate()
+
+    a = String(repeating: "9", count: 19358)
+    b = String(repeating: "1", count: 1)
+    c = "1" + String(repeating: "0", count: 19358)
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_add(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
   }
 
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(
-//      String(String(repeating: "1", count: 2431)),
+//      "1" + String(String(repeating: "0", count: 2500)),
 //      10
 //    )!
 //    let divisor = big_integer_init_from_string("de0b6b3a7640000", 16)!
 //
 //
 //    for i in 0 ..< dividend.pointee._magnitude_count {
-//      print(dividend.pointee._magnitude[Int(i)], terminator: ", ")
+//      print("\(i): \(dividend.pointee._magnitude[Int(i)])")
 //    }
 //    print()
 //    for i in 0 ..< divisor.pointee._magnitude_count {
@@ -152,7 +174,7 @@ struct BigIntegerTests {
 //    let lhs = mutable_big_integer_init_from_words(
 //      dividend.pointee._magnitude,
 //      dividend.pointee._magnitude_count
-//    )
+//    )!
 //    let rhs = mutable_big_integer_init_from_words(
 //      divisor.pointee._magnitude,
 //      divisor.pointee._magnitude_count
