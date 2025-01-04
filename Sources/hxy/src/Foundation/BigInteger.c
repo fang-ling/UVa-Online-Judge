@@ -194,13 +194,18 @@ static Int64 big_integer_trusted_strip_leading_zero_words(Int32* value,
 #define big_integer_bit_count_for_word(n) \
           (32 - __builtin_clz((n)))
 
-struct BigInteger* big_integer_init_from_words(Int32* magnitude,
-                                               Int64 count,
-                                               enum BigIntegerSign sign) {
+static struct BigInteger* big_integer_init_from_words(Int32* magnitude,
+                                                      Int64 count,
+                                                      enum BigIntegerSign sign,
+                                                      Bool needs_allocation) {
   var n = (struct BigInteger*)malloc(sizeof(struct BigInteger));
 
-  n->_magnitude = malloc(sizeof(Int32) * count);
-  memcpy(n->_magnitude, magnitude, sizeof(Int32) * count);
+  if (needs_allocation) {
+    n->_magnitude = malloc(sizeof(Int32) * count);
+    memcpy(n->_magnitude, magnitude, sizeof(Int32) * count);
+  } else {
+    n->_magnitude = magnitude;
+  }
   n->_magnitude_capacity = count;
   n->_magnitude_count = count;
   n->_sign = count == 0 ? none : sign;
@@ -224,7 +229,9 @@ big_integer_mutable_big_integer_to_big_integer(struct MutableBigInteger* value,
   }
 
   return big_integer_init_from_words(value->_magnitude + value->_offset,
-                                     value->_magnitude_count, sign);
+                                     value->_magnitude_count,
+                                     sign,
+                                     true);
 }
 
 /**
@@ -393,7 +400,7 @@ static Void big_integer_to_string_schoenhage(struct BigInteger* u,
 //  }
 }
 
-/*
+/**
  * Adds the contents of the int32 arrays x and y. This method allocates a new
  * int32 array to hold the answer and returns a pointer to that array.
  */
@@ -460,6 +467,75 @@ static Int32* big_integer_add_words(Int32* x,
   return result;
 }
 
+/**
+ * Subtracts the contents of the second int32 arrays (little) from the first
+ * (big). The first int32 array (big) must represent a larger number than the
+ * second. This method allocates the space necessary to hold the answer.
+ */
+static Int32* big_integer_subtract_words(Int32* big,
+                                         Int64 big_count,
+                                         Int32* little,
+                                         Int64 little_count) {
+  var big_index = big_count;
+  var result = (Int32*)calloc(big_index, sizeof(Int32));
+  var little_index = little_count;
+
+  var difference = (Int64)0;
+
+  /* Subtract common parts of both numbers. */
+  while (little_index > 0) {
+    big_index -= 1;
+    little_index -= 1;
+    difference >>= 32;
+    difference += big[big_index] & BIG_INTEGER_INT64_MASK;
+    difference -= little[little_index] & BIG_INTEGER_INT64_MASK;
+    result[big_index] = (Int32)difference;
+  }
+
+  /* Subtract remainder of longer number while borrow propagates. */
+  var borrow = difference >> 32 != 0;
+  while (big_index > 0 && borrow) {
+    big_index -= 1;
+    result[big_index] = big[big_index] - 1;
+    borrow = result[big_index] == -1;
+  }
+
+  /* Copy remainder of longer number */
+  while (big_index > 0) {
+    big_index -= 1;
+    result[big_index] = big[big_index];
+  }
+
+  return result;
+}
+
+/**
+ * Compares the magnitude array of `lhs` with the `rhs`'s. This is the version
+ * of compare() ignoring sign.
+ */
+static Int64 big_integer_compare_magnitude(struct BigInteger* lhs,
+                                           struct BigInteger* rhs) {
+  if (lhs->_magnitude_count < rhs->_magnitude_count) {
+    return -1;
+  }
+  if (lhs->_magnitude_count > rhs->_magnitude_count) {
+    return 1;
+  }
+  /* Find the first mismatch index */
+  var i = -1;
+  var k = 0;
+  for (; k < lhs->_magnitude_count; k += 1) {
+    if (lhs->_magnitude[k] != rhs->_magnitude[k]) {
+      i = k;
+      break;
+    }
+  }
+  if (i != -1) {
+    return (UInt32)lhs->_magnitude[i] < (UInt32)rhs->_magnitude[i] ? -1 : 1;
+  }
+  return 0;
+}
+
 ///*
 // * Ensure that the BigInt is in normal form, specifically making sure that there
 // * are no leading zeros, and that if the magnitude is zero, then count is zero.
@@ -517,33 +593,7 @@ static Int32* big_integer_add_words(Int32* x,
 //  return bit + __builtin_ctzll(word);
 //}
 //
-//
-///**
-// * Compares the magnitude array of `lhs` with the `rhs`'s. This is the version
-// * of compare() ignoring sign.
-// */
-//static Int64 big_int_compare_magnitude(struct BigInt* lhs, struct BigInt* rhs) {
-//  if (lhs->_magnitude_count < rhs->_magnitude_count) {
-//    return -1;
-//  }
-//  if (lhs->_magnitude_count > rhs->_magnitude_count) {
-//    return 1;
-//  }
-//  /* Find the first mismatch index */
-//  var i = -1;
-//  var k = 0;
-//  for (; k < lhs->_magnitude_count; k += 1) {
-//    if (lhs->_magnitude[k] != rhs->_magnitude[k]) {
-//      i = k;
-//      break;
-//    }
-//  }
-//  if (i != -1) {
-//    return lhs->_magnitude[i] < rhs->_magnitude[i] ? -1 : 1;
-//  }
-//  return 0;
-//}
-//
+
 /* MARK: - Creating and Destroying a BigInt */
 
 /**
@@ -763,12 +813,48 @@ struct BigInteger* big_integer_add(struct BigInteger* lhs,
                                        rhs->_magnitude,
                                        rhs->_magnitude_count,
                                        &result_count);
-    return big_integer_init_from_words(result, result_count, lhs->_sign);
+    return big_integer_init_from_words(result, result_count, lhs->_sign, false);
   }
-  // TODO: different sign
+
+  let compare_result = big_integer_compare_magnitude(lhs, rhs);
+  if (compare_result == 0) {
+    return big_integer_init_from_words(malloc(sizeof(Int32) * 0),
+                                       0,
+                                       none,
+                                       false);
+  }
+
+  var result_count = (Int64)0;
+  var result = (Int32*)NULL;
+  if (compare_result > 0) {
+    result = big_integer_subtract_words(lhs->_magnitude,
+                                        lhs->_magnitude_count,
+                                        rhs->_magnitude,
+                                        rhs->_magnitude_count);
+    result_count = lhs->_magnitude_count;
+  } else {
+    result = big_integer_subtract_words(rhs->_magnitude,
+                                        rhs->_magnitude_count,
+                                        lhs->_magnitude,
+                                        lhs->_magnitude_count);
+    result_count = rhs->_magnitude_count;
+  }
+  result_count = big_integer_trusted_strip_leading_zero_words(result,
+                                                              result_count);
+
+  var sign = none;
+  if ((compare_result > 0 && lhs->_sign == plus) ||
+      (compare_result < 0 && lhs->_sign == minus)) {
+    sign = plus;
+  } else {
+    sign = minus;
+  }
+  return big_integer_init_from_words(result,
+                                     result_count,
+                                     sign,
+                                     false);
 }
 
-//
 ///**
 // * Returns -1, 0 or 1 that indicates whether the number object's value is
 // * greater than, equal to, or less than a given number.

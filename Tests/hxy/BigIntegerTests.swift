@@ -152,6 +152,45 @@ struct BigIntegerTests {
     bPointer.deallocate()
     cPointer.deallocate()
     stringPointer.deallocate()
+
+    a = "19358"
+    b = "-12361"
+    c = "6997"
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_add(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+
+    a = "19358"
+    b = "-19358"
+    c = "0"
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_add(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+
+    a = "12361"
+    b = "-19358"
+    c = "-6997"
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_add(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
   }
 
 //  @Test func testMutableBigIntegerDivide() async throws {
