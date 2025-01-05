@@ -513,8 +513,8 @@ static Int32* big_integer_subtract_words(Int32* big,
  * Compares the magnitude array of `lhs` with the `rhs`'s. This is the version
  * of compare() ignoring sign.
  */
-static Int64 big_integer_compare_magnitude(struct BigInteger* lhs,
-                                           struct BigInteger* rhs) {
+static Int64 big_integer_compare_words(struct BigInteger* lhs,
+                                       struct BigInteger* rhs) {
   if (lhs->_magnitude_count < rhs->_magnitude_count) {
     return -1;
   }
@@ -816,7 +816,73 @@ struct BigInteger* big_integer_add(struct BigInteger* lhs,
     return big_integer_init_from_words(result, result_count, lhs->_sign, false);
   }
 
-  let compare_result = big_integer_compare_magnitude(lhs, rhs);
+  let compare_result = big_integer_compare_words(lhs, rhs);
+  if (compare_result == 0) {
+    return big_integer_init_from_words(malloc(sizeof(Int32) * 0),
+                                       0,
+                                       none,
+                                       false);
+  }
+
+  var result_count = (Int64)0;
+  var result = (Int32*)NULL;
+  if (compare_result > 0) {
+    result = big_integer_subtract_words(lhs->_magnitude,
+                                        lhs->_magnitude_count,
+                                        rhs->_magnitude,
+                                        rhs->_magnitude_count);
+    result_count = lhs->_magnitude_count;
+  } else {
+    result = big_integer_subtract_words(rhs->_magnitude,
+                                        rhs->_magnitude_count,
+                                        lhs->_magnitude,
+                                        lhs->_magnitude_count);
+    result_count = rhs->_magnitude_count;
+  }
+  result_count = big_integer_trusted_strip_leading_zero_words(result,
+                                                              result_count);
+
+  var sign = none;
+  if ((compare_result > 0 && lhs->_sign == plus) ||
+      (compare_result < 0 && lhs->_sign == minus)) {
+    sign = plus;
+  } else {
+    sign = minus;
+  }
+  return big_integer_init_from_words(result,
+                                     result_count,
+                                     sign,
+                                     false);
+}
+
+/**
+ * Subtracts one value from another and produces their difference.
+ */
+struct BigInteger* big_integer_subtract(struct BigInteger* lhs,
+                                        struct BigInteger* rhs) {
+  if (rhs->_sign == none) {
+    return big_integer_copy(lhs);
+  }
+  if (lhs->_sign == none) {
+    var result = big_integer_copy(rhs);
+    if (result->_sign == plus) {
+      result->_sign = minus;
+    } else if (result->_sign == minus) {
+      result->_sign = plus;
+    }
+    return result;
+  }
+  if (rhs->_sign != lhs->_sign) {
+    var result_count = (Int64)0;
+    var result = big_integer_add_words(lhs->_magnitude,
+                                       lhs->_magnitude_count,
+                                       rhs->_magnitude,
+                                       rhs->_magnitude_count,
+                                       &result_count);
+    return big_integer_init_from_words(result, result_count, lhs->_sign, false);
+  }
+
+  var compare_result = big_integer_compare_words(lhs, rhs);
   if (compare_result == 0) {
     return big_integer_init_from_words(malloc(sizeof(Int32) * 0),
                                        0,

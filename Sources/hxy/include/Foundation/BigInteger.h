@@ -178,6 +178,18 @@ Char* big_integer_to_string(struct BigInteger* value,
 struct BigInteger* big_integer_add(struct BigInteger* lhs,
                                    struct BigInteger* rhs);
 
+/**
+ * Subtracts one value from another and produces their difference.
+ *
+ * - Parameters:
+ *   - lhs: A numeric value.
+ *   - rhs: The value to subtract from lhs.
+ *
+ * - Returns: Returns a new BigInteger whose value is `lhs - rhs`.
+ */
+struct BigInteger* big_integer_subtract(struct BigInteger* lhs,
+                                        struct BigInteger* rhs);
+
 /* MARK: - Working with Binary Representation */
 
 /**
