@@ -129,13 +129,20 @@ Double BIG_INTEGER_LOG_CACHE[] = {
 
 /*
  * The threshold value for using Schoenhage recursive base conversion. If
- * the number of ints in the number are larger than this value,
+ * the number of int32s in the number are larger than this value,
  * the Schoenhage algorithm will be used. In practice, it appears that the
  * Schoenhage routine is faster for any threshold down to 2, and is
  * relatively flat for thresholds between 2-25, so this choice may be
  * varied within this range for very small effect.
  */
 #define BIG_INTEGER_SCHOENHAGE_BASE_CONVERSION_THRESHOLD 20
+
+/*
+ * The threshold value for using Karatsuba multiplication.  If the number of
+ * int32s in both magnitude arrays are greater than this number, then Karatsuba
+ * multiplication will be used. This value is found experimentally to work well.
+ */
+#define BIG_INTEGER_KARATSUBA_THRESHOLD 80
 
 /* MARK: - Private methods */
 
@@ -536,45 +543,80 @@ static Int64 big_integer_compare_words(struct BigInteger* lhs,
   return 0;
 }
 
-///*
-// * Ensure that the BigInt is in normal form, specifically making sure that there
-// * are no leading zeros, and that if the magnitude is zero, then count is zero.
-// */
-//static Void big_int_normalize(struct BigInt* bigInt) {
-//  if (bigInt->_magnitude_count == 0) {
-//    bigInt->_sign = none;
-//    return;
-//  }
-//
-//  if (bigInt->_magnitude[0] != 0) {
-//    return;
-//  }
-//
-//  let new_count = big_int_strip_leading_zero_uint64s(bigInt->_magnitude,
-//                                                     bigInt->_magnitude_count);
-//  bigInt->_magnitude_count = new_count;
-//}
+static
+struct BigInteger* big_integer_multiply_by_word(Int32* x,
+                                                Int64 x_count,
+                                                Int32 y,
+                                                enum BigIntegerSign sign) {
+  /* TODO: special case for left shift */
+  //if (__builtin_popcount(y) == 1) {
+  //}
 
-//static struct BigInt* big_int_init_internal(UInt64* magnitude,
-//                                            Int64 count,
-//                                            Int64 capacity,
-//                                            enum BigIntSign sign) {
-//  precondition(count <= capacity, "count must less than or equal to capacity");
-//
-//  var bigInt = (struct BigInt*)malloc(sizeof(struct BigInt));
-//
-//  bigInt->_magnitude = malloc(sizeof(UInt64) * capacity);
-//  if (count != 0 && magnitude != NULL) {
-//    memcpy(bigInt->_magnitude, magnitude, sizeof(UInt64) * count);
-//  }
-//  bigInt->_magnitude_count = count;
-//  bigInt->_magnitude_capacity = capacity;
-//  bigInt->_sign = sign;
-//
-//  return bigInt;
-//}
-//
-//
+  var result = (Int32*)calloc(x_count + 1, sizeof(Int32));
+  var result_count = x_count + 1;
+
+  var carry = (Int64)0;
+  var y_int64 = y & BIG_INTEGER_INT64_MASK;
+  var r_start = x_count;
+  var i = x_count - 1;
+  for (; i >= 0; i -= 1) {
+    var product = (x[i] & BIG_INTEGER_INT64_MASK) * y_int64 + carry;
+    result[r_start] = (Int32)product;
+    r_start -= 1;
+    carry = ((UInt64)product) >> 32;
+  }
+  if (carry == 0) {
+    memmove(result, result + 1, sizeof(Int32) * x_count);
+    result_count = x_count;
+  } else {
+    result[r_start] = (Int32)carry;
+  }
+
+  return big_integer_init_from_words(result, result_count, sign, false);
+}
+
+/*
+ * Multiplies int32 arrays x and y to the specified lengths and places the
+ * result into z. There will be no leading zeros in the resultant array.
+ */
+static Int32* big_integer_multiply_to_count(Int32* x,
+                                            Int64 x_count,
+                                            Int32* y,
+                                            Int64 y_count,
+                                            Int64* z_count) {
+  var z = (Int32*)calloc(x_count + y_count, sizeof(Int32));
+  *z_count = x_count + y_count;
+
+  var x_start = x_count - 1;
+  var y_start = y_count - 1;
+
+  var carry = (Int64)0;
+  var j = y_start;
+  var k = y_start + 1 + x_start;
+  for (; j >= 0; j -= 1, k -= 1) {
+    var product = y[j] & BIG_INTEGER_INT64_MASK;
+    product *= x[x_start] & BIG_INTEGER_INT64_MASK;
+    product += carry;
+    z[k] = (Int32)product;
+    carry = ((UInt64)product) >> 32;
+  }
+  z[x_start] = (Int32)carry;
+
+  var i = x_start - 1;
+  for (; i >= 0; i -= 1) {
+    carry = 0;
+    for (j = y_start, k = y_start + 1 + i; j >= 0; j -= 1, k -= 1) {
+      var product = y[j] & BIG_INTEGER_INT64_MASK;
+      product *= x[i] & BIG_INTEGER_INT64_MASK;
+      product += (z[k] & BIG_INTEGER_INT64_MASK) + carry;
+      z[k] = (Int32)product;
+      carry = ((UInt64)product) >> 32;
+    }
+    z[i] = (Int32)carry;
+  }
+  return z;
+}
+
 ///*
 // * Return the index of the lowest set bit in given big int. If the magnitude of
 // * that big int is zero, -1 is returned.
@@ -921,6 +963,50 @@ struct BigInteger* big_integer_subtract(struct BigInteger* lhs,
                                      false);
 }
 
+/**
+ * Multiplies two values and produces their product.
+ */
+struct BigInteger* big_integer_multiply(struct BigInteger* lhs,
+                                        struct BigInteger* rhs) {
+  if (lhs->_sign == none || rhs->_sign == none) {
+    return big_integer_init_from_words(malloc(sizeof(Int32) * 0),
+                                       0,
+                                       none,
+                                       false);
+  }
+
+  /* TODO: special case for square */
+
+//  if (lhs->_magnitude_count < BIG_INTEGER_KARATSUBA_THRESHOLD ||
+//      rhs->_magnitude_count < BIG_INTEGER_KARATSUBA_THRESHOLD) {
+    var result_sign = lhs->_sign == rhs->_sign ? plus : minus;
+    if (rhs->_magnitude_count == 1) {
+      return big_integer_multiply_by_word(lhs->_magnitude,
+                                          lhs->_magnitude_count,
+                                          rhs->_magnitude[0],
+                                          result_sign);
+    }
+    if (lhs->_magnitude_count == 1) {
+      return big_integer_multiply_by_word(rhs->_magnitude,
+                                          rhs->_magnitude_count,
+                                          lhs->_magnitude[0],
+                                          result_sign);
+    }
+    var result_count = (Int64)0;
+    var result = big_integer_multiply_to_count(lhs->_magnitude,
+                                               lhs->_magnitude_count,
+                                               rhs->_magnitude,
+                                               rhs->_magnitude_count,
+                                               &result_count);
+    result_count = big_integer_trusted_strip_leading_zero_words(result,
+                                                                result_count);
+    return big_integer_init_from_words(result,
+                                       result_count,
+                                       result_sign,
+                                       false);
+//  }
+}
+
 ///**
 // * Returns -1, 0 or 1 that indicates whether the number object's value is
 // * greater than, equal to, or less than a given number.
@@ -952,7 +1038,7 @@ Int64 big_integer_bit_count(struct BigInteger* value) {
   bit_count += big_integer_bit_count_for_word((UInt32)value->_magnitude[0]);
   if (value->_sign == minus) {
     /* Check if magnitude is a power of two. */
-    var is_pow2 = __builtin_popcountll(value->_magnitude[0]) == 1;
+    var is_pow2 = __builtin_popcount(value->_magnitude[0]) == 1;
     var i = 1;
     for (; i < value->_magnitude_count && is_pow2; i += 1) {
       is_pow2 = (value->_magnitude[i] == 0);

@@ -190,6 +190,18 @@ struct BigInteger* big_integer_add(struct BigInteger* lhs,
 struct BigInteger* big_integer_subtract(struct BigInteger* lhs,
                                         struct BigInteger* rhs);
 
+/**
+ * Multiplies two values and produces their product.
+ *
+ * - Parameters:
+ *   - lhs: The first value to multiply.
+ *   - rhs: The second value to multiply.
+ *
+ * - Returns: Returns a new BigInteger whose value is `lhs * rhs`.
+ */
+struct BigInteger* big_integer_multiply(struct BigInteger* lhs,
+                                        struct BigInteger* rhs);
+
 /* MARK: - Working with Binary Representation */
 
 /**

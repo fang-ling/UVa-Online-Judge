@@ -221,6 +221,34 @@ struct BigIntegerTests {
     stringPointer.deallocate()
   }
 
+  @Test func testBigIntegerMultiply() async throws {
+    var a = "2"
+    var b = "1"
+    var c = "2"
+    var aPointer = big_integer_init_from_string(a, 10)!
+    var bPointer = big_integer_init_from_string(b, 10)!
+    var cPointer = big_integer_multiply(aPointer, bPointer)!
+    var stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+
+    a = "12361"
+    b = "-19358"
+    c = "-239284238"
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_multiply(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer, 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+  }
+
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(
 //      "1" + String(String(repeating: "0", count: 2500)),
