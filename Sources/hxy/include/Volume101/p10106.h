@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume118Tests.swift                                 /'___\ /\_ \          */
+/* p10106.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date:                                      \ \ \_/__ \_\ \_  __  */
+/* Date: January 14, 2025                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -11,7 +11,7 @@
 /*
  * This source file is part of the hxy open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -19,31 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+#ifndef p10106_h
+#define p10106_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume118Tests {
-    @Test func testP11805() throws {
-      try run(main: p11805_main, for: 11805, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP11809() throws {
-      try run(main: p11809_main, for: 11809, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p10106_main();
 
-    @Test func testP11879() throws {
-      try run(main: p11879_main, for: 11879, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* p10106_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

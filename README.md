@@ -17,6 +17,9 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30105545 | 11879 | Multiple of 17 |
+| 30100999 | 713 | Adding Reversed Numbers |
+| 30099493 | 10106 | Product |
 | 30080909 | 424 | Integer Inquiry |
 | 30065274 | 11498 | Division of Nlogonia |
 | 30064829 | 11364 | Parking |

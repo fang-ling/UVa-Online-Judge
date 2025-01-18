@@ -1007,6 +1007,32 @@ struct BigInteger* big_integer_multiply(struct BigInteger* lhs,
 //  }
 }
 
+/**
+ * Returns the quotient and remainder of one value divided by another value.
+ */
+struct BigInteger** big_integer_divide_and_modulo(struct BigInteger* lhs,
+                                                  struct BigInteger* rhs) {
+  var a = mutable_big_integer_init_from_words(lhs->_magnitude,
+                                              lhs->_magnitude_count);
+  var b = mutable_big_integer_init_from_words(rhs->_magnitude,
+                                              rhs->_magnitude_count);
+  var quotient_and_remainder = mutable_big_integer_divide(a, b);
+  var q = quotient_and_remainder[0];
+  var r = quotient_and_remainder[1];
+
+  var result = (struct BigInteger**)malloc(sizeof(struct BigInteger*) * 2);
+  let quotient_sign = lhs->_sign == rhs->_sign ? plus : minus;
+  result[0] = big_integer_mutable_big_integer_to_big_integer(q, quotient_sign);
+  result[1] = big_integer_mutable_big_integer_to_big_integer(r, lhs->_sign);
+
+  mutable_big_integer_deinit(a);
+  mutable_big_integer_deinit(b);
+  mutable_big_integer_deinit(q);
+  mutable_big_integer_deinit(r);
+
+  return result;
+}
+
 ///**
 // * Returns -1, 0 or 1 that indicates whether the number object's value is
 // * greater than, equal to, or less than a given number.

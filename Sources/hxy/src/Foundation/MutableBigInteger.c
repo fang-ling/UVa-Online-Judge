@@ -103,8 +103,8 @@ mutable_big_integer_divide_one_word(struct MutableBigInteger* dividend,
   /* Special case of one word dividend. */
   if (dividend->_magnitude_count == 1) {
     var dividend_value = dividend->_magnitude[dividend->_offset];
-    var q = dividend_value / divisor;
-    var r = dividend_value % divisor;
+    var q = (Int32)((UInt32)dividend_value / (UInt32)divisor);
+    var r = (Int32)((UInt32)dividend_value % (UInt32)divisor);
 
     quotient->_magnitude[0] = q;
     quotient->_magnitude_count = q == 0 ? 0 : 1;

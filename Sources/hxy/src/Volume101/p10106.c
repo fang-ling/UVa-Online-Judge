@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume118Tests.swift                                 /'___\ /\_ \          */
+/* p10106.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date:                                      \ \ \_/__ \_\ \_  __  */
+/* Date: January 14, 2025                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -11,7 +11,7 @@
 /*
  * This source file is part of the hxy open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -19,29 +19,42 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+/*
+ * 10106 Product
+ *
+ * The problem is to multiply two integers X, Y . (0 ≤ X, Y < 10**250)
+ *
+ * Input:
+ * The input will consist of a set of pairs of lines. Each line in pair contains
+ * one multiplyer.
+ *
+ * Output:
+ * For each input pair of lines the output line should consist one integer the
+ * product.
+ *
+ * Solution:
+ * A * B problem (BigInteger ver.)
+ */
 
-extension UVaOnlineJudgeTests {
-  struct Volume118Tests {
-    @Test func testP11805() throws {
-      try run(main: p11805_main, for: 11805, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Volume101/p10106.h"
 
-    @Test func testP11809() throws {
-      try run(main: p11809_main, for: 11809, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p10106_main() {
+  Char buffer1[256];
+  Char buffer2[256];
 
-    @Test func testP11879() throws {
-      try run(main: p11879_main, for: 11879, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+  while (scanf("%s %s", buffer1, buffer2) == 2) {
+    var lhs = big_integer_init_from_string(buffer1, 10);
+    var rhs = big_integer_init_from_string(buffer2, 10);
+
+    var product = big_integer_multiply(lhs, rhs);
+    var result = big_integer_to_string(product, 10, false);
+
+    printf("%s\n", result);
+
+    big_integer_deinit(lhs);
+    big_integer_deinit(rhs);
+    big_integer_deinit(product);
+    free(result);
   }
 }
 

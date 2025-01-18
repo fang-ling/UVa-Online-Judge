@@ -202,6 +202,19 @@ struct BigInteger* big_integer_subtract(struct BigInteger* lhs,
 struct BigInteger* big_integer_multiply(struct BigInteger* lhs,
                                         struct BigInteger* rhs);
 
+/**
+ * Returns the quotient and remainder of one value divided by another value.
+ *
+ * - Parameters:
+ *   - lhs: A numeric value.
+ *   - rhs: The value to divide this value by.
+ *
+ * - Returns: Returns a tuple containing the quotient and remainder of `lhs`
+ * divided by `rhs`.
+ */
+struct BigInteger** big_integer_divide_and_modulo(struct BigInteger* lhs,
+                                                  struct BigInteger* rhs);
+
 /* MARK: - Working with Binary Representation */
 
 /**

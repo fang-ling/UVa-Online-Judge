@@ -249,6 +249,21 @@ struct BigIntegerTests {
     stringPointer.deallocate()
   }
 
+  @Test func testBigIntegerDivide() async throws {
+    let a = "3420802118"
+    let b = "17"
+    let c = "0"
+    let aPointer = big_integer_init_from_string(a, 10)!
+    let bPointer = big_integer_init_from_string(b, 10)!
+    let cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
+    let stringPointer = big_integer_to_string(cPointer[1], 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+  }
+
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(
 //      "1" + String(String(repeating: "0", count: 2500)),
