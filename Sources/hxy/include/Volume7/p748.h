@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume101Tests.swift                                 /'___\ /\_ \          */
+/* p748.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: January 14, 2025                               \ \ \_/__ \_\ \_  __  */
+/* Date: January 20, 2025                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,31 +19,15 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+#ifndef p748_h
+#define p748_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume101Tests {
-    @Test func testP10106() throws {
-      try run(main: p10106_main, for: 10106, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP10114() throws {
-      try run(main: p10114_main, for: 10114, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p748_main();
 
-    @Test func testP10189() throws {
-      try run(main: p10189_main, for: 10189, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* p748_h */
+
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */

@@ -42,12 +42,12 @@ let volumes =
   process(volume: 4, problems: [(465, 5), (424, 5)]) +
   process(volume: 5, problems: [(594, 3)]) +
   process(volume: 6, problems: [(621, 3)]) +
-  process(volume: 7, problems: [(713, 5)]) +
+  process(volume: 7, problems: [(713, 5), (748, 3)]) +
   process(volume: 11, problems: [(1124, 5)]) +
   process(volume: 15, problems: [(1585, 4)]) +
   process(volume: 17, problems: [(1709, 3)]) +
   process(volume: 100, problems: [(10071, 3), (10055, 7)]) +
-  process(volume: 101, problems: [(10114, 2), (10106, 4)]) +
+  process(volume: 101, problems: [(10114, 2), (10106, 4), (10189, 3)]) +
   process(volume: 103, problems: [(10300, 4)]) +
   process(volume: 104, problems: [(10424, 7)]) +
   process(volume: 110, problems: [(11044, 3), (11078, 4)]) +
