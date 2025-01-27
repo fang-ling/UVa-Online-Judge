@@ -298,7 +298,7 @@ mutable_big_integer_divide_magnitude(struct MutableBigInteger* dividend,
     memset(remainder->_magnitude, 0, sizeof(Int32) * count);
     memcpy(remainder->_magnitude + 1,
            dividend->_magnitude + dividend->_offset,
-           dividend->_magnitude_count);
+           sizeof(Int32) * dividend->_magnitude_count);
     remainder->_magnitude_count = dividend->_magnitude_count;
     remainder->_magnitude_capacity = count;
     remainder->_offset = 1;

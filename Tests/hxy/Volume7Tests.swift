@@ -32,7 +32,7 @@ extension UVaOnlineJudgeTests {
     }
 
     @Test func testP748() throws {
-      try run(main: p748_main, for: 748, caseCount: 3, skipping: [1,2]).forEach { result in
+      try run(main: p748_main, for: 748, caseCount: 3).forEach { result in
         #expect(result.0 == result.1)
       }
     }

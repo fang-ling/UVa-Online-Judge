@@ -250,16 +250,33 @@ struct BigIntegerTests {
   }
 
   @Test func testBigIntegerDivide() async throws {
-    let a = "3420802118"
-    let b = "17"
-    let c = "0"
-    let aPointer = big_integer_init_from_string(a, 10)!
-    let bPointer = big_integer_init_from_string(b, 10)!
-    let cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
-    let stringPointer = big_integer_to_string(cPointer[1], 10, false)!
+    var a = "3420802118"
+    var b = "17"
+    var c = "0"
+    var aPointer = big_integer_init_from_string(a, 10)!
+    var bPointer = big_integer_init_from_string(b, 10)!
+    var cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
+    var stringPointer = big_integer_to_string(cPointer[1], 10, false)!
     #expect(c == String(cString: stringPointer))
     aPointer.deallocate()
     bPointer.deallocate()
+    cPointer[0]!.deallocate()
+    cPointer[1]!.deallocate()
+    cPointer.deallocate()
+    stringPointer.deallocate()
+
+    a = "1126825030131969720661201000000000000000000000000"
+    b = "1000000000000000000000000000000000000000000000000"
+    c = "126825030131969720661201000000000000000000000000"
+    aPointer = big_integer_init_from_string(a, 10)!
+    bPointer = big_integer_init_from_string(b, 10)!
+    cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
+    stringPointer = big_integer_to_string(cPointer[1], 10, false)!
+    #expect(c == String(cString: stringPointer))
+    aPointer.deallocate()
+    bPointer.deallocate()
+    cPointer[0]!.deallocate()
+    cPointer[1]!.deallocate()
     cPointer.deallocate()
     stringPointer.deallocate()
   }

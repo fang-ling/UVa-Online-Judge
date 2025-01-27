@@ -63,7 +63,6 @@ Void p748_main() {
     index = strlen(buffer) - index;
     buffer2[0] = '1';
     buffer2[1] = '\0';
-//    strcpy(buffer2, "100");
     strncat(buffer2, ZEROS, index);
 
     var zero_count = index;
@@ -73,7 +72,6 @@ Void p748_main() {
       big_integer_deinit(r100);
       r100 = delta;
 
-//      strcat(buffer2, "00");
       strncat(buffer2, ZEROS, index);
       zero_count += index;
     }
@@ -88,11 +86,17 @@ Void p748_main() {
       printf("%s", integer);
     }
     printf(".");
+    /* Leading zeros */
     if (strlen(fraction) < zero_count) {
       var difference = zero_count - strlen(fraction);
       while (difference--) {
         printf("0");
       }
+    }
+    /* Trailing zeros */
+    var i = strlen(fraction) - 1;
+    for (; i >= 0 && fraction[i] == '0'; i -= 1) {
+      fraction[i] = '\0';
     }
     printf("%s\n", fraction);
 

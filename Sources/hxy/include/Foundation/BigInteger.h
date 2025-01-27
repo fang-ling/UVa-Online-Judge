@@ -136,11 +136,6 @@ struct BigInteger* big_integer_copy(struct BigInteger* value);
  */
 Void big_integer_deinit(struct BigInteger* value);
 
-///**
-// * Creates a new `BigInt` value with the specified value.
-// */
-//struct BigInt* big_int_init_from_int128(Int128 value);
-
 /* MARK: - Converting Numeric Values */
 
 /**
