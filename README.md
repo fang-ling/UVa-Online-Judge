@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30119622 | 458 | The Decoder |
 | 30117840 | 748 | Exponentiation |
 | 30117288 | 10189 | Minesweeper |
 | 30105545 | 11879 | Multiple of 17 |
