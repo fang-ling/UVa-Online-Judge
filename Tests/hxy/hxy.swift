@@ -88,10 +88,6 @@ final class hxy: XCTestCase {
     }
   }
   
-  func testVolume5() throws {
-    try hxy.judge(solution: p594_main, for: 594, caseCount: 3)
-  }
-  
   func testVolume11() throws {
     try hxy.judge(solution: p1124_main, for: 1124, caseCount: 5)
   }

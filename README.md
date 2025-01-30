@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30121768 | 591 | Box of Bricks |
 | 30121745 | 10082 | WERTYU |
 | 30119622 | 458 | The Decoder |
 | 30117840 | 748 | Exponentiation |
