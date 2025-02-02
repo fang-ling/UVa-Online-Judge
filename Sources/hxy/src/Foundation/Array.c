@@ -149,6 +149,17 @@ Void array_write(struct Array* array, Int64 index, AnyObject element) {
   }
 }
 
+/* MARK: - Reordering an Array's Elements */
+
+/**
+ * Sorts the array in place, using the given predicate as the comparison between
+ * elements.
+ */
+Void array_sort(struct Array* array,
+                Int32 (*compare)(AnyConstantObject, AnyConstantObject)) {
+  qsort(array->_buffer, array->count, array->_width, compare);
+}
+
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */

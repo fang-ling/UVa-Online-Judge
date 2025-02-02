@@ -144,6 +144,19 @@ Void array_read(struct Array* array, Int64 index, AnyObject element);
  */
 Void array_write(struct Array* array, Int64 index, AnyObject element);
 
+/* MARK: - Reordering an Array's Elements */
+
+/**
+ * Sorts the array in place, using the given predicate as the comparison between
+ * elements.
+ *
+ * - Parameter compare: A predicate that returns an integer less than, equal to,
+ *   or greater than zero if the first argument is considered to be respectively
+ *   less than, equal to, or greater than the second.
+ */
+Void array_sort(struct Array* array,
+                Int32 (*compare)(AnyConstantObject, AnyConstantObject));
+
 #endif /* Array_h */
 
 /*===----------------------------------------------------------------------===*/
