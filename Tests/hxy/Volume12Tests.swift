@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Foundation.h                                         /'___\ /\_ \          */
+/* File.swift                                           /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: September 15, 2024                             \ \ \_/__ \_\ \_  __  */
+/* Date: February 6, 2025                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -11,7 +11,7 @@
 /*
  * This source file is part of the hxy open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -19,17 +19,19 @@
  * which have their own licensing terms.
  */
 
-#ifndef Foundation_h
-#define Foundation_h
+import Foundation
+@testable import hxy
+import Testing
 
-#include "CFoundation.h"
-#include "Number.h"
-
-#include "Array.h"
-#include "BigInteger.h"
-#include "BinaryHeap.h"
-
-#endif /* Foundation_h */
+extension UVaOnlineJudgeTests {
+  struct Volume12Tests {
+    @Test func testP1203() throws {
+      try run(main: p1203_main, for: 1203, caseCount: 8).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
+  }
+}
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
