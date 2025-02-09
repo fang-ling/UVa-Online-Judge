@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30136878 | 102 | Ecological Bin Packing |
 | 30134436 | 1203 | Argus |
 | 30129116 | 299 | Train Swapping |
 | 30127468 | 10038 | Jolly Jumpers |
