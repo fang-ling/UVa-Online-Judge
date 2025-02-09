@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume1Tests.swift                                   /'___\ /\_ \          */
+/* p100.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: February 7, 2025                               \ \ \_/__ \_\ \_  __  */
+/* Date: February 9, 2025                               \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,25 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import hxy
-import Testing
+#ifndef p100_h
+#define p100_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume1Tests {
-    @Test func testP100() throws {
-      try run(main: p100_main, for: 100, caseCount: 7).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP102() throws {
-      try run(main: p102_main, for: 102, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+Void p100_main();
+
+#endif /* p100_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

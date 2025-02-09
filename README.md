@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30141277 | 100 | The 3n + 1 problem |
 | 30136878 | 102 | Ecological Bin Packing |
 | 30134436 | 1203 | Argus |
 | 30129116 | 299 | Train Swapping |
