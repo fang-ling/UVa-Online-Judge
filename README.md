@@ -17,6 +17,9 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30166807 | 10110 | Light, more light |
+| 30148996 | 10035 | Primary Arithmetic |
+| 30147116 | 10783 | Odd Sum |
 | 30141277 | 100 | The 3n + 1 problem |
 | 30136878 | 102 | Ecological Bin Packing |
 | 30134436 | 1203 | Argus |

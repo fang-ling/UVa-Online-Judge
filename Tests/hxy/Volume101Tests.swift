@@ -31,6 +31,12 @@ extension UVaOnlineJudgeTests {
       }
     }
 
+    @Test func testP10110() throws {
+      try run(main: p10110_main, for: 10110, caseCount: 4).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
+
     @Test func testP10114() throws {
       try run(main: p10114_main, for: 10114, caseCount: 2).forEach { result in
         #expect(result.0 == result.1)

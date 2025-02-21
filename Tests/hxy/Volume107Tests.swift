@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume100Tests.swift                                 /'___\ /\_ \          */
+/* Volume107Tests.swift                                 /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: November 20, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: February 12, 2025                              \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -11,7 +11,7 @@
 /*
  * This source file is part of the hxy open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -24,33 +24,9 @@ import Foundation
 import Testing
 
 extension UVaOnlineJudgeTests {
-  struct Volume100Tests {
-    @Test func testP10035() throws {
-      try run(main: p10035_main, for: 10035, caseCount: 7).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP10038() throws {
-      try run(main: p10038_main, for: 10038, caseCount: 6).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP10055() throws {
-      try run(main: p10055_main, for: 10055, caseCount: 7).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP10071() throws {
-      try run(main: p10071_main, for: 10071, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP10082() throws {
-      try run(main: p10082_main, for: 10082, caseCount: 5).forEach { result in
+  struct Volume107Tests {
+    @Test func testP10783() throws {
+      try run(main: p10783_main, for: 10783, caseCount: 5).forEach { result in
         #expect(result.0 == result.1)
       }
     }
