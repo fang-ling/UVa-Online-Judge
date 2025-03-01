@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30176907 | 113 | Power of Cryptography |
 | 30166807 | 10110 | Light, more light |
 | 30148996 | 10035 | Primary Arithmetic |
 | 30147116 | 10783 | Odd Sum |

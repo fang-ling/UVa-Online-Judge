@@ -10,7 +10,7 @@
 /*===----------------------------------------------------------------------===*/
 
 /*
- * This source file is part of the hxy open source project.
+ * This source file is part of the CoreAlgorithm open source project.
  *
  * Copyright (c) 2024 Fang Ling All Rights Reserved.
  *
@@ -38,7 +38,7 @@ fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
 }
 
 let volumes =
-  process(volume: 1, problems: [(100, 7), (102, 4)]) +
+  process(volume: 1, problems: [(100, 7), (102, 4), (113, 4)]) +
   process(volume: 2, problems: [(272, 4), (299, 6)]) +
   process(volume: 4, problems: [(424, 5), (458, 2), (465, 5)]) +
   process(volume: 5, problems: [(591, 7), (594, 3)]) +
@@ -81,13 +81,13 @@ let volumes =
   process(volume: 130, problems: [(13025, 1)])
 
 let package = Package(
-  name: "hxy",
+  name: "CoreAlgorithm",
   targets: [
-    .target(name: "hxy"),
+    .target(name: "CoreAlgorithm"),
     .testTarget(
-      name: "hxyTests",
-      dependencies: ["hxy"],
-      path: "Tests/hxy",
+      name: "CoreAlgorithmTests",
+      dependencies: ["CoreAlgorithm"],
+      path: "Tests/CoreAlgorithm",
       resources: volumes
     )
   ],
