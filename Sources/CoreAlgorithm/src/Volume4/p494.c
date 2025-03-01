@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume4Tests.swift                                   /'___\ /\_ \          */
+/* p494.c                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: January 1, 2025                                \ \ \_/__ \_\ \_  __  */
+/* Date: March 1, 2025                                  \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,35 +19,39 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+/*
+ * 494 Kindergarten Counting Game
+ *
+ * Everybody sit down in a circle. Ok. Listen to me carefully.
+ *   "Woooooo, you scwewy wabbit!"
+ *   Now, could someone tell me how many words I just said?
+ *
+ * Input:
+ * Input to your program will consist of a series of lines, each line containing
+ * multiple words (at least one). A "word" is defined as a consecutive sequence
+ * of letters (upper and/or lower case).
+ *
+ * Output:
+ * Your program should output a word count for each line of input. Each word
+ * count should be printed on a separate line.
+ */
+#include "Volume4/p494.h"
 
-extension UVaOnlineJudgeTests {
-  struct Volume4Tests {
-    @Test func testP424() throws {
-      try run(main: p424_main, for: 424, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
+Void p494_main() {
+  var line = (Char*)NULL;
+  var line_capacity = 0ul;
+  var line_count = 0l;
+  while ((line_count = getline(&line, &line_capacity, stdin)) > 0) {
+    var count = 0;
+
+    var i = 0;
+    for (; i < line_count; i += 1) {
+      if (isalpha(line[i]) && (i - 1 < 0 || !isalpha(line[i - 1]))) {
+        count += 1;
       }
     }
 
-    @Test func testP458() throws {
-      try run(main: p458_main, for: 458, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP465() throws {
-      try run(main: p465_main, for: 465, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP494() throws {
-      try run(main: p494_main, for: 494, caseCount: 8).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+    printf("%d\n", count);
   }
 }
 

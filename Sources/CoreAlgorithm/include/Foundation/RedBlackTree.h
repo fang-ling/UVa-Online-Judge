@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume4Tests.swift                                   /'___\ /\_ \          */
+/* RedBlackTree.h                                       /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: January 1, 2025                                \ \ \_/__ \_\ \_  __  */
+/* Date: March 1, 2025                                  \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,37 +19,13 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+#ifndef RedBlackTree_h
+#define RedBlackTree_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume4Tests {
-    @Test func testP424() throws {
-      try run(main: p424_main, for: 424, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "CFoundation.h"
+#include "Number.h"
 
-    @Test func testP458() throws {
-      try run(main: p458_main, for: 458, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP465() throws {
-      try run(main: p465_main, for: 465, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP494() throws {
-      try run(main: p494_main, for: 494, caseCount: 8).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* RedBlackTree_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
