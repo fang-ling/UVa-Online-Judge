@@ -42,6 +42,12 @@ extension UVaOnlineJudgeTests {
         #expect(result.0 == result.1)
       }
     }
+
+    @Test func testP136() throws {
+      try run(main: p136_main, for: 136, caseCount: 1).forEach { result in
+        #expect(result.0 == result.1)
+      }
+    }
   }
 }
 

@@ -17,6 +17,8 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30206067 | 136 | Ugly Numbers |
+| 30191776 | 10018 | Reverse and Add |
 | 30186463 | 494 | Kindergarten Counting Game |
 | 30176907 | 113 | Power of Cryptography |
 | 30166807 | 10110 | Light, more light |
