@@ -66,8 +66,7 @@ typedef bool Bool;
 /* The maximum representable integer in Int32 */
 #define INT32_MAXIMUM 0x7FFFFFFF
 
-/* MARK: - Global Numeric Functions */
-/* Use these functions with numeric values and other comparable types. */
+/* MARK: - Choosing the Smallest and Largest Value */
 
 /**
  * Returns the greater of two comparable values.
@@ -104,6 +103,8 @@ typedef bool Bool;
           _x < _y ? _x : _y; \
         })
 #endif
+
+/* MARK: - Finding the Absolute Value */
 
 /**
  * Returns the absolute value of the given number.
