@@ -39,8 +39,8 @@
 #include "Volume101/p10106.h"
 
 Void p10106_main() {
-  Char buffer1[256];
-  Char buffer2[256];
+  Int8 buffer1[256];
+  Int8 buffer2[256];
 
   while (scanf("%s %s", buffer1, buffer2) == 2) {
     var lhs = big_integer_init_from_string(buffer1, 10);

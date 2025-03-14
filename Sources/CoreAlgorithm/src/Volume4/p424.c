@@ -48,7 +48,7 @@
 #include "Volume4/p424.h"
 
 Void p424_main() {
-  Char buffer[128];
+  Int8 buffer[128];
 
   var sum = big_integer_init_from_string("0", 10);
   while (scanf("%s", buffer) == 1) {

@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* PredictableRandom.h                                  /'___\ /\_ \          */
+/* String.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: March 9, 2025                                  \ \ \_/__ \_\ \_  __  */
+/* Date: March 13, 2025                                 \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,29 +19,7 @@
  * which have their own licensing terms.
  */
 
-#ifndef PredictableRandom_h
-#define PredictableRandom_h
-
-#include "CFoundation.h"
-#include "Number.h"
-
-/* MARK: - Creating a Random Value */
-
-/**
- * Returns a predictable random value within the specified range.
- *
- * The range is always half-open, containing its lower bound but not its upper
- * bound.
- *
- * - Parameters:
- *   - minimum: The lower bound for the range.
- *   - maximum: The upper bound for the range.
- *
- * - Returns: A random value within the bounds of range.
- */
-Int64 int64_predictable_random(Int64 minimum, Int64 maximum);
-
-#endif /* PredictableRandom_h */
+#include "Foundation/String.h"
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

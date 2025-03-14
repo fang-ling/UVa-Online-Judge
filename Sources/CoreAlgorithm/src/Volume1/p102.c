@@ -84,7 +84,7 @@
 
 struct Result {
   Int32 number;
-  Char colors[4];
+  Int8 colors[4];
 };
 
 static Int32 compare(AnyConstantObject _a, AnyConstantObject _b) {

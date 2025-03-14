@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -249,7 +249,7 @@ big_integer_mutable_big_integer_to_big_integer(struct MutableBigInteger* value,
  *   - text: The string buffer that will be appended to.
  *   - zero_count: The number of zeros to append.
  */
-static Void big_integer_pad_with_zeros(Char* text,
+static Void big_integer_pad_with_zeros(Int8* text,
                                        Int64 offset,
                                        Int64 zero_count) {
   while (zero_count >= 63) {
@@ -279,12 +279,12 @@ static Void big_integer_pad_with_zeros(Char* text,
  */
 static Void big_integer_small_to_string(struct BigInteger* u,
                                         Int64 radix,
-                                        Char* text,
+                                        Int8* text,
                                         Int64 offset,
                                         Int64 padding,
                                         Bool is_uppercase) {
-  precondition(u->_sign != minus,
-               "This method can only be called for non-negative numbers.");
+  _precondition(u->_sign != minus,
+                "This method can only be called for non-negative numbers.");
 
   if (u->_sign == none) {
     big_integer_pad_with_zeros(text, offset, padding);
@@ -340,8 +340,8 @@ static Void big_integer_small_to_string(struct BigInteger* u,
   big_integer_deinit(tmp); /* Free the last q2 */
 
   /* Get string version of first digit group. */
-  Char s[64];
-  ansi_itoall(digit_groups[group_count - 1], s, (Int32)radix, is_uppercase);
+  Int8 s[64];
+  _itoa(digit_groups[group_count - 1], s, (Int32)radix, is_uppercase);
 
   /* Pad with internal zeros if necessary. */
   let digits = (group_count - 1) * BIG_INTEGER_DIGITS_PER_DOUBLE_WORD[radix];
@@ -356,7 +356,7 @@ static Void big_integer_small_to_string(struct BigInteger* u,
   var i = group_count - 2;
   for (; i >= 0; i -= 1) {
     /* Prepend (any) leading zeros for this digit group. */
-    ansi_itoall(digit_groups[i], s, (Int32)radix, is_uppercase);
+    _itoa(digit_groups[i], s, (Int32)radix, is_uppercase);
     let leading_zeros = BIG_INTEGER_DIGITS_PER_DOUBLE_WORD[radix] - strlen(s);
     if (leading_zeros != 0) {
       strncat(text + offset,
@@ -387,13 +387,13 @@ static Void big_integer_small_to_string(struct BigInteger* u,
  *   greater than 9, or false to use lowercase letters.
  */
 static Void big_integer_to_string_schoenhage(struct BigInteger* u,
-                                             Char* text,
+                                             Int8* text,
                                              Int64 offset,
                                              Int64 radix,
                                              Int64 padding,
                                              Bool is_uppercase) {
-  precondition(u->_sign != minus,
-               "This method can only be called for non-negative numbers.");
+  _precondition(u->_sign != minus,
+                "This method can only be called for non-negative numbers.");
 
   /*
    * If we're smaller than a certain threshold, use the small_to_string()
@@ -641,12 +641,12 @@ static Int32* big_integer_multiply_to_count(Int32* x,
 /**
  * Creates a new `BigInt` value from the given string and radix.
  */
-struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
+struct BigInteger* big_integer_init_from_string(Int8* text, Int64 radix) {
   var cursor = 0;
   let text_count = strlen(text);
 
-  precondition(radix >= 2 && radix <= 36, "Radix out of range");
-  precondition(text_count > 0, "Zero length BigInt");
+  _precondition(radix >= 2 && radix <= 36, "Radix out of range");
+  _precondition(text_count > 0, "Zero length BigInt");
 
   var value = (struct BigInteger*)malloc(sizeof(struct BigInteger));
 
@@ -655,14 +655,14 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
   let index1 = (Int64)(strrchr(text, '-') - text); /* lastIndexOf */
   let index2 = (Int64)(strrchr(text, '+') - text); /* lastIndexOf */
   if (index1 >= 0) {
-    precondition(index1 == 0 && index2 < 0, "Illegal embedded sign character");
+    _precondition(index1 == 0 && index2 < 0, "Illegal embedded sign character");
     value->_sign = minus;
     cursor = 1;
   } else if (index2 >= 0) {
-    precondition(index2 == 0, "Illegal embedded sign character");
+    _precondition(index2 == 0, "Illegal embedded sign character");
     cursor = 1;
   }
-  precondition(cursor != text_count, "Zero length BigInt");
+  _precondition(cursor != text_count, "Zero length BigInt");
 
   /* Skip leading zeros and compute number of digits in magnitude. */
   while (cursor < text_count && text[cursor] == '0') {
@@ -696,14 +696,14 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
   if (first_group_count == 0) {
     first_group_count = BIG_INTEGER_DIGITS_PER_WORD[radix];
   }
-  Char group[32];
-  memcpy(group, text + cursor * sizeof(Char), first_group_count);
+  Int8 group[32];
+  memcpy(group, text + cursor * sizeof(Int8), first_group_count);
   group[first_group_count] = '\0';
   cursor += first_group_count;
   value->_magnitude[magnitude_count - 1] = (Int32)strtol(group,
                                                          NULL,
                                                          (Int32)radix);
-  precondition(value->_magnitude[magnitude_count - 1] >= 0, "Illegal digit");
+  _precondition(value->_magnitude[magnitude_count - 1] >= 0, "Illegal digit");
 
   /* Process remaining digit groups */
   let super_radix = BIG_INTEGER_WORD_RADIX[radix];
@@ -715,7 +715,7 @@ struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix) {
     group[BIG_INTEGER_DIGITS_PER_WORD[radix]] = '\0';
     cursor += BIG_INTEGER_DIGITS_PER_WORD[radix];
     group_value = (Int32)strtol(group, NULL, (Int32)radix);
-    precondition(group_value >= 0, "Illegal digit");
+    _precondition(group_value >= 0, "Illegal digit");
     big_integer_destructive_multiply_add(value->_magnitude,
                                          value->_magnitude_count,
                                          super_radix,
@@ -794,11 +794,11 @@ Void big_integer_deinit(struct BigInteger* value) {
  * Creates a string representing the given value in base 10, or some other
  * specified base.
  */
-Char* big_integer_to_string(struct BigInteger* value,
+Int8* big_integer_to_string(struct BigInteger* value,
                             Int64 radix,
                             Bool is_uppercase) {
   if (value->_sign == none) {
-    var text = (Char*)malloc(sizeof(Char) * 2);
+    var text = (Int8*)malloc(sizeof(Int8) * 2);
     strcpy(text, "0");
     return text;
   }
@@ -821,7 +821,7 @@ Char* big_integer_to_string(struct BigInteger* value,
   count += value->_sign == minus ? 1 : 0;
   count += 1;
 
-  var text = (Char*)malloc(sizeof(Char) * count);
+  var text = (Int8*)malloc(sizeof(Int8) * count);
   var offset = 0;
   if (value->_sign == minus) {
     text[0] = '-';

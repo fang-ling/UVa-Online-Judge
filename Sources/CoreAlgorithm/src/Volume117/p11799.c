@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -74,7 +74,7 @@ Void p11799_main() {
     scanf("%d", &n);
     while (n--) {
       scanf("%d", &alpha);
-      result = max(result, alpha);
+      result = _max(result, alpha);
     }
     
     printf("Case %d: %d\n", i, result);

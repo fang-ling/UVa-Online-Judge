@@ -72,7 +72,7 @@ Void p10038_main() {
       array_read(array, i - 1, &alpha);
       array_read(array, i, &beta);
 
-      delta = abs(beta - alpha);
+      delta = _abs(beta - alpha);
       array_append(difference, &delta);
     }
 

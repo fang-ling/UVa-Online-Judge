@@ -41,8 +41,8 @@
 #include "Volume100/p10035.h"
 
 Void p10035_main() {
-  var lhs = (Char*)malloc(sizeof(Char) * 16);
-  var rhs = (Char*)malloc(sizeof(Char) * 16);
+  var lhs = (Int8*)malloc(sizeof(Int8) * 16);
+  var rhs = (Int8*)malloc(sizeof(Int8) * 16);
 
   while (scanf("%s %s", lhs, rhs) == 2) {
     var lhs_count = (Int32)strlen(lhs);
@@ -55,7 +55,7 @@ Void p10035_main() {
     /* Make both lhs & rhs same length. */
     if (lhs_count < rhs_count) {
       let difference = rhs_count - lhs_count;
-      memmove(lhs + difference, lhs, lhs_count * sizeof(Char));
+      memmove(lhs + difference, lhs, lhs_count * sizeof(Int8));
 
       var i = 0;
       for (; i < difference; i += 1) {
@@ -64,7 +64,7 @@ Void p10035_main() {
       lhs_count = rhs_count;
     } else if (rhs_count < lhs_count) {
       let difference = lhs_count - rhs_count;
-      memmove(rhs + difference, rhs, rhs_count * sizeof(Char));
+      memmove(rhs + difference, rhs, rhs_count * sizeof(Int8));
 
       var i = 0;
       for (; i < difference; i += 1) {

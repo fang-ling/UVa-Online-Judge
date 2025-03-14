@@ -76,8 +76,8 @@ Void p100_main() {
   var i = 0;
   var j = 0;
   while (scanf("%d %d", &i, &j) == 2) {
-    var left = min(i, j);
-    var right = max(i, j);
+    var left = _min(i, j);
+    var right = _max(i, j);
 
     var max_result = 0;
     var k = left;
@@ -94,7 +94,7 @@ Void p100_main() {
         }
       }
 
-      max_result = max(result, max_result);
+      max_result = _max(result, max_result);
     }
 
     printf("%d %d %d\n", i, j, max_result + 1);

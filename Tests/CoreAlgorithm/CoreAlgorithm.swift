@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -30,8 +30,8 @@ func run(
   for problem: Int,
   caseCount: Int,
   skipping: [Int] = []
-) throws -> [(String, String)] {
-  var results: [(String, String)] = []
+) throws -> [(Swift.String, Swift.String)] {
+  var results: [(Swift.String, Swift.String)] = []
   for i in 0 ..< caseCount {
     if (skipping.contains(i)) {
       continue;
@@ -48,8 +48,8 @@ func run(
     fclose(stdin)
     fclose(stdout)
     
-    let output = try String(contentsOfFile: outputPath, encoding: .utf8)
-    let solution = try String(contentsOfFile: solutionPath, encoding: .utf8)
+    let output = try Swift.String(contentsOfFile: outputPath, encoding: .utf8)
+    let solution = try Swift.String(contentsOfFile: solutionPath, encoding: .utf8)
     results.append((output, solution))
   }
   return results

@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -67,7 +67,7 @@ Void p11559_main() {
       &week_count
     ) == 4
   ) {
-    var result = INT32_MAXIMUM;
+    var result = INT32_MAX;
 
     var i = 0;
     for(; i < hotel_count; i += 1) {
@@ -80,7 +80,7 @@ Void p11559_main() {
         scanf("%d", &bed_count);
 
         if (bed_count >= participant_count) {
-          result = min(result, price * participant_count);
+          result = _min(result, price * participant_count);
         }
       }
     }

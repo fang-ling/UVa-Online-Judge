@@ -53,7 +53,7 @@
 #include "Volume4/p458.h"
 
 Void p458_main() {
-  Char buffer[512];
+  Int8 buffer[512];
   while (scanf("%s", buffer) == 1) {
     var count = ((Int64)strlen(buffer));
     while (count -= 1) {

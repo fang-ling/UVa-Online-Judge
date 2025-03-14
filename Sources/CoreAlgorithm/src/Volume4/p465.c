@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -45,7 +45,7 @@
 
 #include "Volume4/p465.h"
 
-Bool p465_is_int64_convertible(const Char* number) {
+Bool p465_is_int64_convertible(Int8* number) {
   /*
    * Remove leading zeros
    * For all zero number, this function still returns true, so it's OK.
@@ -61,9 +61,9 @@ Bool p465_is_int32_convertible(Int64 number) {
 }
 
 Void p465_main() {
-  Char lhs_string[256];
-  Char operator[2];
-  Char rhs_string[256];
+  Int8 lhs_string[256];
+  Int8 operator[2];
+  Int8 rhs_string[256];
   while (scanf("%s %s %s", lhs_string, operator, rhs_string) == 3) {
     printf("%s %s %s\n", lhs_string, operator, rhs_string);
     

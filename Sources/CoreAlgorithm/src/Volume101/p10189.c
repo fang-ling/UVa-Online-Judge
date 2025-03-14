@@ -73,7 +73,7 @@
 
 Void p10189_main() {
   var field_count = 0;
-  Char field[128][128];
+  Int8 field[128][128];
 
   var n = 0;
   var m = 0;

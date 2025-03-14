@@ -69,7 +69,7 @@ Void p591_main() {
 
     var sum = 0;
     for (i = 0; i < stack_count; i += 1) {
-      sum += abs(block_height[i] - average);
+      sum += _abs(block_height[i] - average);
     }
 
     set_count += 1;

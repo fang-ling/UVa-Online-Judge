@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -490,7 +490,7 @@ static
 Void mutable_big_integer_divide_knuth(struct MutableBigInteger* u,
                                       struct MutableBigInteger* v,
                                       struct MutableBigInteger** result) {
-  precondition(v->_magnitude_count != 0, "BigInt divide by zero");
+  _precondition(v->_magnitude_count != 0, "BigInt divide by zero");
 
   /* Dividend is zero */
   if (u->_magnitude_count == 0) {

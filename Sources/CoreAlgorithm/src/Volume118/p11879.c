@@ -50,7 +50,7 @@
 Void p11879_main() {
   var seventeen = big_integer_init_from_string("17", 10);
 
-  Char buffer[128];
+  Int8 buffer[128];
   while (scanf("%s", buffer) == 1) {
     if (strlen(buffer) == 1 && buffer[0] == '0') { /* End of input */
       break;

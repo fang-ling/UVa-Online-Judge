@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -22,9 +22,8 @@
 #ifndef BigInteger_h
 #define BigInteger_h
 
-#include "CFoundation.h"
+#include "_Foundation.h"
 #include "MutableBigInteger.h"
-#include "Number.h"
 
 enum BigIntegerSign {
   plus,
@@ -124,7 +123,7 @@ struct BigInteger {
  *   - radix: The radix, or base, to use for converting text to an integer
  *   value. radix must be in the range 2 ... 36.
  */
-struct BigInteger* big_integer_init_from_string(const Char* text, Int64 radix);
+struct BigInteger* big_integer_init_from_string(Int8* text, Int64 radix);
 
 /**
  * Creates a new `BigInteger` containing the given value.
@@ -155,7 +154,7 @@ Void big_integer_deinit(struct BigInteger* value);
  *   - is_uppercase: Pass `true` to use uppercase letters to represent numerals
  *   greater than 9, or false to use lowercase letters.
  */
-Char* big_integer_to_string(struct BigInteger* value,
+Int8* big_integer_to_string(struct BigInteger* value,
                             Int64 radix,
                             Bool is_uppercase);
 

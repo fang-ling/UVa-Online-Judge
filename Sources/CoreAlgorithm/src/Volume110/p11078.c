@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -65,8 +65,8 @@ Void p11078_main() {
     var result = -150000-1;
     while (n--) {
       scanf("%d", &current_score);
-      result = max(result, current_max - current_score);
-      current_max = max(current_max, current_score);
+      result = _max(result, current_max - current_score);
+      current_max = _max(current_max, current_score);
     }
     
     printf("%d\n", result);

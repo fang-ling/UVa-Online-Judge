@@ -61,23 +61,23 @@
 #include "Volume7/p713.h"
 
 Void p713_main() {
-  Char bufffer1[256];
-  Char bufffer2[256];
+  Int8 bufffer1[256];
+  Int8 bufffer2[256];
 
   var case_count = 0;
   scanf("%d", &case_count);
 
   while (case_count--) {
     scanf("%s %s", bufffer1, bufffer2);
-    ansi_strrev(bufffer1);
-    ansi_strrev(bufffer2);
+    _strrev(bufffer1);
+    _strrev(bufffer2);
 
     var a = big_integer_init_from_string(bufffer1, 10);
     var b = big_integer_init_from_string(bufffer2, 10);
     var sum = big_integer_add(a, b);
 
     var result = big_integer_to_string(sum, 10, false);
-    ansi_strrev(result);
+    _strrev(result);
     var reversed = big_integer_init_from_string(result, 10);
     free(result);
     result = big_integer_to_string(reversed, 10, false);

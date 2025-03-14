@@ -88,7 +88,7 @@ static Int32 compare(AnyConstantObject _a, AnyConstantObject _b) {
 }
 
 Void p1203_main() {
-  var operator = (Char*)malloc(sizeof(Char) * 16);
+  var operator = (Int8*)malloc(sizeof(Int8) * 16);
   var heap = binary_heap_init(sizeof(struct Query), compare);
 
   while (scanf("%s", operator) == 1 && operator[0] != '#') {

@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -59,7 +59,7 @@
 
 #include "Volume104/p10424.h"
 
-static Int64 p10424_sum(Char* name) {
+static Int64 p10424_sum(Int8* name) {
   var sum = 0ll;
   var s = name;
   while (*s != '\0') {
@@ -86,8 +86,8 @@ static Int64 p10424_sum_digits(Int64 sum) {
 }
 
 Void p10424_main() {
-  Char* name1 = NULL;
-  Char* name2 = NULL;
+  Int8* name1 = NULL;
+  Int8* name2 = NULL;
   var line_capacity1 = 0ul;
   var line_capacity2 = 0ul;
   var line_count1 = 0l;

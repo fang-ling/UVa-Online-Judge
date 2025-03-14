@@ -493,8 +493,8 @@ Void red_black_tree_insert(struct RedBlackTree* tree,
 Void red_black_tree_remove(struct RedBlackTree* tree,
                            AnyObject key,
                            AnyObject value) {
-  precondition(tree->count > 0,
-               "Can't remove key-value pair from an empty tree.");
+  _precondition(tree->count > 0,
+                "Can't remove key-value pair from an empty tree.");
 
   var z = tree->_root;
   var w = tree->_nil;

@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -48,7 +48,7 @@
 #include "Volume126/p12658.h"
 
 Void p12658_main() {
-  Char digits[5][10 * (3 + 1) + 1];
+  Int8 digits[5][10 * (3 + 1) + 1];
 
   var n = 0;
   scanf("%d", &n);

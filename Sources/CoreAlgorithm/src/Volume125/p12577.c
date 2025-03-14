@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -80,7 +80,7 @@
 #include "Volume125/p12577.h"
 
 Void p12577_main() {
-  Char buffer[8];
+  Int8 buffer[8];
 
   var case_number = 1;
   while (scanf("%s", buffer) == 1 && buffer[0] != '*') {

@@ -48,8 +48,8 @@
 Void p748_main() {
   var ZEROS = "00000000";
 
-  Char buffer[8];
-  Char buffer2[512];
+  Int8 buffer[8];
+  Int8 buffer2[512];
   var n = 0;
 
   while (scanf("%s %d", buffer, &n) == 2) {

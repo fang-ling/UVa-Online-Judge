@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -64,7 +64,8 @@ Void p11547_main() {
   while (case_count--) {
     var number = 0;
     scanf("%d", &number);
-    printf("%d\n", abs(((number * 567 / 9 + 7492) * 235 / 47 - 498) / 10 % 10));
+    printf("%d\n",
+           _abs(((number * 567 / 9 + 7492) * 235 / 47 - 498) / 10 % 10));
   }
 }
 

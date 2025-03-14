@@ -44,7 +44,7 @@
 #include "Volume100/p10082.h"
 
 Void p10082_main() {
-  Char table[128];
+  Int8 table[128];
 
   table['Q'] = 'Q';
   table['W'] = 'Q';
@@ -96,7 +96,7 @@ Void p10082_main() {
   table[' '] = ' ';
   table['\n'] = '\n';
 
-  var c = (Char)0;
+  var c = (Int8)0;
   while (scanf("%c", &c) == 1) {
     printf("%c", table[c]);
   }

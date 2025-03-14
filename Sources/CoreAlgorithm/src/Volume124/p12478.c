@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -91,8 +91,8 @@
 #include "Volume124/p12478.h"
 
 static Int32 p12478_char_compare(AnyConstantObject lhs, AnyConstantObject rhs) {
-  let _lhs = *(Char*)lhs;
-  let _rhs = *(Char*)rhs;
+  let _lhs = *(Int8*)lhs;
+  let _rhs = *(Int8*)rhs;
 
   if (_lhs < _rhs) {
     return -1;
@@ -102,23 +102,23 @@ static Int32 p12478_char_compare(AnyConstantObject lhs, AnyConstantObject rhs) {
   return 0;
 }
 
-static Void p12478_sort_char_array(Char* string) {
+static Void p12478_sort_char_array(Int8* string) {
   let count = strlen(string);
-  qsort(string, count, sizeof(Char), p12478_char_compare);
+  qsort(string, count, sizeof(Int8), p12478_char_compare);
 }
 
-static Int32 p12478_count_name(Char** grid, Char* name) {
+static Int32 p12478_count_name(Int8** grid, Int8* name) {
   var count = 0;
 
   let name_count = (Int32)strlen(name);
-  var name_copy = ansi_strdup(name);
+  var name_copy = _strdup(name);
   p12478_sort_char_array(name_copy);
 
   var r = 0;
   for (; r < 9; r += 1) {
     var c = 0;
     for (; c < 9; c += 1) {
-      var new_name = (Char*)malloc(sizeof(Char) * (name_count + 1));
+      var new_name = (Int8*)malloc(sizeof(Int8) * (name_count + 1));
 
       /* Construct and compare the new name (in row direction) */
       var i = 0;
@@ -151,7 +151,7 @@ static Int32 p12478_count_name(Char** grid, Char* name) {
 }
 
 Void p12478_main() {
-  Char* grid[16];
+  Int8* grid[16];
   grid[0] = "OBIDAIBKR";
   grid[1] = "RKAULHISP";
   grid[2] = "SADIYANNO";
@@ -162,7 +162,7 @@ Void p12478_main() {
   grid[7] = "LEBSYNUNE";
   grid[8] = "EMOTIONAL";
 
-  Char* names[8];
+  Int8* names[8];
   names[0] = "RAKIBUL";
   names[1] = "ANINDYA";
   names[2] = "MOSHIUR";

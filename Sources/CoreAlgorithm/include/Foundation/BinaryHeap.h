@@ -22,8 +22,7 @@
 #ifndef BinaryHeap_h
 #define BinaryHeap_h
 
-#include "CFoundation.h"
-#include "Number.h"
+#include "_Foundation.h"
 
 /**
  * A container type implementing a priority queue. Heap is a container of

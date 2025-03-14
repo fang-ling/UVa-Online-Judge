@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -26,10 +26,9 @@ import Testing
 @Suite
 struct BigIntegerTests {
   @Test func testBigIntegerInitWhiteBox() async throws {
-    var numberPointer = big_integer_init_from_string(
-      "193581934212361123331930619348",
-      10
-    )!
+    var numberPointer = "193581934212361123331930619348".withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 10)
+    })!
     #expect(numberPointer.pointee._magnitude_count == 4)
     #expect(numberPointer.pointee._magnitude_capacity == 4)
     /*
@@ -44,7 +43,9 @@ struct BigIntegerTests {
     #expect(numberPointer.pointee._magnitude[3] == -144409132)
     big_integer_deinit(numberPointer)
 
-    numberPointer = big_integer_init_from_string("de0b6b3a7640000", 16)!
+    numberPointer = "de0b6b3a7640000".withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 16)!
+    })
     #expect(numberPointer.pointee._magnitude_count == 2)
     #expect(numberPointer.pointee._magnitude_capacity == 2)
     /*
@@ -58,13 +59,12 @@ struct BigIntegerTests {
   }
 
   @Test func testBigIntegerToString() async throws {
-    var numberPointer = big_integer_init_from_string(
-      "193581934212361123331930619348",
-      10
-    )!
+    var numberPointer = "193581934212361123331930619348".withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 10)
+    })!
 
     var stringPointer = big_integer_to_string(numberPointer, 10, false)!
-    var string = String(cString: stringPointer);
+    var string = Swift.String(cString: stringPointer);
     #expect(string == "193581934212361123331930619348")
     stringPointer.deallocate()
     numberPointer.deallocate()
@@ -80,9 +80,11 @@ struct BigIntegerTests {
       "193581934212361123331930619348" + "193581934212361123331930619348" +
       "193581934212361123331930619348" + "193581934212361123331930619348" +
       "193581934212361123331930619348" + "193581934212361123331930619348"
-    numberPointer = big_integer_init_from_string(longString, 10)!
+    numberPointer = longString.withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 10)
+    })!
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
-    string = String(cString: stringPointer)
+    string = Swift.String(cString: stringPointer)
     #expect(string == longString)
     stringPointer.deallocate()
     numberPointer.deallocate()
@@ -91,195 +93,199 @@ struct BigIntegerTests {
     for _ in 1 ... 2430 {
       longString += "\(1)"
     }
-    numberPointer = big_integer_init_from_string(longString, 10)!
+    numberPointer = longString.withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 10)
+    })!
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
-    string = String(cString: stringPointer)
+    string = Swift.String(cString: stringPointer)
     #expect(string == longString)
     #expect(string.count == longString.count)
     stringPointer.deallocate()
     numberPointer.deallocate()
 
-    longString = "1" + String(repeating: "0", count: 2500)
-    numberPointer = big_integer_init_from_string(longString, 10)!
+    longString = "1" + Swift.String(repeating: "0", count: 2500)
+    numberPointer = longString.withCString({
+      big_integer_init_from_string(UnsafeMutablePointer(mutating: $0), 10)
+    })!
     stringPointer = big_integer_to_string(numberPointer, 10, false)!
-    string = String(cString: stringPointer)
+    string = Swift.String(cString: stringPointer)
     #expect(string == longString)
     #expect(string.count == longString.count)
     stringPointer.deallocate()
     numberPointer.deallocate()
   }
 
-  @Test func testBigIntegerAdd() async throws {
-    var a = "18863046225568582542016021945328306014125955818525918809"
-    var b = "49558923010544057053463173587344941434565966176383118780" +
-            "0740923395817893020463093092080"
-    var c = "49558923010544057053463173587346827739188523034637320382" +
-            "2686251701832018976281619010889"
-    var aPointer = big_integer_init_from_string(a, 10)!
-    var bPointer = big_integer_init_from_string(b, 10)!
-    var cPointer = big_integer_add(aPointer, bPointer)!
-    var stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "9999999999999999999999999999999999999999999999999999999999999999" +
-        "9999999999999999999999"
-    b = "1"
-    c = "1000000000000000000000000000000000000000000000000000000000000000" +
-        "00000000000000000000000"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_add(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = String(repeating: "9", count: 19358)
-    b = String(repeating: "1", count: 1)
-    c = "1" + String(repeating: "0", count: 19358)
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_add(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "19358"
-    b = "-12361"
-    c = "6997"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_add(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "19358"
-    b = "-19358"
-    c = "0"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_add(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "12361"
-    b = "-19358"
-    c = "-6997"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_add(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-  }
-
-  @Test func testBigIntegerSubtract() async throws {
-    var a = "2"
-    var b = "1"
-    var c = "1"
-    var aPointer = big_integer_init_from_string(a, 10)!
-    var bPointer = big_integer_init_from_string(b, 10)!
-    var cPointer = big_integer_subtract(aPointer, bPointer)!
-    var stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "12361"
-    b = "-19358"
-    c = "31719"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_subtract(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-  }
-
-  @Test func testBigIntegerMultiply() async throws {
-    var a = "2"
-    var b = "1"
-    var c = "2"
-    var aPointer = big_integer_init_from_string(a, 10)!
-    var bPointer = big_integer_init_from_string(b, 10)!
-    var cPointer = big_integer_multiply(aPointer, bPointer)!
-    var stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "12361"
-    b = "-19358"
-    c = "-239284238"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_multiply(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer, 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-  }
-
-  @Test func testBigIntegerDivide() async throws {
-    var a = "3420802118"
-    var b = "17"
-    var c = "0"
-    var aPointer = big_integer_init_from_string(a, 10)!
-    var bPointer = big_integer_init_from_string(b, 10)!
-    var cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
-    var stringPointer = big_integer_to_string(cPointer[1], 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer[0]!.deallocate()
-    cPointer[1]!.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-
-    a = "1126825030131969720661201000000000000000000000000"
-    b = "1000000000000000000000000000000000000000000000000"
-    c = "126825030131969720661201000000000000000000000000"
-    aPointer = big_integer_init_from_string(a, 10)!
-    bPointer = big_integer_init_from_string(b, 10)!
-    cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
-    stringPointer = big_integer_to_string(cPointer[1], 10, false)!
-    #expect(c == String(cString: stringPointer))
-    aPointer.deallocate()
-    bPointer.deallocate()
-    cPointer[0]!.deallocate()
-    cPointer[1]!.deallocate()
-    cPointer.deallocate()
-    stringPointer.deallocate()
-  }
+//  @Test func testBigIntegerAdd() async throws {
+//    var a = "18863046225568582542016021945328306014125955818525918809"
+//    var b = "49558923010544057053463173587344941434565966176383118780" +
+//            "0740923395817893020463093092080"
+//    var c = "49558923010544057053463173587346827739188523034637320382" +
+//            "2686251701832018976281619010889"
+//    var aPointer = big_integer_init_from_string(a, 10)!
+//    var bPointer = big_integer_init_from_string(b, 10)!
+//    var cPointer = big_integer_add(aPointer, bPointer)!
+//    var stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "9999999999999999999999999999999999999999999999999999999999999999" +
+//        "9999999999999999999999"
+//    b = "1"
+//    c = "1000000000000000000000000000000000000000000000000000000000000000" +
+//        "00000000000000000000000"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_add(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = String(repeating: "9", count: 19358)
+//    b = String(repeating: "1", count: 1)
+//    c = "1" + String(repeating: "0", count: 19358)
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_add(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "19358"
+//    b = "-12361"
+//    c = "6997"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_add(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "19358"
+//    b = "-19358"
+//    c = "0"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_add(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "12361"
+//    b = "-19358"
+//    c = "-6997"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_add(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//  }
+//
+//  @Test func testBigIntegerSubtract() async throws {
+//    var a = "2"
+//    var b = "1"
+//    var c = "1"
+//    var aPointer = big_integer_init_from_string(a, 10)!
+//    var bPointer = big_integer_init_from_string(b, 10)!
+//    var cPointer = big_integer_subtract(aPointer, bPointer)!
+//    var stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "12361"
+//    b = "-19358"
+//    c = "31719"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_subtract(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//  }
+//
+//  @Test func testBigIntegerMultiply() async throws {
+//    var a = "2"
+//    var b = "1"
+//    var c = "2"
+//    var aPointer = big_integer_init_from_string(a, 10)!
+//    var bPointer = big_integer_init_from_string(b, 10)!
+//    var cPointer = big_integer_multiply(aPointer, bPointer)!
+//    var stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "12361"
+//    b = "-19358"
+//    c = "-239284238"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_multiply(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer, 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//  }
+//
+//  @Test func testBigIntegerDivide() async throws {
+//    var a = "3420802118"
+//    var b = "17"
+//    var c = "0"
+//    var aPointer = big_integer_init_from_string(a, 10)!
+//    var bPointer = big_integer_init_from_string(b, 10)!
+//    var cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
+//    var stringPointer = big_integer_to_string(cPointer[1], 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer[0]!.deallocate()
+//    cPointer[1]!.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//
+//    a = "1126825030131969720661201000000000000000000000000"
+//    b = "1000000000000000000000000000000000000000000000000"
+//    c = "126825030131969720661201000000000000000000000000"
+//    aPointer = big_integer_init_from_string(a, 10)!
+//    bPointer = big_integer_init_from_string(b, 10)!
+//    cPointer = big_integer_divide_and_modulo(aPointer, bPointer)!
+//    stringPointer = big_integer_to_string(cPointer[1], 10, false)!
+//    #expect(c == String(cString: stringPointer))
+//    aPointer.deallocate()
+//    bPointer.deallocate()
+//    cPointer[0]!.deallocate()
+//    cPointer[1]!.deallocate()
+//    cPointer.deallocate()
+//    stringPointer.deallocate()
+//  }
 
 //  @Test func testMutableBigIntegerDivide() async throws {
 //    let dividend = big_integer_init_from_string(

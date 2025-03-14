@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -108,7 +108,7 @@ Void p11809_main() {
     }
   }
   
-  Char input_string[32];
+  Int8 input_string[32];
   while (scanf("%s", input_string) == 1 && strcmp(input_string, "0e0") != 0) {
     /* Input */
     var a_i = 0;
@@ -123,7 +123,7 @@ Void p11809_main() {
     /* Find the result in results */
     for (M = 0; M <= 9; M += 1) {
       for (E = 1; E <= 30; E += 1) {
-        if (fabs(results[M][E] - result) <= 1e-5) {
+        if (_abs(results[M][E] - result) <= 1e-5) {
           printf("%d %d\n", M, E);
           break;
         }

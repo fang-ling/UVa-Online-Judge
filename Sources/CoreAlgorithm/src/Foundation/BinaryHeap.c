@@ -37,7 +37,7 @@ static Void binary_heap_max_heapify_up(struct BinaryHeap* heap, Int64 i) {
   var a_i = heap->_buffer + i * heap->_width;
   if (heap->compare(a_p_i, a_i) <= 0) {
     /* Exchange i with parent(i) */
-    ansi_memswap(a_p_i, a_i, heap->_width);
+    _memswap(a_p_i, a_i, heap->_width);
     /*
      * Current node is satisfy max heap property, but maybe not its parent.
      * Fix this recursively.
@@ -75,7 +75,7 @@ static Void binary_heap_max_heapify_down(struct BinaryHeap* heap, Int64 i) {
   var a_i = heap->_buffer + i * heap->_width;
   var a_j = heap->_buffer + j * heap->_width;
   if (heap->compare(a_i, a_j) <= 0) {
-    ansi_memswap(a_i, a_j, heap->_width);
+    _memswap(a_i, a_j, heap->_width);
     binary_heap_max_heapify_down(heap, j);
   }
 }
@@ -141,10 +141,10 @@ Void binary_heap_insert(struct BinaryHeap* heap, AnyObject new_element) {
  * Removes and returns the element with the highest priority.
  */
 Void binary_heap_pop_max(struct BinaryHeap* heap, AnyObject removed_element) {
-  precondition(heap->count > 0,
-               "Can't remove last element from an empty heap");
+  _precondition(heap->count > 0,
+                "Can't remove last element from an empty heap");
 
-  ansi_memswap(heap->_buffer + 0 * heap->_width,
+  _memswap(heap->_buffer + 0 * heap->_width,
                heap->_buffer + (heap->count - 1) * heap->_width,
                heap->_width);
 
@@ -170,8 +170,8 @@ Void binary_heap_pop_max(struct BinaryHeap* heap, AnyObject removed_element) {
  * Reads the element with the highest priority.
  */
 Void binary_heap_max(struct BinaryHeap* heap, AnyObject element) {
-  precondition(heap->count > 0,
-               "Can't access largest element from an empty heap");
+  _precondition(heap->count > 0,
+                "Can't access largest element from an empty heap");
   memcpy(element, heap->_buffer + 0 * heap->_width, heap->_width);
 }
 

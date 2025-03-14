@@ -38,7 +38,7 @@
 #include "Volume4/p494.h"
 
 Void p494_main() {
-  var line = (Char*)NULL;
+  var line = (Int8*)NULL;
   var line_capacity = 0ul;
   var line_count = 0l;
   while ((line_count = getline(&line, &line_capacity, stdin)) > 0) {

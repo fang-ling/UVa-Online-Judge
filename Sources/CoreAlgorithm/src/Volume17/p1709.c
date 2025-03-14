@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -76,8 +76,8 @@ Void p1709_main() {
     var i = 0;
     for (i = 1; i <= n; i += 1) {
       var current_price = price(i, p, a, b, c, d);
-      current_max = max(current_max, current_price);
-      result = max(result, current_max - current_price);
+      current_max = _max(current_max, current_price);
+      result = _max(result, current_max - current_price);
     }
     
     printf("%.6lf\n", result);

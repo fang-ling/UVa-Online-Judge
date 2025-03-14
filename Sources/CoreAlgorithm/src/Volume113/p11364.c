@@ -11,7 +11,7 @@
 /*
  * This source file is part of the CoreAlgorithm open source project.
  *
- * Copyright (c) 2024 Fang Ling All Rights Reserved.
+ * Copyright (c) 2024-2025 Fang Ling All Rights Reserved.
  *
  * Use of this source code is governed by the Apache License, Version 2.0
  * that can be found in the LICENSE file in the root of the source tree.
@@ -61,8 +61,8 @@ Void p11364_main() {
     while (n--) {
       scanf("%d", &alpha);
 
-      min = min(min, alpha);
-      max = max(max, alpha);
+      min = _min(min, alpha);
+      max = _max(max, alpha);
     }
 
     printf("%d\n", (max - min) * 2);

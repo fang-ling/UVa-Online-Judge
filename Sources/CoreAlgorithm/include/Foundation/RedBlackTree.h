@@ -22,8 +22,7 @@
 #ifndef RedBlackTree_h
 #define RedBlackTree_h
 
-#include "CFoundation.h"
-#include "Number.h"
+#include "_Foundation.h"
 
 enum _RedBlackTreeColor {
   RED_BLACK_TREE_COLOR_RED,
