@@ -159,20 +159,16 @@ typedef Int32 (*Comparable)(AnyConstantObject, AnyConstantObject);
 #if defined(ONLINE_JUDGE) || !defined(DEBUG)
 #define _precondition(condition, message) ((void)0)
 #else
-#define _precondition(condition, message)   \
-  do {                                      \
-    if (!(condition)) {                     \
-      do {                                  \
-        fprintf(                            \
-          stderr,                           \
-          "%s:%d: Fatal error: %s\n",       \
-          __FILE__,                         \
-          __LINE__,                         \
-          (message)                         \
-        );                                  \
-        abort();                            \
-      } while (0);                          \
-    }                                       \
+#define _precondition(condition, message) \
+  do {                                    \
+    if (!(condition)) {                   \
+      fprintf(stderr,                     \
+              "%s:%d: Fatal error: %s\n", \
+              __FILE__,                   \
+              __LINE__,                   \
+              (message));                 \
+      abort();                            \
+    }                                     \
   } while (0)
 #endif
 
