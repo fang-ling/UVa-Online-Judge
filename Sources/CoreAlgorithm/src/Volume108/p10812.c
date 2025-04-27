@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume6Tests.swift                                   /'___\ /\_ \          */
+/* p10812.c                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: November 27, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: March 30, 2025                                 \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,23 +19,58 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+/*
+ * 10812 Beat the Spread!
+ *
+ * Superbowl Sunday is nearly here. In order to pass the time waiting for the
+ * half-time commercials and wardrobe malfunctions, the local hackers have
+ * organized a betting pool on the game. Members place their bets on the sum of
+ * the two final scores, or on the absolute difference between the two scores.
+ *
+ * Given the winning numbers for each type of bet, can you deduce the final
+ * scores?
+ *
+ * Input:
+ * The first line of input contains n, the number of test cases. n lines follow,
+ * each representing a test case. Each test case gives s and d, non-negative
+ * integers representing the sum and (absolute) difference between the two final
+ * scores.
+ *
+ * Output:
+ * For each test case, output a line giving the two final scores, largest first.
+ * If there are no such scores, output a line containing "impossible". Recall
+ * that football scores are always non-negative integers.
+ */
 
-extension UVaOnlineJudgeTests {
-  struct Volume6Tests {
-    @Test func testP621() throws {
-      try run(main: p621_main, for: 621, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
+#include "Volume108/p10812.h"
+
+Void p10812_main() {
+  var case_count = 0;
+  scanf("%d", &case_count);
+
+  while (case_count--) {
+    var sum = (Int64)0;
+    var difference = (Int64)0;
+    scanf("%lld %lld", &sum, &difference);
+
+    /* Case1: a - b >= 0 */
+    var a = (sum + difference) / 2;
+    var b = sum - a;
+    if (a >= 0 && b >= 0 && (sum + difference) % 2 == 0) {
+      printf("%lld %lld\n", _max(a, b), _min(a, b));
+      continue;
     }
 
-    @Test func testP673() throws {
-      try run(main: p673_main, for: 673, caseCount: 6).forEach { result in
-        #expect(result.0 == result.1)
-      }
+    /* Case2: a - b < 0 */
+    b = (sum + difference) / 2;
+    a = sum - b;
+    if (a >= 0 && b >= 0 && (sum + difference) % 2 == 0) {
+      printf("%lld %lld\n", _max(a, b), _min(a, b));
+      continue;
     }
+
+    /* Case3: impossible */
+    printf("impossible\n");
   }
 }
 

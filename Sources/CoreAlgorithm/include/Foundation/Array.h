@@ -26,11 +26,6 @@
 
 /**
  * An ordered, random-access collection.
- *
- * Arrays are one of the most commonly used data types in an app. You use
- * arrays to organize your app's data. Specifically, you use the `Array` type
- * to hold elements of a single type, the array's `Element` type. An array
- * can store any kind of elements---from integers to structures to pointers.
  */
 struct Array {
   /**
@@ -66,11 +61,37 @@ struct Array {
 
 /**
  * Creates a new, empty array.
+ *
+ * - Parameter width: The size of the `Element` type of the array.
+ *
+ * - Returns: The newly created array object, or NULL if memory allocation
+ *            fails.
+ *
+ * > Warning: It is the caller's responsibility to deinitialize the array using
+ *            ``array_deinit`` when it is no longer needed to prevent memory
+ *            leaks.
+ *
+ * Here is an example to create an array:
+ *
+ * ```c
+ * var array = array_init(sizeof(Int32));
+ *
+ * if (array->count == 0) {
+ *   // true
+ * }
+ * ```
  */
 struct Array* array_init(Int64 width);
 
 /**
  * Destroys an array.
+ *
+ * This function safely frees all the resources associated with the array. After
+ * calling this function, the array should no longer be used, as all elements in
+ * that array will be invalidated.
+ *
+ * - Parameter array: The array object to be deinitialized, if array is a `NULL`
+ *                    pointer, no operation is performed.
  */
 Void array_deinit(struct Array* array);
 
@@ -79,13 +100,32 @@ Void array_deinit(struct Array* array);
 /**
  * Adds an element to the end of the array.
  *
- * If the array does not have sufficient capacity for another element,
- * additional storage is allocated before appending `new_element`.
+ * Use this function to append a single element to the end of a mutable array.
  *
- * - Parameter new_element: The element to append to the array.
+ * ```c
+ * var numbers = array_init(sizeof(Int32));
  *
- * - Complexity: O(1) on average, over many calls to `append()` on the
- *   same array.
+ * var i = 0;
+ * for (; i < 5; i += 1) {
+ *   array_append(numbers, &i);
+ * }
+ *
+ * // numbers = [0, 1, 2, 3, 4]
+ * ```
+ *
+ * Because arrays increase their allocated capacity using an exponential
+ * strategy, appending a single element to an array is an *O(1)* operation when
+ * averaged over many calls to the `array_append` method. When an array has
+ * additional capacity, appending an element is *O(1)*. When an array needs to
+ * reallocate storage before appending, appending is *O(n)*, where n is the
+ * length of the array.
+ *
+ * - Parameters:
+ *   - array: The array object where the element will be appended.
+ *   - new_element: The element to append to the array.
+ *
+ * - Complexity: *O(1)* on average, over many calls to `array_append` on the
+ *               same array.
  */
 Void array_append(struct Array* array, AnyObject new_element);
 
@@ -94,21 +134,38 @@ Void array_append(struct Array* array, AnyObject new_element);
  *
  * The array must not be empty.
  *
- * - Returns: The last element of the collection. Passes NULL to
- * `removed_element` if you want to ignore the return value.
+ * ```c
+ * var numbers = array_init(sizeof(Int32));
  *
- * - Complexity: O(1) on average, over many calls to `remove_last()` on the
- *   same array.
+ * var i = 0;
+ * for (; i < 5; i += 1) {
+ *   array_append(numbers, &i);
+ * }
+ * // numbers = [0, 1, 2, 3, 4]
+ *
+ * array_remove_last(numbers, NULL); // numbers = [0, 1, 2, 3]
+ *
+ * var last_element = 0;
+ * array_remove_last(numbers, &last_element);
+ * // numbers = [0, 1, 2]
+ * // last_element = 3
+ * ```
+ *
+ * - Returns: The last element of the array. Passes `NULL` to `removed_element`
+ *            if you want to ignore the return value.
+ *
+ * - Complexity: *O(1)* on average, over many calls to `remove_last` on the
+ *               same array.
  */
 Void array_remove_last(struct Array* array, AnyObject removed_element);
 
 /**
  * Removes all elements from the array.
  *
- * - Parameter keep_capacity: Pass `true` to request that the collection
- *   avoid releasing its storage. Retaining the collection's storage can
- *   be a useful optimization when you're planning to grow the collection
- *   again.
+ * - Parameter keep_capacity: Pass `true` to request that the collection avoid
+ *                            releasing its storage. Retaining the collection's
+ *                            storage can be a useful optimization when you're
+ *                            planning to grow the collection again.
  *
  * - Complexity:
  *   - O(*n*), when `keep_capacity` is `false`, where *n* is the length of the
@@ -153,8 +210,7 @@ Void array_write(struct Array* array, Int64 index, AnyObject element);
  *   or greater than zero if the first argument is considered to be respectively
  *   less than, equal to, or greater than the second.
  */
-Void array_sort(struct Array* array,
-                Int32 (*compare)(AnyConstantObject, AnyConstantObject));
+Void array_sort(struct Array* array, Comparable comparator);
 
 #endif /* Array_h */
 

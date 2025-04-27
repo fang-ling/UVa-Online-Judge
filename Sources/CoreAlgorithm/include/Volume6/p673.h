@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume6Tests.swift                                   /'___\ /\_ \          */
+/* p673.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: November 27, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: April 27, 2025                                 \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,25 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+#ifndef p673_h
+#define p673_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume6Tests {
-    @Test func testP621() throws {
-      try run(main: p621_main, for: 621, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP673() throws {
-      try run(main: p673_main, for: 673, caseCount: 6).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+Void p673_main();
+
+#endif /* p673_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

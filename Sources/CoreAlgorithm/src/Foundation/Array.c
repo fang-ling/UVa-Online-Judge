@@ -79,11 +79,9 @@ Void array_append(struct Array* array, AnyObject new_element) {
     array->_buffer = realloc(array->_buffer, array->_capacity * array->_width);
   }
   
-  memcpy(
-    array->_buffer + array->count * array->_width, /* dst */
-    new_element,                                   /* src */
-    array->_width                                  /* width */
-  );
+  memcpy(array->_buffer + array->count * array->_width,
+         new_element,
+         array->_width);
   array->count += 1;
 }
 
@@ -91,17 +89,13 @@ Void array_append(struct Array* array, AnyObject new_element) {
  * Removes and returns the last element of the array.
  */
 Void array_remove_last(struct Array* array, AnyObject removed_element) {
-  _precondition(
-    array->count > 0,
-    "Can't remove last element from an empty array"
-  );
+  _precondition(array->count > 0,
+                "Can't remove last element from an empty array");
   
   if (removed_element != NULL) {
-    memcpy(
-      removed_element,                                     /* dst */
-      array->_buffer + (array->count - 1) * array->_width, /* src */
-      array->_width                                        /* width */
-    );
+    memcpy(removed_element,
+           array->_buffer + (array->count - 1) * array->_width,
+           array->_width);
   }
   
   array->count -= 1;

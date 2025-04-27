@@ -5,7 +5,7 @@ Here are my solutions to some UVa Online Judge problems written in ANSI C.
 Tested under:
 
 - UVa Online Judge: 5.3.0 - GNU C Compiler with options: `-lm -lcrypt -O2 -pipe -ansi -DONLINE_JUDGE`
-- Local Xcode Workplace: 16.0.0 - Apple clang, Swift Package Manager with `cLanguageStandard = .c89`
+- Local Xcode Workplace: 17.0.0 - Apple clang, Swift Package Manager with `cLanguageStandard = .c89`
 
 Caveat:
 
@@ -17,6 +17,8 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30352091 | 673 | Parentheses Balance |
+| 30275839 | 10812 | Beat the Spread! |
 | 30218991 | 10041 | Vito's Family |
 | 30206067 | 136 | Ugly Numbers |
 | 30191776 | 10018 | Reverse and Add |
