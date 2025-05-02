@@ -9,6 +9,11 @@
 - ``array_init``
 - ``array_deinit``
 
+### Accessing Elements
+
+- ``array_read``
+- ``array_write``
+
 ### Adding and Removing Elements
 
 - ``array_append``

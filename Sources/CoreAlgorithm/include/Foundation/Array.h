@@ -179,8 +179,29 @@ Void array_remove_all(struct Array* array, Bool keep_capacity);
 /**
  * Reads the element at the specified position.
  *
+ * The following example uses ``array_write`` to update an array's second
+ * element. After assigning the new value (7) at a specific position, that value
+ * is immediately available at that same position.
+ *
+ * ```c
+ * var numbers = array_init(sizeof(Int32));
+ *
+ * var i = 0;
+ * for (; i < 5; i += 1) {
+ *   array_append(numbers, &i);
+ * }
+ * // numbers = [0, 1, 2, 3, 4]
+ *
+ * i = 7;
+ * array_write(numbers, 1, &i);
+ * // numbers = [0, 7, 2, 3, 4]
+ * i = 0;
+ * array_read(numbers, 1, &i);
+ * // i = 7
+ * ```
+ *
  * - Parameter index: The position of the element to access. `index` must be
- *   greater than or equal to 0 and less than `count`.
+ *                    greater than or equal to 0 and less than `count`.
  *
  * - Returns: The element at the specified position.
  *
@@ -191,10 +212,31 @@ Void array_read(struct Array* array, Int64 index, AnyObject element);
 /**
  * Writes the element to the specified position.
  *
+ * The following example uses ``array_write`` to update an array's second
+ * element. After assigning the new value (7) at a specific position, that value
+ * is immediately available at that same position.
+ *
+ * ```c
+ * var numbers = array_init(sizeof(Int32));
+ *
+ * var i = 0;
+ * for (; i < 5; i += 1) {
+ *   array_append(numbers, &i);
+ * }
+ * // numbers = [0, 1, 2, 3, 4]
+ *
+ * i = 7;
+ * array_write(numbers, 1, &i);
+ * // numbers = [0, 7, 2, 3, 4]
+ * i = 0;
+ * array_read(numbers, 1, &i);
+ * // i = 7
+ * ```
+ *
  * - Parameters:
- *   - index: The position of the element to access. `index` must be
- *   greater than or equal to 0 and less than `count`.
- *   - element: The element to be write.
+ *   - index: The position of the element to access. `index` must be greater
+ *            than or equal to 0 and less than `count`.
+ *   - element: The element to be written.
  *
  * - Complexity: O(1)
  */

@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume1Tests.swift                                   /'___\ /\_ \          */
+/* p108.h                                               /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: February 7, 2025                               \ \ \_/__ \_\ \_  __  */
+/* Date: May 1, 2025                                    \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,43 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+#ifndef p108_h
+#define p108_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume1Tests {
-    @Test func testP100() throws {
-      try run(main: p100_main, for: 100, caseCount: 7).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP102() throws {
-      try run(main: p102_main, for: 102, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p108_main();
 
-    @Test func testP108() throws {
-      try run(main: p108_main, for: 108, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP113() throws {
-      try run(main: p113_main, for: 113, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-
-    @Test func testP136() throws {
-      try run(main: p136_main, for: 136, caseCount: 1).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* p108_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

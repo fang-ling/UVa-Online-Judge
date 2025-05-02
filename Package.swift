@@ -38,7 +38,12 @@ fileprivate func process(volume: Int, problems: [(Int, Int)]) -> [Resource] {
 }
 
 let volumes =
-  process(volume: 1, problems: [(100, 7), (102, 4), (113, 4), (136, 1)]) +
+  process(
+    volume: 1,
+    problems: [
+      (100, 7), (102, 4), (108, 3), (113, 4), (136, 1)
+    ]
+  ) +
   process(volume: 2, problems: [(272, 4), (299, 6)]) +
   process(volume: 4, problems: [(424, 5), (458, 2), (465, 5), (494, 8)]) +
   process(volume: 5, problems: [(591, 7), (594, 3)]) +
