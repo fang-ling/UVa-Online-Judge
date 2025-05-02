@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30366925 | 374 | Big Mod |
 | 30365491 | 108 | Maximum Sum |
 | 30352091 | 673 | Parentheses Balance |
 | 30275839 | 10812 | Beat the Spread! |

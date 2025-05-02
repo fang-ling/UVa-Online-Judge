@@ -310,6 +310,34 @@ typedef Int32 (*Comparable)(AnyConstantObject, AnyConstantObject);
     }                             \
   } while (0)
 
+/**
+ * Returns a number raised to a specified power then taken modulo a given
+ * modulus.
+ *
+ * - Parameters:
+ *   - x: The base value.
+ *   - y: The power by which to raise `x`.
+ *   - m: The modulus to apply after exponentiation.
+ *
+ * - Returns: The result of *x \*\* y mod m*.
+ *
+ * - Complexity: *O(log y)*
+ */
+#define _pow_mod(x, y, m) ({    \
+  var _x = x % m;               \
+  var _y = y;                   \
+  var result = x;               \
+  result = 1; /* For type */    \
+  while (_y > 0) {              \
+    if (_y % 2 != 0) {          \
+      result = result * _x % m; \
+    }                           \
+    _x = _x * _x % m;           \
+    _y /= 2;                    \
+  }                             \
+  result % m;                   \
+})
+
 #endif /* _Foundation_h */
 
 /*===----------------------------------------------------------------------===*/
