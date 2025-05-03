@@ -154,6 +154,41 @@ Void array_sort(struct Array* array,
   qsort(array->_buffer, array->count, array->_width, compare);
 }
 
+/* MARK: - Transforming an Array */
+
+/**
+ * Returns the result of combining the elements of the sequence using the given
+ * closure.
+ */
+Void array_reduce(struct Array* array,
+                  AnyObject initial_result,
+                  Void (*next_partial_result)(AnyObject accumulator,
+                                              AnyConstantObject element,
+                                              AnyObject* closure_capture_list,
+                                              AnyObject result),
+                  AnyObject* closure_capture_list,
+                  AnyObject result) {
+  var accumulator = malloc(array->_width);
+  memcpy(accumulator, initial_result, array->_width);
+
+  var element = malloc(array->_width);
+  var i = 0ll;
+  for (; i < array->count; i += 1) {
+    array_read(array, i, element);
+    next_partial_result(accumulator,
+                        element,
+                        closure_capture_list,
+                        accumulator);
+  }
+
+  if (result != NULL) {
+    memcpy(result, accumulator, array->_width);
+  }
+
+  free(accumulator);
+  free(element);
+}
+
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */

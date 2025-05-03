@@ -19,3 +19,7 @@
 - ``array_append``
 - ``array_remove_last``
 - ``array_remove_all``
+
+### Transforming an Array
+
+- ``array_reduce``

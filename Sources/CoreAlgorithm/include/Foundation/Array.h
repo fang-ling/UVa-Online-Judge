@@ -254,6 +254,70 @@ Void array_write(struct Array* array, Int64 index, AnyObject element);
  */
 Void array_sort(struct Array* array, Comparable comparator);
 
+/* MARK: - Transforming an Array */
+
+/**
+ * Returns the result of combining the elements of the sequence using the given
+ * closure.
+ *
+ * Use this method to produce a single value from the elements of an entire
+ * sequence. For example, you can use this method on an array of numbers to find
+ * their sum or product.
+ *
+ * The `next_partial_result` closure is called sequentially with an accumulating
+ * value initialized to `initial_result` and each element of the sequence. This
+ * example shows how to find the sum of an array of numbers.
+ *
+ * ```c
+ * Void sum_closure(AnyObject accumulator,
+ *                  AnyConstantObject element,
+ *                  AnyObject* closure_capture_list,
+ *                  AnyObject result) {
+ *   var _accumulator = (Int32*)accumulator;
+ *   var _element = (Int32*)element;
+ *
+ *   *_accumulator += *_element;
+ *
+ *   memcpy(result, _accumulator, sizeof(Int32));
+ * }
+ *
+ * var numbers = array_init(sizeof(Int32));
+ * var i = 1;
+ * for (; i <= 4; i += 1) {
+ *   array_append(numbers, &i);
+ * }
+ * // numbers = [1, 2, 3, 4]
+ *
+ * var number_sum = 0;
+ * array_reduce(scores, &number_sum, sum_closure, NULL, &number_sum);
+ * // number_sum == 10
+ *
+ * array_deinit(scores);
+ * ```
+ *
+ * - Parameters:
+ *   - initial_result: The value to use as the initial accumulating value.
+ *                     `initial_result` is passed to `next_partial_result` the
+ *                     first time the closure is executed.
+ *   - next_partial_result: A closure that combines an accumulating value and an
+ *                          element of the sequence into a new accumulating
+ *                          value, to be used in the next call of the
+ *                          `next_partial_result` closure or returned to the
+ *                          caller.
+ *   - result: The final accumulated value to be written. If the sequence has no
+ *             elements, the result is `initial_result`.
+ *
+ * - Complexity: O(*n*), where *n* is the length of the sequence.
+ */
+Void array_reduce(struct Array* array,
+                  AnyObject initial_result,
+                  Void (*next_partial_result)(AnyObject accumulator,
+                                              AnyConstantObject element,
+                                              AnyObject* closure_capture_list,
+                                              AnyObject result),
+                  AnyObject* closure_capture_list,
+                  AnyObject result);
+
 #endif /* Array_h */
 
 /*===----------------------------------------------------------------------===*/

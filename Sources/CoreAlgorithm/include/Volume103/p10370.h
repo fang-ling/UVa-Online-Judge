@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume103Tests.swift                                 /'___\ /\_ \          */
+/* p10370.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: December 17, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: May 3, 2025                                    \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,25 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+#ifndef p10370_h
+#define p10370_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume103Tests {
-    @Test func testP10300() throws {
-      try run(main: p10300_main, for: 10300, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP10370() throws {
-      try run(main: p10370_main, for: 10370, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+Void p10370_main();
+
+#endif /* p10370_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
