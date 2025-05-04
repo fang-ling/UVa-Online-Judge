@@ -99,10 +99,6 @@ final class CoreAlgorithm: XCTestCase {
   func testVolume127() throws {
     try CoreAlgorithm.judge(solution: p12720_main, for: 12720, caseCount: 2)
   }
-  
-  func testVolume130() throws {
-    try CoreAlgorithm.judge(solution: p13025_main, for: 13025, caseCount: 1)
-  }
 }*/
 
 /*===----------------------------------------------------------------------===*/
