@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30369924 | 12403 | Save Setu |
 | 30369908 | 10696 | f91 |
 | 30368128 | 10370 | Above Average |
 | 30366925 | 374 | Big Mod |
