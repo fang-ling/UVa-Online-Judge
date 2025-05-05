@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30372818 | 13034 | Solve Everything :-) |
 | 30369969 | 13012 | Identifying tea |
 | 30369924 | 12403 | Save Setu |
 | 30369908 | 10696 | f91 |

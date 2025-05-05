@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume130Tests.swift                                 /'___\ /\_ \          */
+/* p13034.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: May 4, 2025                                    \ \ \_/__ \_\ \_  __  */
+/* Date: May 5, 2025                                    \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,31 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithm
-import Testing
+#ifndef p13034_h
+#define p13034_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume130Tests {
-    @Test func testP13012() throws {
-      try run(main: p13012_main, for: 13012, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP13025() throws {
-      try run(main: p13025_main, for: 13025, caseCount: 1).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p13034_main();
 
-    @Test func testP13034() throws {
-      try run(main: p13034_main, for: 13034, caseCount: 2).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* p13034_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
