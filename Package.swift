@@ -89,7 +89,8 @@ let volumes =
   process(volume: 126, problems: [(12658, 2), (12696, 2), (12646, 3)]) + 
   process(volume: 127, problems: [(12720, 2)]) +
   process(volume: 129, problems: [(12917, 3)]) +
-  process(volume: 130, problems: [(13012, 2), (13025, 1), (13034, 2)])
+  process(volume: 130, problems: [(13012, 2), (13025, 1), (13034, 2)]) +
+  process(volume: 131, problems: [(13130, 3)])
 
 let package = Package(
   name: "CoreAlgorithm",
