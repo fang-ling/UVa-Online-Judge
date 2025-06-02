@@ -17,6 +17,9 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30435515 | 10963 | The Swallowing Ground |
+| 30419756 | 11942 | Lumberjack Sequencing |
+| 30414835 | 10550 | Combination Lock |
 | 30373861 | 13130 | Cacho |
 | 30372818 | 13034 | Solve Everything :-) |
 | 30369969 | 13012 | Identifying tea |
