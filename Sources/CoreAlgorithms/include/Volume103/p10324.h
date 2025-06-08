@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Volume103Tests.swift                                 /'___\ /\_ \          */
+/* p10324.h                                             /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: December 17, 2024                              \ \ \_/__ \_\ \_  __  */
+/* Date: June 8, 2025                                   \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,31 +19,14 @@
  * which have their own licensing terms.
  */
 
-import Foundation
-@testable import CoreAlgorithms
-import Testing
+#ifndef p10324_h
+#define p10324_h
 
-extension UVaOnlineJudgeTests {
-  struct Volume103Tests {
-    @Test func testP10300() throws {
-      try run(main: p10300_main, for: 10300, caseCount: 4).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+#include "Foundation/Foundation.h"
 
-    @Test func testP10324() throws {
-      try run(main: p10324_main, for: 10324, caseCount: 5).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
+Void p10324_main();
 
-    @Test func testP10370() throws {
-      try run(main: p10370_main, for: 10370, caseCount: 3).forEach { result in
-        #expect(result.0 == result.1)
-      }
-    }
-  }
-}
+#endif /* p10324_h */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

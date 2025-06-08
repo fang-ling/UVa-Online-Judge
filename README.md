@@ -17,6 +17,7 @@ Swift codes are only for Swift Testing.
 
 | # | pid | Problem |
 |--|--|--|
+| 30458837 | 10324 | Zeros and Ones |
 | 30435515 | 10963 | The Swallowing Ground |
 | 30419756 | 11942 | Lumberjack Sequencing |
 | 30414835 | 10550 | Combination Lock |
