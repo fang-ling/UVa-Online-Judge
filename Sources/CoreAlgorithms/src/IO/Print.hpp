@@ -24,9 +24,18 @@
 
 #include "../Internal/_CoreAlgorithms.hpp"
 
+/**
+ * Writes the textual representations of the given item into the standard
+ * output.
+ *
+ * - Parameters:
+ *   - item: The item to print.
+ *   - terminator: The string to print after the item have been printed. The
+ *                 default is a newline (`\n`).
+ */
 template <class T> /* FIXME: Use String */
-func print(const T& item, std::string separator = "\n") -> Void {
-  std::cout << item << separator;
+func print(const T& item, std::string terminator = "\n") -> Void {
+  std::cout << item << terminator;
 }
 
 #endif /* Print_hpp */

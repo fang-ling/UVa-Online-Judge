@@ -31,8 +31,8 @@ func run(
   for problem: Int,
   caseCount: Int,
   skipping: [Int] = []
-) throws -> [(String, String)] {
-  var results: [(String, String)] = []
+) throws -> [(Swift.String, Swift.String)] {
+  var results: [(Swift.String, Swift.String)] = []
   for i in 0 ..< caseCount {
     if (skipping.contains(i)) {
       continue;

@@ -23,6 +23,7 @@
 #define UVaOnlineJudge_h
 
 #include "../src/Volume1/UVa100.hpp"
+#include "../src/Volume2/UVa272.hpp"
 
 #endif /* UVaOnlineJudge_h */
 

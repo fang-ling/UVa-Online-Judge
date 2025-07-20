@@ -25,6 +25,7 @@
 #include "../src/Core/Algorithm.hpp"
 #include "../src/Core/Bool.hpp"
 #include "../src/Core/Int64.hpp"
+#include "../src/Core/String.hpp"
 
 #include "../src/IO/Print.hpp"
 #include "../src/IO/Scan.hpp"

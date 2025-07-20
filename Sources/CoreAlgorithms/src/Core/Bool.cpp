@@ -29,6 +29,9 @@ Bool::operator bool() const {
   return this->_value;
 }
 
+func Bool::toggle() -> Void {
+  this->_value = !this->_value;
+}
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */
 /*       /'___\                          /\_ \    __                          */

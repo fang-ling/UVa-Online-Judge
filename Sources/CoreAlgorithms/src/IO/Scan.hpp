@@ -23,6 +23,8 @@
 #define Scan_hpp
 
 #include "../Core/Bool.hpp"
+#include "../Core/String.hpp"
+
 #include "../Internal/_CoreAlgorithms.hpp"
 
 template <class T>
@@ -30,6 +32,8 @@ func scan(T* value) -> Bool {
   std::cin >> (*value);
   return !std::cin.fail();
 }
+
+func read_line(String* value) -> Bool;
 
 func _reset_input_stream() -> Void;
 

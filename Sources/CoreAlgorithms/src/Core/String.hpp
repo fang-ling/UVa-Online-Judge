@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Bool.hpp                                             /'___\ /\_ \          */
+/* String.hpp                                           /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: July 19, 2025                                  \ \ \_/__ \_\ \_  __  */
+/* Date: July 20, 2025                                  \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,41 +19,24 @@
  * which have their own licensing terms.
  */
 
-#ifndef Bool_hpp
-#define Bool_hpp
+#ifndef String_hpp
+#define String_hpp
 
 #include "../Internal/_CoreAlgorithms.hpp"
 
 /**
- * A value type whose instances are either `true` or `false`.
+ * A Unicode string value that is a collection of characters.
  */
-class Bool {
-  private: bool _value;
+class String {
+  public: std::string _value;
 
-  /**
-   * Creates an instance equal to the given Boolean value.
-   *
-   * - Parameter value: The Boolean value to copy.
-   */
-  public: Bool(bool value);
-
-  /**
-   * Toggles the Boolean variable's value.
-   *
-   * Use this method to toggle a Boolean value from `true` to `false` or from
-   * `false` to `true`.
-   *
-   *     var b = Bool(true);
-   *
-   *     b.toggle()
-   *     // b == false
-   */
-  public: func toggle() -> Void;
-
-  public: operator bool() const;
+  public: func begin() -> std::string::iterator;
+  public: func end() -> std::string::iterator;
+  public: func begin() const -> std::string::const_iterator;
+  public: func end() const -> std::string::const_iterator;
 };
 
-#endif /* Bool_hpp */
+#endif /* String_hpp */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

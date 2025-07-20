@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Bool.hpp                                             /'___\ /\_ \          */
+/* UVa272.hpp                                           /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: July 19, 2025                                  \ \ \_/__ \_\ \_  __  */
+/* Date: July 20, 2025                                  \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,41 +19,14 @@
  * which have their own licensing terms.
  */
 
-#ifndef Bool_hpp
-#define Bool_hpp
+#ifndef UVa272_hpp
+#define UVa272_hpp
 
-#include "../Internal/_CoreAlgorithms.hpp"
+#include "CoreAlgorithms.h"
 
-/**
- * A value type whose instances are either `true` or `false`.
- */
-class Bool {
-  private: bool _value;
+func uva272() -> Void;
 
-  /**
-   * Creates an instance equal to the given Boolean value.
-   *
-   * - Parameter value: The Boolean value to copy.
-   */
-  public: Bool(bool value);
-
-  /**
-   * Toggles the Boolean variable's value.
-   *
-   * Use this method to toggle a Boolean value from `true` to `false` or from
-   * `false` to `true`.
-   *
-   *     var b = Bool(true);
-   *
-   *     b.toggle()
-   *     // b == false
-   */
-  public: func toggle() -> Void;
-
-  public: operator bool() const;
-};
-
-#endif /* Bool_hpp */
+#endif /* UVa272_hpp */
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

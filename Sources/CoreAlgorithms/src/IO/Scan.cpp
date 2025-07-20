@@ -21,6 +21,11 @@
 
 #include "Scan.hpp"
 
+func read_line(String* value) -> Bool {
+  std::getline(std::cin, value->_value);
+  return !std::cin.fail();
+}
+
 /* We need this for Swift to reset the std::cin's state. */
 func _reset_input_stream() -> Void {
   std::cin.clear();

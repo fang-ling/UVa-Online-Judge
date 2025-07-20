@@ -1,9 +1,9 @@
 /*===----------------------------------------------------------------------===*/
 /*                                                        ___   ___           */
-/* Bool.hpp                                             /'___\ /\_ \          */
+/* String.cpp                                           /'___\ /\_ \          */
 /*                                                     /\ \__/ \//\ \         */
 /* Author: Fang Ling (fangling@fangl.ing)              \ \ ,__\  \ \ \        */
-/* Date: July 19, 2025                                  \ \ \_/__ \_\ \_  __  */
+/* Date: July 20, 2025                                  \ \ \_/__ \_\ \_  __  */
 /*                                                       \ \_\/\_\/\____\/\_\ */
 /*                                                        \/_/\/_/\/____/\/_/ */
 /*===----------------------------------------------------------------------===*/
@@ -19,41 +19,23 @@
  * which have their own licensing terms.
  */
 
-#ifndef Bool_hpp
-#define Bool_hpp
+#include "String.hpp"
 
-#include "../Internal/_CoreAlgorithms.hpp"
+func String::begin() -> std::string::iterator {
+  return this->_value.begin();
+}
 
-/**
- * A value type whose instances are either `true` or `false`.
- */
-class Bool {
-  private: bool _value;
+func String::end() -> std::string::iterator {
+  return this->_value.end();
+}
 
-  /**
-   * Creates an instance equal to the given Boolean value.
-   *
-   * - Parameter value: The Boolean value to copy.
-   */
-  public: Bool(bool value);
+func String::begin() const -> std::string::const_iterator {
+  return this->_value.begin();
+}
 
-  /**
-   * Toggles the Boolean variable's value.
-   *
-   * Use this method to toggle a Boolean value from `true` to `false` or from
-   * `false` to `true`.
-   *
-   *     var b = Bool(true);
-   *
-   *     b.toggle()
-   *     // b == false
-   */
-  public: func toggle() -> Void;
-
-  public: operator bool() const;
-};
-
-#endif /* Bool_hpp */
+func String::end() const -> std::string::const_iterator {
+  return this->_value.end();
+}
 
 /*===----------------------------------------------------------------------===*/
 /*         ___                            ___                                 */

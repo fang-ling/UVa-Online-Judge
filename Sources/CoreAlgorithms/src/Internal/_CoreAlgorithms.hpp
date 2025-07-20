@@ -28,6 +28,8 @@
 #define func auto
 #define Void void
 
+#define nil nullptr
+
 #include <iostream>
 #include <string>
 

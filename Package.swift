@@ -54,7 +54,7 @@ let package = Package(
       name: "UVaOnlineJudgeTests",
       dependencies: ["UVaOnlineJudge"],
       resources: process([
-        (100, 7)
+        (100, 7), (272, 4)
       ]),
       swiftSettings: [.interoperabilityMode(.Cxx)]
     )
@@ -82,7 +82,7 @@ let package = Package(
 //      , (102, 4), (108, 3), (113, 4), (136, 1)
 //    ]
 //  ) +
-//  process(volume: 2, problems: [(272, 4), (299, 6)]) +
+//  process(volume: 2, problems: [, (299, 6)]) +
 //  process(volume: 3, problems: [(374, 5)]) +
 //  process(volume: 4, problems: [(424, 5), (458, 2), (465, 5), (494, 8)]) +
 //  process(volume: 5, problems: [(591, 7), (594, 3)]) +
